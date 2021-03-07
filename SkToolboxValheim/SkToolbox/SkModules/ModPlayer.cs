@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SkToolbox.SkModules
 {
-    class ModPlayer : SkBaseModule, IModule
+    internal class ModPlayer : SkBaseModule, IModule
     {
         //private Rect EnemyWindow;
         Player selectedPlayer = null;
@@ -47,12 +47,12 @@ namespace SkToolbox.SkModules
             GenericMenu.AddItem("Tame", new Action(Tame));
             GenericMenu.AddItemToggle("Enable Teleport to Mouse", ref bTeleport, new Action(ToggleTeleport), "Press tilde (~) to teleport!");
             GenericMenu.AddItemToggle("Build Anywhere", ref SkCommandPatcher.bBuildAnywhere, new Action(ToggleAnywhere));
-            GenericMenu.AddItemToggle("No Cost Building", ref CommandProcessor.noCostEnabled, new Action(ToggleNoCost));
-            GenericMenu.AddItemToggle("Detect Nearby Enemies", ref CommandProcessor.bDetectEnemies, new Action(ToggleESPEnemies), "Range: 20m");
-            GenericMenu.AddItemToggle("Display Coordinates", ref CommandProcessor.bCoords, new Action(ToggleCoords));
-            GenericMenu.AddItemToggle("Godmode", ref CommandProcessor.godEnabled, new Action(ToggleGodmode));
-            GenericMenu.AddItemToggle("Flying", ref CommandProcessor.flyEnabled, new Action(ToggleFlying));
-            GenericMenu.AddItemToggle("Infinite Stamina", ref CommandProcessor.infStamina, new Action(ToggleInfStam));
+            GenericMenu.AddItemToggle("No Cost Building", ref SkCommandProcessor.noCostEnabled, new Action(ToggleNoCost));
+            GenericMenu.AddItemToggle("Detect Nearby Enemies", ref SkCommandProcessor.bDetectEnemies, new Action(ToggleESPEnemies), "Range: 20m");
+            GenericMenu.AddItemToggle("Display Coordinates", ref SkCommandProcessor.bCoords, new Action(ToggleCoords));
+            GenericMenu.AddItemToggle("Godmode", ref SkCommandProcessor.godEnabled, new Action(ToggleGodmode));
+            GenericMenu.AddItemToggle("Flying", ref SkCommandProcessor.flyEnabled, new Action(ToggleFlying));
+            GenericMenu.AddItemToggle("Infinite Stamina", ref SkCommandProcessor.infStamina, new Action(ToggleInfStam));
             MenuOptions = GenericMenu;
         }
 
@@ -172,58 +172,58 @@ namespace SkToolbox.SkModules
 
         public void Heal()
         {
-            CommandProcessor.ProcessCommand("/heal", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/heal", SkCommandProcessor.LogTo.Chat);
         }
         public void Tame()
         {
-            CommandProcessor.ProcessCommand("/tame", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/tame", SkCommandProcessor.LogTo.Chat);
         }
 
         public void ToggleNoCost()
         {
-            CommandProcessor.ProcessCommand("/nocost", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/nocost", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleESPEnemies()
         {
-            CommandProcessor.ProcessCommand("/detect 20", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/detect 20", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleCoords()
         {
-            CommandProcessor.ProcessCommand("/coords", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/coords", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleAnywhere()
         {
-            CommandProcessor.ProcessCommand("/nores", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/nores", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleGodmode()
         {
-            CommandProcessor.ProcessCommand("/god", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/god", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleFlying()
         {
-            CommandProcessor.ProcessCommand("/fly", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/fly", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void ToggleInfStam()
         {
-            CommandProcessor.ProcessCommand("/infstam", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/infstam", SkCommandProcessor.LogTo.Chat);
             BeginMenu();
         }
 
         public void RepairAll()
         {
-            CommandProcessor.ProcessCommand("/repair", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/repair", SkCommandProcessor.LogTo.Chat);
         }
 
         void Update()

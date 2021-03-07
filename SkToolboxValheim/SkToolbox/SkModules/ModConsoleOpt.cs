@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SkToolbox.SkModules
 {
-    class ModConsoleOpt : SkBaseModule, IModule
+    internal class ModConsoleOpt : SkBaseModule, IModule
     {
         internal bool conWriteToFile = false;
         string consoleLastMessage = string.Empty;
@@ -36,7 +36,7 @@ namespace SkToolbox.SkModules
 
         public void Start()
         {
-            CommandProcessor.consoleOpt = this;
+            SkCommandProcessor.consoleOpt = this;
             BeginMenu();
             base.Ready();
         }
@@ -101,7 +101,7 @@ namespace SkToolbox.SkModules
                             //{
                             consoleHistory.Add(consoleLastMessage);
                             //}
-                            CommandProcessor.ProcessCommands(consoleLastMessage, CommandProcessor.LogTo.Console);
+                            SkCommandProcessor.ProcessCommands(consoleLastMessage, SkCommandProcessor.LogTo.Console);
 
                             consoleLastMessage = string.Empty;
                         }
@@ -186,7 +186,7 @@ namespace SkToolbox.SkModules
                     }
                     if (inputText.Equals(string.Empty) && !chatInLastMessage.Equals(string.Empty)) // Enter was pressed
                     {
-                        CommandProcessor.ProcessCommands(chatInLastMessage, CommandProcessor.LogTo.Chat);
+                        SkCommandProcessor.ProcessCommands(chatInLastMessage, SkCommandProcessor.LogTo.Chat);
 
                         chatInLastMessage = string.Empty;
                     }
@@ -209,11 +209,11 @@ namespace SkToolbox.SkModules
         {
             if (Player.m_localPlayer != null)
             {
-                if (CommandProcessor.bDetectEnemies && nearbyCharacters.Count > 0)
+                if (SkCommandProcessor.bDetectEnemies && nearbyCharacters.Count > 0)
                 {
                     EnemyWindow = GUILayout.Window(39999, rectEnemy, ProcessEnemies, "Enemy Information");
                 }
-                if (CommandProcessor.bCoords)
+                if (SkCommandProcessor.bCoords)
                 {
                     Vector3 plPos = Player.m_localPlayer.transform.position;
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
@@ -234,7 +234,7 @@ namespace SkToolbox.SkModules
             {
                 if (Console.instance != null && Player.m_localPlayer == null) // Only announce at main menu
                 {
-                    CommandProcessor.Announce();
+                    SkCommandProcessor.Announce();
                     LoadConsoleCustomizations();
                     anncounced1 = true;
                 }
@@ -251,7 +251,7 @@ namespace SkToolbox.SkModules
             {
                 if (Chat.instance != null)
                 {
-                    CommandProcessor.Announce();
+                    SkCommandProcessor.Announce();
                     LoadConsoleCustomizations();
                     anncounced2 = true;
                 }
@@ -273,13 +273,13 @@ namespace SkToolbox.SkModules
                         try
                         {
                             SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.autoRunCommand.Value });
-                            CommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.autoRunCommand.Value, CommandProcessor.LogTo.Console);
-                            CommandProcessor.ProcessCommands(SkConfigEntry.autoRunCommand.Value, CommandProcessor.LogTo.Console); // try to proces SkToolbox command
+                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkCommandProcessor.ProcessCommands(SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
                         }
                         catch (Exception)
                         {
                             SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.autoRunCommand.Value }, LogType.Warning);
-                            CommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.autoRunCommand.Value, CommandProcessor.LogTo.Console);
+                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console);
                         }
                         finally
                         {
@@ -293,7 +293,7 @@ namespace SkToolbox.SkModules
                 }
             }
 
-            if (CommandProcessor.bTeleport)
+            if (SkCommandProcessor.bTeleport)
             {
                 if (Input.GetKeyDown(KeyCode.BackQuote))
                 {
@@ -307,7 +307,7 @@ namespace SkToolbox.SkModules
                     }
                 }
             }
-            if (CommandProcessor.bDetectEnemies)
+            if (SkCommandProcessor.bDetectEnemies)
             {
                 try
                 {
@@ -318,7 +318,7 @@ namespace SkToolbox.SkModules
                         {
                             if (character != null && !character.IsDead() && !character.IsPlayer())
                             {
-                                if (Vector3.Distance(character.transform.position, Player.m_localPlayer.transform.position) < CommandProcessor.bDetectRange)
+                                if (Vector3.Distance(character.transform.position, Player.m_localPlayer.transform.position) < SkCommandProcessor.bDetectRange)
                                 {
                                     if (!nearbyCharacters.Contains(character))
                                     {
@@ -354,14 +354,14 @@ namespace SkToolbox.SkModules
                             }
                         }
                     }
-                    if (nearbyCharacters.Count > 0 && CommandProcessor.btDetectEnemiesSwitch)
+                    if (nearbyCharacters.Count > 0 && SkCommandProcessor.btDetectEnemiesSwitch)
                     {
                         Player.m_localPlayer.Message(MessageHud.MessageType.Center, "Enemy nearby!", 0, null);
-                        CommandProcessor.btDetectEnemiesSwitch = false;
+                        SkCommandProcessor.btDetectEnemiesSwitch = false;
                     }
                     else if (nearbyCharacters.Count == 0)
                     {
-                        CommandProcessor.btDetectEnemiesSwitch = true;
+                        SkCommandProcessor.btDetectEnemiesSwitch = true;
                     }
                 }
                 catch (Exception)

@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkToolbox\CommandProcessor.cs" />
+    <Compile Include="SkToolbox\SkCommandProcessor.cs" />
     <Compile Include="SkToolbox\SkBepInExLoader.cs" />
     <Compile Include="SkToolbox\SkCommandPatcher.cs" />
     <Compile Include="SkToolbox\SkConfigEntry.cs" />
@@ -113,9 +113,6 @@
     <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
     <Compile Include="SkToolbox\SkUtilities.cs" />
     <Compile Include="SkToolbox\SkVersionChecker.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SkToolbox Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

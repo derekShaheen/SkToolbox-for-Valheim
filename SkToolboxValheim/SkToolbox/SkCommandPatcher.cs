@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SkToolbox
 {
-    public static class SkCommandPatcher
+    internal static class SkCommandPatcher
     {
         public static Harmony harmony = null;
 

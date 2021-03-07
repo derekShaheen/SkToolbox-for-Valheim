@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SkToolbox.SkModules
 {
-    class ModWorld : SkBaseModule, IModule
+    internal class ModWorld : SkBaseModule, IModule
     {
         int radius = 5;
         int height = 5;
@@ -75,30 +75,30 @@ namespace SkToolbox.SkModules
 
         public void ListPortals()
         {
-            CommandProcessor.ProcessCommand("/portals", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/portals", SkCommandProcessor.LogTo.Chat);
         }
         public void RemoveDrops()
         {
-            CommandProcessor.ProcessCommand("/removedrops", CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/removedrops", SkCommandProcessor.LogTo.Chat);
         }
 
         public void TLevel()
         {
-            CommandProcessor.ProcessCommand("/tl " + radius, CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/tl " + radius, SkCommandProcessor.LogTo.Chat);
         }
 
         public void TRaise()
         {
-            CommandProcessor.ProcessCommand("/tr " + radius + " " + height, CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/tr " + radius + " " + height, SkCommandProcessor.LogTo.Chat);
         }
         public void TLower()
         {
-            CommandProcessor.ProcessCommand("/td " + radius + " " + height, CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/td " + radius + " " + height, SkCommandProcessor.LogTo.Chat);
         }
 
         public void TReset()
         {
-            CommandProcessor.ProcessCommand("/tu " + radius + " " + height, CommandProcessor.LogTo.Chat);
+            SkCommandProcessor.ProcessCommand("/tu " + radius + " " + height, SkCommandProcessor.LogTo.Chat);
         }
 
     }

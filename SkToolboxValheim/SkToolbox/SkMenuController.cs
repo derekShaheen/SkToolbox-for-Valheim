@@ -11,7 +11,7 @@ namespace SkToolbox
     /// Designed to control the menu processes. Menu operations can be requested/performed via this class.
     /// </summary>
 
-    public class SkMenuController : MonoBehaviour
+    internal class SkMenuController : MonoBehaviour
     {
         private string contextTipInfo1 = "NumPad Arrows";
         private string contextTipInfo2 = "NumPad 5 to Select";
@@ -78,7 +78,7 @@ namespace SkToolbox
         void Update()
         {
 
-            if (CommandProcessor.altOnScreenControls)
+            if (SkCommandProcessor.altOnScreenControls)
             {
                 if(SkConfigEntry.oAltToggle != null && SkConfigEntry.oAltUp != null && SkConfigEntry.oAltDown != null && SkConfigEntry.oAltChoose != null && SkConfigEntry.oAltBack != null)
                 {

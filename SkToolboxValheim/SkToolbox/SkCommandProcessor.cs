@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SkToolbox
 {
-    internal static class CommandProcessor
+    internal static class SkCommandProcessor
     {
 
 

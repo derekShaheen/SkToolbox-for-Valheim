@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 namespace SkToolbox
 {
-    public class SkConsole : MonoBehaviour
+    internal class SkConsole : MonoBehaviour
     {
         public static Version SkConsoleVersion = new Version(1, 1, 1);
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SkToolbox
 {
-    public static class SkUtilities
+    internal static class SkUtilities
     {
         public static bool ConvertInternalWarningsErrors = false; // Should we allow output of warnings and errors from SkToolbox, or suppress them all to regular log output? // True = suppress
         public static BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
