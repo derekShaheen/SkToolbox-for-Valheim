@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8DB1269B-91CF-45A1-A52C-7334C87EA75F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SkToolboxValheim</RootNamespace>
+    <AssemblyName>SkToolboxValheim</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_utils.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_valheim">
+      <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\..\..\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SkToolbox\CommandProcessor.cs" />
+    <Compile Include="SkToolbox\SkBepInExLoader.cs" />
+    <Compile Include="SkToolbox\SkCommandPatcher.cs" />
+    <Compile Include="SkToolbox\SkConfigEntry.cs" />
+    <Compile Include="SkToolbox\SkConsole.cs" />
+    <Compile Include="SkToolbox\SkLoader.cs" />
+    <Compile Include="SkToolbox\SkMenu.cs" />
+    <Compile Include="SkToolbox\SkMenuController.cs" />
+    <Compile Include="SkToolbox\SkMenuItem.cs" />
+    <Compile Include="SkToolbox\SkModuleController.cs" />
+    <Compile Include="SkToolbox\SkModules\IModule.cs" />
+    <Compile Include="SkToolbox\SkModules\ModConsoleOpt.cs" />
+    <Compile Include="SkToolbox\SkModules\ModPlayer.cs" />
+    <Compile Include="SkToolbox\SkModules\ModWorld.cs" />
+    <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
+    <Compile Include="SkToolbox\SkUtilities.cs" />
+    <Compile Include="SkToolbox\SkVersionChecker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>echo Copying debug files to the game...
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "D:\Games\Steam\steamapps\common\Valheim\BepInEx\plugins\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "D:\Games\Steam\steamapps\common\Valheim\BepInEx\scripts\SkToolboxValheim.dll"
+echo Copying release files and readme to folders...
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Release\SkToolboxValheim.dll" "B:\SkToolbox Projects\Release - BepInEx\BepInEx\plugins\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Release - BepInEx\SkToolbox Readme.txt"
+
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Release\SkToolboxValheim.dll" "B:\SkToolbox Projects\Release - Thunderstore\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Release - Thunderstore\README.md"
+
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Release\SkToolboxValheim.dll" "B:\SkToolbox Projects\Release - Trainer Only\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Release - Trainer Only\SkToolbox Readme.txt"
+echo Compressing release files to zip...
+echo ...Release - BepInEx
+cd /d "B:\SkToolbox Projects\Release - BepInEx\"
+tar -cf "..\SkToolbox Release - BepInEx.zip" "*"
+echo ...Release - Thunderstore
+cd /d "B:\SkToolbox Projects\Release - Thunderstore\"
+tar -cf "..\SkToolbox Release - Thunderstore.zip" "*"
+echo ...Release Standalone
+cd /d "B:\SkToolbox Projects\Release - Trainer Only\"
+tar -cf "..\SkToolbox Release - Trainer Only.zip" "*"
+echo ...Release DLL Only
+cd /d "B:\SkToolbox Projects\Release - Trainer Only\"
+tar -cf "..\SkToolbox Release - DLL Only.zip" "SkToolboxValheim.dll"
+echo Complete. Make sure you check the file version on the assembly info, the readme, the Thunderstore manifest, and the Version Checker!</PostBuildEvent>
+  </PropertyGroup>
+</Project>
