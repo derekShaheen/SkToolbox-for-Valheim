@@ -41,18 +41,18 @@ namespace SkToolbox.SkModules
         {
             SkMenu GenericMenu = new SkMenu();
             //GenericMenu.AddItem("Select Player\t►", new Action(BeginPromptPlayers));
-            GenericMenu.AddItem("Give Item\t►", new Action(BeginListItems), "Give item(s) to self");
-            GenericMenu.AddItem("Repair All", new Action(RepairAll));
-            GenericMenu.AddItem("Heal Self", new Action(Heal));
-            GenericMenu.AddItem("Tame", new Action(Tame));
+            GenericMenu.AddItem("Repair All", new Action(RepairAll), "Repair all your items");
+            GenericMenu.AddItem("Heal Self", new Action(Heal), "Heal yourself");
+            GenericMenu.AddItem("Tame", new Action(Tame), "Tame all nearby creatures");
             GenericMenu.AddItemToggle("Enable Teleport to Mouse", ref bTeleport, new Action(ToggleTeleport), "Press tilde (~) to teleport!");
-            GenericMenu.AddItemToggle("Build Anywhere", ref SkCommandPatcher.bBuildAnywhere, new Action(ToggleAnywhere));
-            GenericMenu.AddItemToggle("No Cost Building", ref SkCommandProcessor.noCostEnabled, new Action(ToggleNoCost));
+            GenericMenu.AddItemToggle("Build Anywhere", ref SkCommandPatcher.bBuildAnywhere, new Action(ToggleAnywhere), "Remove build restrictions");
+            GenericMenu.AddItemToggle("No Cost Building", ref SkCommandProcessor.noCostEnabled, new Action(ToggleNoCost), "Unlock all pieces and no cost");
             GenericMenu.AddItemToggle("Detect Nearby Enemies", ref SkCommandProcessor.bDetectEnemies, new Action(ToggleESPEnemies), "Range: 20m");
-            GenericMenu.AddItemToggle("Display Coordinates", ref SkCommandProcessor.bCoords, new Action(ToggleCoords));
-            GenericMenu.AddItemToggle("Godmode", ref SkCommandProcessor.godEnabled, new Action(ToggleGodmode));
-            GenericMenu.AddItemToggle("Flying", ref SkCommandProcessor.flyEnabled, new Action(ToggleFlying));
-            GenericMenu.AddItemToggle("Infinite Stamina", ref SkCommandProcessor.infStamina, new Action(ToggleInfStam));
+            GenericMenu.AddItemToggle("Display Coordinates", ref SkCommandProcessor.bCoords, new Action(ToggleCoords), "Display coords in top left corner");
+            GenericMenu.AddItemToggle("Godmode", ref SkCommandProcessor.godEnabled, new Action(ToggleGodmode), "Godmode for yourself");
+            GenericMenu.AddItemToggle("Flying", ref SkCommandProcessor.flyEnabled, new Action(ToggleFlying), "Flying for yourself");
+            GenericMenu.AddItemToggle("Infinite Stamina", ref SkCommandProcessor.infStamina, new Action(ToggleInfStam), "Infinite stamina for yourself");
+            GenericMenu.AddItem("Give Item\t►", new Action(BeginListItems), "Give item(s) to self");
             MenuOptions = GenericMenu;
         }
 

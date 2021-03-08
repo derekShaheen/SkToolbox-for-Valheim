@@ -117,7 +117,7 @@ namespace SkToolbox.SkModules
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Slash)
-                    && (SkConfigEntry.cOpenConsoleWithSlash != null && SkConfigEntry.cOpenConsoleWithSlash.Value)
+                    && ((SkConfigEntry.cOpenConsoleWithSlash != null && SkConfigEntry.cOpenConsoleWithSlash.Value) || SkConfigEntry.cOpenConsoleWithSlash == null)
                     && !global::Console.IsVisible() && !global::Chat.instance.IsChatDialogWindowVisible() && !TextInput.IsVisible())
                 {
                     Console.instance.m_chatWindow.gameObject.SetActive(true);
@@ -135,6 +135,7 @@ namespace SkToolbox.SkModules
                     int fontSize = Console.instance.m_output.fontSize;
                     string font = "Consolas";
                     Color outputColor = Console.instance.m_output.color;
+                    Color inputColor = Console.instance.m_input.textComponent.color;
                     Color selectionColor = Console.instance.m_input.selectionColor;
                     Color caretColor = Color.white;
                     try
@@ -142,6 +143,7 @@ namespace SkToolbox.SkModules
                         fontSize = SkConfigEntry.cConsoleFontSize.Value;
                         font = SkConfigEntry.cConsoleFont.Value;
                         ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleOutputTextColor.Value, out outputColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleInputTextColor.Value, out inputColor);
                         ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleSelectionColor.Value, out selectionColor);
                         ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleCaretColor.Value, out caretColor);
                     }
@@ -150,10 +152,14 @@ namespace SkToolbox.SkModules
                         SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to load something from the config.", Ex.Message }, LogType.Warning);
                     }
 
-                    Console.instance.m_output.font = Font.CreateDynamicFontFromOSFont(font, fontSize);
-                    Console.instance.m_output.fontSize = fontSize;
+                    Font consoleFont = Font.CreateDynamicFontFromOSFont(font, fontSize);
 
+                    Console.instance.m_output.font = consoleFont;
+                    Console.instance.m_output.fontSize = fontSize;
                     Console.instance.m_output.color = outputColor;
+
+                    Console.instance.m_input.textComponent.color = inputColor;
+                    Console.instance.m_input.textComponent.font = consoleFont;
                     Console.instance.m_input.selectionColor = selectionColor;
                     Console.instance.m_input.caretColor = caretColor;
                     Console.instance.m_input.customCaretColor = true;
@@ -205,6 +211,11 @@ namespace SkToolbox.SkModules
             }
         }
 
+        public void OnCredits()
+        {
+
+        }
+
         void OnGUI()
         {
             if (Player.m_localPlayer != null)
@@ -218,6 +229,28 @@ namespace SkToolbox.SkModules
                     Vector3 plPos = Player.m_localPlayer.transform.position;
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
                 }
+            }
+            if(FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
+            {
+
+                GUILayout.BeginArea(new Rect(0, Screen.height/4, Screen.width, Screen.height));
+                GUILayout.FlexibleSpace();
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+
+                Color tempColor = GUI.color;
+                GUI.color = Color.yellow;
+                GUIStyle credStyle = new GUIStyle();
+                credStyle.font = (Font)Resources.Load("AveriaSansLibre-Bold");
+                credStyle.fontStyle = FontStyle.Bold;
+                credStyle.fontSize = 18;
+                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
+                GUI.color = tempColor;
+
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.FlexibleSpace();
+                GUILayout.EndArea();
             }
         }
 
@@ -272,14 +305,14 @@ namespace SkToolbox.SkModules
                     {
                         try
                         {
-                            SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.autoRunCommand.Value });
-                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console);
-                            SkCommandProcessor.ProcessCommands(SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
+                            SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.cAutoRunCommand.Value });
+                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkCommandProcessor.ProcessCommands(SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
                         }
                         catch (Exception)
                         {
-                            SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.autoRunCommand.Value }, LogType.Warning);
-                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.autoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.cAutoRunCommand.Value }, LogType.Warning);
+                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
                         }
                         finally
                         {

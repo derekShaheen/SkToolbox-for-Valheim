@@ -41,84 +41,88 @@ namespace SkToolbox
             DebugConsole
         }
 
-        //Clear
-        //Twilight_Clear
-        //Misty
-        //Darklands_dark
-        //Heath clear
-        //DeepForest Mist
-        //GDKing
-        //Rain
-        //LightRain
-        //ThunderStorm
-        //Eikthyr
-        //GoblinKing
-        //nofogts
-        //SwampRain
-        //Bonemass
-        //Snow
-        //Twilight_Snow
-        //Twilight_SnowStorm
-        //SnowStorm
-        //Moder
-        //Ashrain
-        //Crypt
-        //SunkenCrypt
+        private static List<string> weatherList = new List<string>()
+        {
+             {"Twilight_Clear"}
+            ,{"Clear"}
+            ,{"Misty"}
+            ,{"Darklands_dark"}
+            //,{"Heath clear"}
+            //,{"DeepForest Mist"}
+            ,{"GDKing"}
+            ,{"Rain"}
+            ,{"LightRain"}
+            ,{"ThunderStorm"}
+            ,{"Eikthyr"}
+            ,{"GoblinKing"}
+            ,{"nofogts"}
+            ,{"SwampRain"}
+            ,{"Bonemass"}
+            ,{"Snow"}
+            ,{"Twilight_Snow"}
+            ,{"Twilight_SnowStorm"}
+            ,{"SnowStorm"}
+            ,{"Moder"}
+            ,{"Ashrain"}
+            ,{"Crypt"}
+            ,{"SunkenCrypt"}
+        };
 
         public static Dictionary<string, string> commandList = new Dictionary<string, string>()
         {
-             {"/alt", "Use alternate on-screen controls. Press HOME to toggle if active."}
-            ,{"/coords", "Show coords in corner of the screen"}
-            ,{"/clear", "Clear the current output shown in the console"}
-            ,{"/clearinventory", "Removes all items from your inventory. There is no confirmation, be careful."}
-            ,{"/detect [Range=20]", "Toggle enemy detection"}
-            ,{"/farinteract [Distance=50]", "Toggles far interactions (building as well). To change distance, toggle this off then back on with new distance"}
-            ,{"/findtomb", "Pin nearby dead player tombstones on the map if any currently exist"}
+             {"/alt", "- Use alternate on-screen controls. Press HOME to toggle if active."}
+            ,{"/coords", "- Show coords in corner of the screen"}
+            ,{"/clear", "- Clear the current output shown in the console"}
+            ,{"/clearinventory", "- Removes all items from your inventory. There is no confirmation, be careful."}
+            ,{"/detect", "[Range=20] - Toggle enemy detection"}
+            ,{"/farinteract", "[Distance=50] - Toggles far interactions (building as well). To change distance, toggle this off then back on with new distance"}
+            ,{"/env", "[Weather] - Change the weather. No parameter provided will list all weather. -1 will allow the game to control the weather again."}
+            ,{"/findtomb", "- Pin nearby dead player tombstones on the map if any currently exist"}
             //,{"/findtrader", "Pin the trader on the map if he currently exists"}
-            ,{"/fly", "Toggle flying"}
-            ,{"/ghost", "Toggle Ghostmode"}
-            ,{"/give [Item] [Qty=1], OR /give [Item] [Qty=1] [Player] [Level=1]", "Gives item to player. If player has a space in name, only provide name before the space. Capital letters matter in item / player name!"}
-            ,{"/god", "Toggle Godmode"}
-            ,{"/heal [Player=local]", "Heal Player"}
-            ,{"/imacheater", "Use the toolbox to force enable standard cheats on any server"}
-            ,{"/infstam", "Toggles infinite stamina"}
+            ,{"/fly", "- Toggle flying"}
+            ,{"/ghost", "- Toggle Ghostmode"}
+            ,{"/give", "[Item] [Qty=1], OR /give [Item] [Qty=1] [Player] [Level=1] - Gives item to player. If player has a space in name, only provide name before the space. Capital letters matter in item / player name!"}
+            ,{"/god", "- Toggle Godmode"}
+            ,{"/heal", "[Player=local] - Heal Player"}
+            ,{"/imacheater", "- Use the toolbox to force enable standard cheats on any server"}
+            ,{"/infstam", "- Toggles infinite stamina"}
             //,{"/infstac", "Toggles infinite stacks"}
             //,{"/itp", "Make all items in your inventory able to be teleported"}
-            ,{"/killall", "Kills all nearby creatures"}
-            ,{"/listitems [Name Contains]", "List all items. Optionally include name starts with. \n\tEx. /listitems Woo returns any item that contains the letters 'Woo'"}
-            ,{"/listskills", "Lists all skills"}
-            ,{"/nocost", "Toggle no requirement building"}
-            ,{"/nores", "Toggle no restrictions to where you can build (except ward zones)"}
-            ,{"/nosup", "Toggle no supports required for buildings - WARNING! - IF YOU REJOIN AND THIS IS DISABLED, YOUR STRUCTURES MAY FALL APART - USE WITH CARE. Maybe use the AutoRun functionality?"}
-            ,{"/portals", "List all portal tags"}
-            ,{"/removedrops", "Removes items from the ground"}
-            ,{"/resetwind", "If wind has been set, this will allow the game to take control of the wind again" }
-            ,{"/repair", "Repair your inventory"}
-            ,{"/resetmap", "Reset the map exploration"}
-            ,{"/revealmap", "Reveals the entire minimap"}
-            ,{"/q", "Quickly exit the game. Commands are sometimes just more convenient."}
-            ,{"/seed", "Reveals the map seed"}
-            ,{"/set cw [Weight]", "Set your weight limit (default 300)"}
-            ,{"/set difficulty [Player Count]", "Set the difficulty (default is number of connected players)"}
-            ,{"/set exploreradius [Radius=100]", "Set the explore radius"}
-            ,{"/set jumpforce [Force]", "Set jump force (default 10). Careful if you fall too far!"}
-            ,{"/set pickup [Radius]", "Set your auto pickup radius (default 2)"}
-            ,{"/set skill [Skill] [Level]", "Set your skill level"}
-            ,{"/set speed [Speed Type] [Speed]", "Speed Types: crouch (def: 2), run (def: 120), swim (def: 2)"}
-            ,{"/td [Radius=5] [Height=1]", "Dig nearby terrain. Radius 30 max."}
-            ,{"/tl [Radius=5]", "Level nearby terrain. Radius 30 max."}
-            ,{"/tr [Radius=5] [Height=1]", "Raise nearby terrain. Radius 30 max."}
-            ,{"/tu [Radius=5]", "Undo terrain modifications around you. Radius 50 max."}
-            ,{"/spawn [Creature Name] [Level=1]", "Spawns a creature or prefab in front of you. Capitals in name matter! Ex. /spawn Boar 3 (use /give for items!)"}
-            ,{"/stopevent", "Stops a current event"}
-            ,{"/tame", "Tame all nearby creatures"}
-            ,{"/tod [0-1]", "Set (and lock) time of day (-1 to unlock time) - Ex. /tod 0.5"}
-            ,{"/tp [X,Y]", "Teleport you to the coords provided" }
+            ,{"/killall", "- Kills all nearby creatures"}
+            ,{"/listitems", "[Name Contains] - List all items. Optionally include name starts with. Ex. /listitems Woo returns any item that contains the letters 'Woo'"}
+            ,{"/listskills", "- Lists all skills"}
+            ,{"/nocost", "- Toggle no requirement building"}
+            ,{"/nores", "- Toggle no restrictions to where you can build (except ward zones)"}
+            ,{"/nosup", "- Toggle no supports required for buildings - WARNING! - IF YOU REJOIN AND THIS IS DISABLED, YOUR STRUCTURES MAY FALL APART - USE WITH CARE. Maybe use the AutoRun functionality?"}
+            ,{"/portals", "- List all portal tags"}
+            ,{"/removedrops", "- Removes items from the ground"}
+            ,{"/resetwind", "- If wind has been set, this will allow the game to take control of the wind again" }
+            ,{"/repair", "- Repair your inventory"}
+            ,{"/resetmap", "- Reset the map exploration"}
+            ,{"/revealmap", "- Reveals the entire minimap"}
+            ,{"/q", "- Quickly exit the game. Commands are sometimes just more convenient."}
+            ,{"/seed", "- Reveals the map seed"}
+            ,{"/set cw", "[Weight] - Set your weight limit (default 300)"}
+            ,{"/set difficulty", "[Player Count] - Set the difficulty (default is number of connected players)"}
+            ,{"/set exploreradius", "[Radius=100] - Set the explore radius"}
+            ,{"/set jumpforce", "[Force] - Set jump force (default 10). Careful if you fall too far!"}
+            ,{"/set pickup", "[Radius] - Set your auto pickup radius (default 2)"}
+            ,{"/set skill", "[Skill] [Level] - Set your skill level"}
+            ,{"/set speed", "[Speed Type] [Speed] - Speed Types: crouch (def: 2), run (def: 120), swim (def: 2)"}
+            ,{"/td", "[Radius=5] [Height=1] - Dig nearby terrain. Radius 30 max."}
+            ,{"/tl", "[Radius=5] - Level nearby terrain. Radius 30 max."}
+            ,{"/tr", "[Radius=5] [Height=1] - Raise nearby terrain. Radius 30 max."}
+            ,{"/tu", "[Radius=5] - Undo terrain modifications around you. Radius 50 max."}
+            ,{"/spawn", "[Creature Name] [Level=1] - Spawns a creature or prefab in front of you. Capitals in name matter! Ex. /spawn Boar 3 (use /give for items!)"}
+            ,{"/stopevent", "- Stops a current event"}
+            ,{"/tame", "- Tame all nearby creatures"}
+            ,{"/tod", "[0-1] - Set (and lock) time of day (-1 to unlock time) - Ex. /tod 0.5"}
+            ,{"/tp", "[X,Y] - Teleport you to the coords provided" }
             //,{"/tp [x, y] OR /tp [TO PLAYER] [FROM PLAYER=SELF]", "Teleport you to the coords or the target player to target other player If player has a space in name, only use first portion of the name.. "
             //                                                        + "\nEx. /tp 60,40 | /tp Skrip (Teleport to Skrip) | /tp TSkrip FSkrip (Teleport player FSkrip to player TSkrip)"}
             //,{"/ttp", "Teleport to tombstone"}
             ,{"/wind [Angle] [Intensity]", "Set the wind direction and intensity"}
-            ,{"/whois", "List all players"}
+            ,{"/whois", "- List all players"}
         };
 
         public static void Announce()
@@ -144,17 +148,18 @@ namespace SkToolbox
 
         public static void ProcessCommands(string inCommand, LogTo source, GameObject go = null)
         {
-            if (inCommand.Length > 0)
+            if (!string.IsNullOrEmpty(inCommand))
             {
+                if(Console.instance != null)
+                {
+                    SkUtilities.SetPrivateField(Console.instance, "m_lastEntry", inCommand);
+                }
+                
                 string[] inCommandSplt = inCommand.Split(';');
                 foreach (string command in inCommandSplt)
                 {
                     string commandTrimmed = command.Trim();
-                    if (commandTrimmed.StartsWith(" "))
-                    {
-                        commandTrimmed = commandTrimmed.Remove(0, 1);
-                    }
-                    //PrintOut("~'" + commandTrimmed + "'", true);
+
                     if (!ProcessCommand(commandTrimmed, source, go)) // Process SkToolbox Command
                     { // Unless the command wasn't found, then push it to the console to try and run it elsewhere
                         if (inCommandSplt.Length > 1)
@@ -172,27 +177,30 @@ namespace SkToolbox
 
         public static bool ProcessCommand(string inCommand, LogTo source, GameObject go = null) // source = true is console out, false is chat
         {
+            if(string.IsNullOrEmpty(inCommand) || string.IsNullOrWhiteSpace(inCommand))
+            {
+                return true;
+            } else
+            {
+                inCommand = inCommand.Trim();
+            }
+
+            string[] inCommandSpl = inCommand.Split(' ');
+
             if (source.HasFlag(LogTo.Console))
             {
                 if (inCommand.StartsWith("help"))
                 {
                     Console.instance.Print("imacheater - Enable in-game cheats");
                     Console.instance.Print("/? [Page] - SkToolbox Commands - Ex /? 1");
-                    return false;
+                    return true;
                 }
             }
 
-            if (inCommand.StartsWith("/?") || inCommand.StartsWith("/help"))
+            if (inCommandSpl[0].Equals("/?") || inCommandSpl[0].Equals("/?"))
             {
-                inCommand = inCommand.Remove(0, 2);
-
-                if (inCommand.StartsWith(" "))
-                {
-                    inCommand = inCommand.Remove(0, 1);
-                }
-
                 int displayPage = 1;
-                if (inCommand.Length > 0 && int.TryParse(inCommand, out displayPage))
+                if (inCommandSpl.Length > 1 && int.TryParse(inCommandSpl[1], out displayPage))
                 {
                     if (displayPage > (Mathf.Ceil(commandList.Count / pageSize) + (commandList.Count % pageSize == 0 ? 0 : 1)))
                     {
@@ -206,7 +214,7 @@ namespace SkToolbox
                             // Example: Is 35 items > (( 10 * (2 + 1)) - 10)? If it is, then there is another page after this one, and we can select a full page worth of items. Otherwise, use the final menu item as the end so we over get an index exception.
                             x++) // This selects the correct menu items to display for this page number
                     {
-                        PrintOut(commands[x] + " - " + descriptions[x], source);
+                        PrintOut(commands[x] + " " + descriptions[x], source);
                     }
 
                 }
@@ -219,7 +227,7 @@ namespace SkToolbox
             }
 
 
-            if (commandList.ContainsKey(inCommand) && Player.m_localPlayer == null && !inCommand.StartsWith("/q") && !inCommand.StartsWith("/clear"))
+            if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null && !inCommand.StartsWith("/q") && !inCommand.StartsWith("/clear"))
             {
                 PrintOut("You must be in-game to run commands!", source, false);
                 return true;
@@ -374,22 +382,66 @@ namespace SkToolbox
             if (inCommand.StartsWith("/resetwind"))
             {
                 EnvMan.instance.ResetDebugWind();
+                PrintOut("Wind unlocked and under game control.", source);
             }
 
             if (inCommand.StartsWith("/wind"))
             {
-                string[] inCommandSpl = inCommand.Split(' ');
-                if (inCommandSpl.Length == 3)
+                string[] inCommandSpli = inCommand.Split(' ');
+                if (inCommandSpli.Length == 3)
                 {
-                    float angle = float.Parse(inCommandSpl[1]);
-                    float intensity = float.Parse(inCommandSpl[2]);
+                    float angle = float.Parse(inCommandSpli[1]);
+                    float intensity = float.Parse(inCommandSpli[2]);
                     EnvMan.instance.SetDebugWind(angle, intensity);
                 }
                 else
                 {
-                    PrintOut("Failed to set wind. Check parameters!", source);
+                    PrintOut("Failed to set wind. Check parameters! Ex. /wind 240 5", source);
                 }
+            }
 
+            if (inCommand.StartsWith("/env"))
+            {
+                inCommand = inCommand.Trim();
+                string[] inCommandSpli = inCommand.Split(' ');
+                if (inCommandSpli.Length == 1)
+                {
+                    foreach(string weather in weatherList.OrderBy(q => q).ToList())
+                    {
+                        PrintOut(weather, source, false);
+                    }
+                } else if (inCommandSpli.Length == 2)
+                {
+                    if(inCommandSpli[1].Equals("-1"))
+                    {
+                        if(EnvMan.instance != null)
+                        {
+                            EnvMan.instance.m_debugEnv = "";
+                            PrintOut("Weather unlocked and under game control.", source);
+                        }
+                    } else
+                    {
+                        if(weatherList.Contains(inCommandSpli[1]))
+                        {
+                            if (EnvMan.instance != null)
+                            {
+                                EnvMan.instance.m_debugEnv = inCommandSpli[1];
+                                PrintOut("Weather set to: " + EnvMan.instance.m_debugEnv, source);
+                            } else
+                            {
+                                PrintOut("Failed to set weather. Can't find environment manager.", source);
+                            }
+                        } else
+                        {
+                            PrintOut("Failed to set weather. Check parameters! Ex. /env, /env -1, /env Misty", source);
+                        }
+                    }
+                }
+                else
+                {
+                    PrintOut("Failed to set weather. Check parameters! Ex. /env, /env -1, /env Misty", source);
+                }
+                return true;
             }
 
             //if (inCommand.StartsWith("/imaxstacks"))
@@ -647,6 +699,7 @@ namespace SkToolbox
                 return true;
             }
 
+
             if (inCommand.StartsWith("/seed"))
             {
                 World wrld = SkUtilities.GetPrivateField<World>(WorldGenerator.instance, "m_world");
@@ -843,6 +896,7 @@ namespace SkToolbox
             {
                 SkCommandPatcher.InitPatch();
                 SkCommandPatcher.bCheat = !SkCommandPatcher.bCheat;
+                
                 PrintOut("Cheats toggled! (" + SkCommandPatcher.bCheat.ToString() + ")", source);
                 return true;
             }
@@ -950,13 +1004,15 @@ namespace SkToolbox
                 if (num10 < 0f)
                 {
                     EnvMan.instance.m_debugTimeOfDay = false;
+                    PrintOut("Time unlocked and under game control.", source);
                 }
                 else
                 {
                     EnvMan.instance.m_debugTimeOfDay = true;
                     EnvMan.instance.m_debugTime = Mathf.Clamp01(num10);
+                    PrintOut("Setting time of day:" + num10, source);
                 }
-                PrintOut("Setting time of day:" + num10, source);
+                
                 return true;
             }
 
@@ -1327,7 +1383,7 @@ namespace SkToolbox
 
 
         static Vector3 chatPos = new Vector3(0, 0 - 99);
-        public static void ChatPrint(string ln, string source = "Server")
+        public static void ChatPrint(string ln, string source = "(SkToolbox) " )
         {
             if (Chat.instance != null)
             {

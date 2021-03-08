@@ -10,7 +10,7 @@ namespace SkToolbox
     {
         public static ConfigEntry<bool> cAutoRun;
         public static bool cAutoRunComplete;
-        public static ConfigEntry<string> autoRunCommand;
+        public static ConfigEntry<string> cAutoRunCommand;
 
         public static ConfigEntry<bool> cAllowChatCommandInput;
         public static ConfigEntry<bool> cAllowPublicChatOutput;
@@ -23,6 +23,7 @@ namespace SkToolbox
         public static ConfigEntry<int> cConsoleFontSize;
         public static ConfigEntry<string> cConsoleFont;
         public static ConfigEntry<string> cConsoleOutputTextColor;
+        public static ConfigEntry<string> cConsoleInputTextColor;
         public static ConfigEntry<string> cConsoleSelectionColor;
         public static ConfigEntry<string> cConsoleCaretColor;
 

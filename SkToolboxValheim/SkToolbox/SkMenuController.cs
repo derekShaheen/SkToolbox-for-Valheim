@@ -129,8 +129,8 @@ namespace SkToolbox
                     }
                 }
             }
-            //Keycode hack activation
-            if (Input.GetKeyDown(keyBindings["selToggle"]) && !global::Console.IsVisible())
+            //Keycode menu activation
+            if (Input.GetKeyDown(keyBindings["selToggle"]) && !global::Console.IsVisible() && !global::Chat.instance.m_input.isFocused)
             {
                 firstRun = false;
                 MenuOpen = !MenuOpen;

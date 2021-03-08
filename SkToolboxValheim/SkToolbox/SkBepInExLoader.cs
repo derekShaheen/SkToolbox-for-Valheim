@@ -12,7 +12,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.8.1.0";
+            VERSION = "1.8.2.0";
 
         private void Start()
         {
@@ -32,7 +32,7 @@ namespace SkToolbox
                 SkConfigEntry.cAllowPublicChatOutput = Config.Bind("General", "AllowPublicResponse", true
                     , "Toggle this to allow the mod to respond publicly with certain commands, when entered into chat." +
                     "\nThe /portal command for example, if used in chat and this is true, others nearby will be able to see the response." +
-                    "\nNOTE: If you see a response from your name, it is shown publicly and everyone can see it. If it is a response from Server, only you see it.");
+                    "\nNOTE: If you see a response from your name, it is shown publicly and everyone can see it. If it is a response from (SkToolbox), only you see it.");
                 SkConfigEntry.cAllowExecuteOnClear = Config.Bind("General", "AllowExecuteOnClear", false
                     , "Toggle this to enable the ability to execute commands by clearing the input (by hitting escape, or selecting all and removing).");
                 SkConfigEntry.cOpenConsoleWithSlash = Config.Bind("General", "OpenConsoleWithSlash", false
@@ -44,7 +44,7 @@ namespace SkToolbox
                 SkConfigEntry.cAutoRun = Config.Bind("AutoRun", "AutoRunEnabled", false
                     , "Toggle this to run commands automatically upon spawn into server." +
                     "\nNote this will only occur once per game launch to prevent unintended command executions.");
-                SkConfigEntry.autoRunCommand = Config.Bind("AutoRun", "AutoRunCommand", "/nosup; /god"
+                SkConfigEntry.cAutoRunCommand = Config.Bind("AutoRun", "AutoRunCommand", "/nosup; /god"
                     , "Enter the commands to run upon spawn here. Seperate commands with a semicolon (;).");
 
                 SkConfigEntry.oAltToggle = Config.Bind("OnScreenMenu", "AltKeyToggle", "Home"
@@ -70,6 +70,8 @@ namespace SkToolbox
 
                 SkConfigEntry.cConsoleOutputTextColor = Config.Bind("CustomizeConsoleLook", "ConsoleOutputTextColor", "#E6F7FFFF"
                     , "Set the color of the output text shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
+                SkConfigEntry.cConsoleInputTextColor = Config.Bind("CustomizeConsoleLook", "ConsoleInputTextColor", "#E6F7FFFF"
+                    , "Set the color of the input text shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
                 SkConfigEntry.cConsoleSelectionColor = Config.Bind("CustomizeConsoleLook", "ConsoleSelectionColor", "#A8CEFFC0"
                     , "Set the color of the selection highlight in the console. Game default = #A8CEFFC0. Color format is #RRGGBBAA");
                 SkConfigEntry.cConsoleCaretColor = Config.Bind("CustomizeConsoleLook", "ConsoleCaretColor", "#DCE6F5FF"

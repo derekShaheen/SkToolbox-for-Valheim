@@ -44,14 +44,9 @@ namespace SkToolbox
         [HarmonyPatch(typeof(Console), "IsCheatsEnabled")]
         public static class PatchIsCheatsEnabled
         {
-            public static bool Prefix(ref bool __result)
+            public static void Postfix(bool __result)
             {
-                if (SkCommandPatcher.bCheat)
-                {
-                    __result = true;
-                    return false;
-                }
-                return true;
+                __result = SkCommandPatcher.bCheat;
             }
         }
 

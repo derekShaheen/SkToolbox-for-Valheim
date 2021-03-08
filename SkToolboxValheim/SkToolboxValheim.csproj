@@ -131,19 +131,6 @@ copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Rel
 
 copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Release\SkToolboxValheim.dll" "B:\SkToolbox Projects\Release - Trainer Only\SkToolboxValheim.dll"
 copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Release - Trainer Only\SkToolbox Readme.txt"
-echo Compressing release files to zip...
-echo ...Release - BepInEx
-cd /d "B:\SkToolbox Projects\Release - BepInEx\"
-tar -cf "..\SkToolbox Release - BepInEx.zip" "*"
-echo ...Release - Thunderstore
-cd /d "B:\SkToolbox Projects\Release - Thunderstore\"
-tar -cf "..\SkToolbox Release - Thunderstore.zip" "*"
-echo ...Release Standalone
-cd /d "B:\SkToolbox Projects\Release - Trainer Only\"
-tar -cf "..\SkToolbox Release - Trainer Only.zip" "*"
-echo ...Release DLL Only
-cd /d "B:\SkToolbox Projects\Release - Trainer Only\"
-tar -cf "..\SkToolbox Release - DLL Only.zip" "SkToolboxValheim.dll"
 echo Complete. Make sure you check the file version on the assembly info, the readme, the Thunderstore manifest, and the Version Checker!</PostBuildEvent>
   </PropertyGroup>
 </Project>
