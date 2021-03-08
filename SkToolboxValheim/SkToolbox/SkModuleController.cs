@@ -214,7 +214,7 @@ namespace SkToolbox
             OnUpdate();
         }
 
-        public List<SkModules.SkBaseModule> GetOptions()
+        internal List<SkModules.SkBaseModule> GetOptions()
         {
             return MenuOptions;
         }

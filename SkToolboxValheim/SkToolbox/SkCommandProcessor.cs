@@ -41,6 +41,30 @@ namespace SkToolbox
             DebugConsole
         }
 
+        //Clear
+        //Twilight_Clear
+        //Misty
+        //Darklands_dark
+        //Heath clear
+        //DeepForest Mist
+        //GDKing
+        //Rain
+        //LightRain
+        //ThunderStorm
+        //Eikthyr
+        //GoblinKing
+        //nofogts
+        //SwampRain
+        //Bonemass
+        //Snow
+        //Twilight_Snow
+        //Twilight_SnowStorm
+        //SnowStorm
+        //Moder
+        //Ashrain
+        //Crypt
+        //SunkenCrypt
+
         public static Dictionary<string, string> commandList = new Dictionary<string, string>()
         {
              {"/alt", "Use alternate on-screen controls. Press HOME to toggle if active."}
@@ -226,32 +250,6 @@ namespace SkToolbox
                 PrintOut(ListPortals(), source, true);
                 return true;
             }
-
-            //if (inCommand.StartsWith("/tll"))
-            //{
-            //    GameObject tLevel = ZNetScene.instance.GetPrefab("digg_v2");
-            //    if (tLevel == null)
-            //    {
-            //        PrintOut("Terrain level failed. Report to mod author - terrain level error 1", source);
-            //        return true;
-            //    }
-            //    string[] command = inCommand.Split(' ');
-            //    float length = 5f;
-            //    if (command.Length > 1)
-            //    {
-            //        try
-            //        {
-            //            length = int.Parse(command[1]);
-            //        }
-            //        catch (Exception)
-            //        {
-            //        }
-            //    }
-            //    ModifyTerrain(-1, Player.m_localPlayer.transform.position, tLevel, length);
-
-            //    PrintOut("Terrain levelled in a line!", source);
-            //    return true;
-            //}
 
             if (inCommand.StartsWith("/tl"))
             {

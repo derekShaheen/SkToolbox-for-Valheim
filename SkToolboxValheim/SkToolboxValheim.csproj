@@ -100,7 +100,6 @@
     <Compile Include="SkToolbox\SkBepInExLoader.cs" />
     <Compile Include="SkToolbox\SkCommandPatcher.cs" />
     <Compile Include="SkToolbox\SkConfigEntry.cs" />
-    <Compile Include="SkToolbox\SkConsole.cs" />
     <Compile Include="SkToolbox\SkLoader.cs" />
     <Compile Include="SkToolbox\SkMenu.cs" />
     <Compile Include="SkToolbox\SkMenuController.cs" />

@@ -19,7 +19,7 @@ namespace SkToolbox
 
         public static void Unload()
         {
-            Destroy(_SkGameObject);
+            Destroy(_SkGameObject, 0f);
             SkLoader._SkGameObject = null; // https://answers.unity.com/questions/1186978/does-calling-destroy-on-a-gameobjectmonobehavior-d.html
         }
         public static void Reload()
@@ -70,11 +70,11 @@ namespace SkToolbox
         public static void Init()
         {
             SkLoader._SkGameObject = new GameObject("SkToolbox");
-            SkLoader._SkGameObject.AddComponent<SkConsole>(); // Load the console first so output from the controller can be observed on the following frame
+            //SkLoader._SkGameObject.AddComponent<SkConsole>(); // Load the console first so output from the controller can be observed on the following frame
 
             if (InitLogging)
             {
-                SkConsole.writeToFile = true;
+                //SkConsole.writeToFile = true;
                 InitLogging = false;
             }
 

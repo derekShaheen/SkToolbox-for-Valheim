@@ -44,10 +44,10 @@ namespace SkToolbox.SkModules
         public void BeginMenu()
         {
             SkMenu consoleOptMenu = new SkMenu();
-            consoleOptMenu.AddItem("Open Log Folder", new Action(OpenLogFolder));
             consoleOptMenu.AddItem("Reload Toolbox", new Action(ReloadMenu));
             consoleOptMenu.AddItem("Unload Toolbox", new Action(UnloadMenu));
-            consoleOptMenu.AddItemToggle("Write to File", ref conWriteToFile, new Action(ToggleWriteFile), "Write log output to file?");
+            consoleOptMenu.AddItem("Open Log Folder", new Action(OpenLogFolder));
+            //consoleOptMenu.AddItemToggle("Write to File", ref conWriteToFile, new Action(ToggleWriteFile), "Write log output to file?");
             MenuOptions = consoleOptMenu;
         }
 

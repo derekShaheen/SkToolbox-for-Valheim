@@ -6,12 +6,12 @@ namespace SkToolbox.SkModules
     /// <summary>
     /// All modules must inerhit from this base class. Within those modules, base.Ready() must be called when the module is ready for use, and this must happen within 3 frames of module initialization.
     /// </summary>
-    public class SkBaseModule : MonoBehaviour
+    internal class SkBaseModule : MonoBehaviour
     {
         internal SkMenuController SkMC;
-        public SkMenu MenuOptions { get; set; } = new SkMenu();
+        internal SkMenu MenuOptions { get; set; } = new SkMenu();
         internal SkMenuItem CallerEntry { get; set; } = new SkMenuItem();
-        public SkUtilities.Status ModuleStatus { get; set; } = SkUtilities.Status.Initialized;
+        internal SkUtilities.Status ModuleStatus { get; set; } = SkUtilities.Status.Initialized;
         internal string ModuleName = "UNNAMED";
 
         public SkBaseModule()

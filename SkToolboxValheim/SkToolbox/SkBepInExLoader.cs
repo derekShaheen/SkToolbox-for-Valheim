@@ -12,7 +12,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.7.1.0";
+            VERSION = "1.8.1.0";
 
         private void Start()
         {
@@ -75,9 +75,10 @@ namespace SkToolbox
                 SkConfigEntry.cConsoleCaretColor = Config.Bind("CustomizeConsoleLook", "ConsoleCaretColor", "#DCE6F5FF"
                     , "Set the color of the input text caret shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-
+                SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Could not load config. Please confirm there is a working version of BepInEx installed.",
+                                                                            Ex.Message, Ex.Source}, LogType.Error);
             }
         }
     }
