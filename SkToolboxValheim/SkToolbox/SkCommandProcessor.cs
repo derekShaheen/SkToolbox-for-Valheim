@@ -1,4 +1,6 @@
 ﻿using BepInEx.Configuration;
+using SkToolbox.Configuration;
+using SkToolbox.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1366,7 +1368,7 @@ namespace SkToolbox
             }
             if (source.HasFlag(LogTo.Chat) && Chat.instance != null)
             {
-                if (playerSay && Player.m_localPlayer != null && (SkConfigEntry.cAllowPublicChatOutput != null && SkConfigEntry.cAllowPublicChatOutput.Value))
+                if (playerSay && Player.m_localPlayer != null && (SkConfigEntry.CAllowPublicChatOutput != null && SkConfigEntry.CAllowPublicChatOutput.Value))
                 {
                     Player.m_localPlayer.GetComponent<Talker>().Say(Talker.Type.Normal, text);
                 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SkToolbox.Configuration;
+using SkToolbox.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,7 +119,7 @@ namespace SkToolbox.SkModules
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Slash)
-                    && ((SkConfigEntry.cOpenConsoleWithSlash != null && SkConfigEntry.cOpenConsoleWithSlash.Value) || SkConfigEntry.cOpenConsoleWithSlash == null)
+                    && ((SkConfigEntry.COpenConsoleWithSlash != null && SkConfigEntry.COpenConsoleWithSlash.Value) || SkConfigEntry.COpenConsoleWithSlash == null)
                     && !global::Console.IsVisible() && !global::Chat.instance.IsChatDialogWindowVisible() && !TextInput.IsVisible())
                 {
                     Console.instance.m_chatWindow.gameObject.SetActive(true);
@@ -140,12 +142,12 @@ namespace SkToolbox.SkModules
                     Color caretColor = Color.white;
                     try
                     {
-                        fontSize = SkConfigEntry.cConsoleFontSize.Value;
-                        font = SkConfigEntry.cConsoleFont.Value;
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleOutputTextColor.Value, out outputColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleInputTextColor.Value, out inputColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleSelectionColor.Value, out selectionColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.cConsoleCaretColor.Value, out caretColor);
+                        fontSize = SkConfigEntry.CConsoleFontSize.Value;
+                        font = SkConfigEntry.CConsoleFont.Value;
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleOutputTextColor.Value, out outputColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleInputTextColor.Value, out inputColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleSelectionColor.Value, out selectionColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleCaretColor.Value, out caretColor);
                     }
                     catch (Exception Ex)
                     {
@@ -182,7 +184,8 @@ namespace SkToolbox.SkModules
                     string outputText = Chat.instance.m_output.text;
 
                     //Input
-                    if ((Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape)) && (SkConfigEntry.cAllowExecuteOnClear != null && !SkConfigEntry.cAllowExecuteOnClear.Value))
+                    if ((Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape)) 
+                        && ((SkConfigEntry.CAllowExecuteOnClear != null && !SkConfigEntry.CAllowExecuteOnClear.Value) || SkConfigEntry.CAllowExecuteOnClear == null))
                     {
                         chatInLastMessage = string.Empty;
                     }
@@ -198,8 +201,8 @@ namespace SkToolbox.SkModules
                     }
                 } // Chat is closed
                 if (Input.GetKeyDown(KeyCode.Slash) && Player.m_localPlayer != null
-                        && (SkConfigEntry.cOpenConsoleWithSlash != null && !SkConfigEntry.cOpenConsoleWithSlash.Value)
-                        && (SkConfigEntry.cOpenChatWithSlash != null && SkConfigEntry.cOpenChatWithSlash.Value)
+                        && (SkConfigEntry.COpenConsoleWithSlash != null && !SkConfigEntry.COpenConsoleWithSlash.Value)
+                        && (SkConfigEntry.COpenChatWithSlash != null && SkConfigEntry.COpenChatWithSlash.Value)
                         && !global::Console.IsVisible() && !global::Chat.instance.IsChatDialogWindowVisible() && !TextInput.IsVisible()
                         && !Minimap.InTextInput() && !Menu.IsVisible())
                 {
@@ -209,11 +212,6 @@ namespace SkToolbox.SkModules
                     Chat.instance.m_input.ActivateInputField();
                 }
             }
-        }
-
-        public void OnCredits()
-        {
-
         }
 
         void OnGUI()
@@ -241,7 +239,7 @@ namespace SkToolbox.SkModules
                 Color tempColor = GUI.color;
                 GUI.color = Color.yellow;
                 GUIStyle credStyle = new GUIStyle();
-                credStyle.font = (Font)Resources.Load("AveriaSansLibre-Bold");
+                credStyle.font = (Font)Resources.Load("Consolas");
                 credStyle.fontStyle = FontStyle.Bold;
                 credStyle.fontSize = 18;
                 GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
@@ -258,7 +256,7 @@ namespace SkToolbox.SkModules
         {
             HookConsole();
 
-            if (SkConfigEntry.cAllowChatCommandInput != null && SkConfigEntry.cAllowChatCommandInput.Value)
+            if (SkConfigEntry.CAllowChatCommandInput != null && SkConfigEntry.CAllowChatCommandInput.Value)
             {
                 HookChat();
             }
@@ -297,32 +295,32 @@ namespace SkToolbox.SkModules
                 }
             }
 
-            if (!SkConfigEntry.cAutoRunComplete)
+            if (!SkConfigEntry.CAutoRunComplete)
             {
-                if (SkConfigEntry.cAutoRun != null && SkConfigEntry.cAutoRun.Value == true)
+                if (SkConfigEntry.CAutoRun != null && SkConfigEntry.CAutoRun.Value == true)
                 {
                     if (Player.m_localPlayer != null && Chat.instance != null && Console.instance != null) // Wait until fully logged in
                     {
                         try
                         {
-                            SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.cAutoRunCommand.Value });
-                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
-                            SkCommandProcessor.ProcessCommands(SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
+                            SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.CAutoRunCommand.Value });
+                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
                         }
                         catch (Exception)
                         {
-                            SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.cAutoRunCommand.Value }, LogType.Warning);
-                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.cAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value }, LogType.Warning);
+                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
                         }
                         finally
                         {
-                            SkConfigEntry.cAutoRunComplete = true;
+                            SkConfigEntry.CAutoRunComplete = true;
                         }
                     }
                 }
                 else
                 {
-                    SkConfigEntry.cAutoRunComplete = true;
+                    SkConfigEntry.CAutoRunComplete = true;
                 }
             }
 

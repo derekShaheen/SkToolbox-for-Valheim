@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace SkToolbox
+namespace SkToolbox.Configuration
 {
     internal static class SkVersionChecker
     {

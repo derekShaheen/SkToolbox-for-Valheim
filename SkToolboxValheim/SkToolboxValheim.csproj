@@ -99,7 +99,7 @@
     <Compile Include="SkToolbox\SkCommandProcessor.cs" />
     <Compile Include="SkToolbox\SkBepInExLoader.cs" />
     <Compile Include="SkToolbox\SkCommandPatcher.cs" />
-    <Compile Include="SkToolbox\SkConfigEntry.cs" />
+    <Compile Include="SkToolbox\Configuration\SkConfigEntry.cs" />
     <Compile Include="SkToolbox\SkLoader.cs" />
     <Compile Include="SkToolbox\SkMenu.cs" />
     <Compile Include="SkToolbox\SkMenuController.cs" />
@@ -110,8 +110,8 @@
     <Compile Include="SkToolbox\SkModules\ModPlayer.cs" />
     <Compile Include="SkToolbox\SkModules\ModWorld.cs" />
     <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
-    <Compile Include="SkToolbox\SkUtilities.cs" />
-    <Compile Include="SkToolbox\SkVersionChecker.cs" />
+    <Compile Include="SkToolbox\Utility\SkUtilities.cs" />
+    <Compile Include="SkToolbox\Configuration\SkVersionChecker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

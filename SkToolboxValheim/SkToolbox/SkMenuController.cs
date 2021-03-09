@@ -80,16 +80,16 @@ namespace SkToolbox
 
             if (SkCommandProcessor.altOnScreenControls)
             {
-                if(SkConfigEntry.oAltToggle != null && SkConfigEntry.oAltUp != null && SkConfigEntry.oAltDown != null && SkConfigEntry.oAltChoose != null && SkConfigEntry.oAltBack != null)
+                if(SkConfigEntry.OAltToggle != null && SkConfigEntry.OAltUp != null && SkConfigEntry.OAltDown != null && SkConfigEntry.OAltChoose != null && SkConfigEntry.OAltBack != null)
                 {
-                    contextTipInfo1 = SkConfigEntry.oAltToggle.Value + "/" + SkConfigEntry.oAltUp.Value + "/" + SkConfigEntry.oAltDown.Value;
-                    contextTipInfo2 = SkConfigEntry.oAltChoose.Value + " Button";
-                    contextTipInfo3 = SkConfigEntry.oAltBack.Value + " Button";
-                    keyBindings["selToggle"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.oAltToggle.Value);
-                    keyBindings["selUp"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.oAltUp.Value);
-                    keyBindings["selDown"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.oAltDown.Value);
-                    keyBindings["selChoose"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.oAltChoose.Value);
-                    keyBindings["selBack"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.oAltBack.Value);
+                    contextTipInfo1 = SkConfigEntry.OAltToggle.Value + "/" + SkConfigEntry.OAltUp.Value + "/" + SkConfigEntry.OAltDown.Value;
+                    contextTipInfo2 = SkConfigEntry.OAltChoose.Value + " Button";
+                    contextTipInfo3 = SkConfigEntry.OAltBack.Value + " Button";
+                    keyBindings["selToggle"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltToggle.Value);
+                    keyBindings["selUp"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltUp.Value);
+                    keyBindings["selDown"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltDown.Value);
+                    keyBindings["selChoose"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltChoose.Value);
+                    keyBindings["selBack"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltBack.Value);
                 } else
                 {
                     contextTipInfo1 = "Home/PgUp/PgDn";
