@@ -1,5 +1,4 @@
-﻿using BepInEx.Logging;
-using SkToolbox.Utility;
+﻿using SkToolbox.Utility;
 using System.Linq;
 using System.Threading;
 using UnityEngine;

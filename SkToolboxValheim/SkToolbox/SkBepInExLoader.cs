@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using SkToolbox.Configuration;
 using SkToolbox.Utility;
 using System;

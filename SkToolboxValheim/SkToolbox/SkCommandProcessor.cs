@@ -1,19 +1,15 @@
-﻿using BepInEx.Configuration;
-using SkToolbox.Configuration;
+﻿using SkToolbox.Configuration;
 using SkToolbox.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace SkToolbox
 {
     internal static class SkCommandProcessor
     {
-
-
         public static bool flyEnabled = false;
         public static bool godEnabled = false;
         public static bool farInteract = false;
