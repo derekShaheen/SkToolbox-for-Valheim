@@ -45,7 +45,7 @@ namespace SkToolbox.SkModules
             GenericMenu.AddItem("Heal Self", new Action(Heal), "Heal yourself");
             GenericMenu.AddItem("Tame", new Action(Tame), "Tame all nearby creatures");
             GenericMenu.AddItemToggle("Enable Teleport to Mouse", ref bTeleport, new Action(ToggleTeleport), "Press tilde (~) to teleport!");
-            GenericMenu.AddItemToggle("Build Anywhere", ref SkCommandPatcher.bBuildAnywhere, new Action(ToggleAnywhere), "Remove build restrictions");
+            GenericMenu.AddItemToggle("Build Anywhere", ref SkCommandPatcher.BBuildAnywhere, new Action(ToggleAnywhere), "Remove build restrictions");
             GenericMenu.AddItemToggle("No Cost Building", ref SkCommandProcessor.noCostEnabled, new Action(ToggleNoCost), "Unlock all pieces and no cost");
             GenericMenu.AddItemToggle("Detect Nearby Enemies", ref SkCommandProcessor.bDetectEnemies, new Action(ToggleESPEnemies), "Range: 20m");
             GenericMenu.AddItemToggle("Display Coordinates", ref SkCommandProcessor.bCoords, new Action(ToggleCoords), "Display coords in top left corner");

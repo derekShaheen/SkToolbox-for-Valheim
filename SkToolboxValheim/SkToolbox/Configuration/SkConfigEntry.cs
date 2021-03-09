@@ -15,7 +15,7 @@ namespace SkToolbox.Configuration
         public static ConfigEntry<bool> COpenChatWithSlash { get; set; }
         public static ConfigEntry<bool> COpenConsoleWithSlash { get; set; }
 
-        public static ConfigEntry<bool> cAllowLookCustomizations { get; set; }
+        public static ConfigEntry<bool> CAllowLookCustomizations { get; set; }
         public static ConfigEntry<int> CConsoleFontSize { get; set; }
         public static ConfigEntry<string> CConsoleFont { get; set; }
         public static ConfigEntry<string> CConsoleOutputTextColor { get; set; }

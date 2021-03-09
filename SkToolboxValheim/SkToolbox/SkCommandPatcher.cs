@@ -6,17 +6,23 @@ namespace SkToolbox
 {
     internal static class SkCommandPatcher
     {
-        public static Harmony harmony = null;
+        private static Harmony harmony = null;
 
         private static bool initComplete = false;
 
-        public static bool bCheat = false;
-        public static bool bFreeSupport = false;
-        public static bool bBuildAnywhere = false;
+        private static bool bCheat = false;
+        private static bool bFreeSupport = false;
+        private static bool bBuildAnywhere = false;
+
+        public static Harmony Harmony { get => harmony; set => harmony = value; }
+        public static bool BCheat { get => bCheat; set => bCheat = value; }
+        public static bool BFreeSupport { get => bFreeSupport; set => bFreeSupport = value; }
+        public static bool BBuildAnywhere { get => bBuildAnywhere; set => bBuildAnywhere = value; }
+        public static bool InitComplete { get => initComplete; set => initComplete = value; }
 
         public static void InitPatch()
         {
-            if (!initComplete)
+            if (!InitComplete)
             {
                 //SkUtilities.Logz(new string[] { "SkCommandPatcher", "INJECT" }, new string[] { "Attempting injection..." });
                 try
@@ -32,7 +38,7 @@ namespace SkToolbox
                 }
                 finally
                 {
-                    initComplete = true;
+                    InitComplete = true;
                 }
             }
         }
@@ -42,7 +48,7 @@ namespace SkToolbox
         {
             public static void Postfix(bool __result)
             {
-                __result = SkCommandPatcher.bCheat;
+                __result = SkCommandPatcher.BCheat;
             }
         }
 
@@ -76,7 +82,7 @@ namespace SkToolbox
         {
             private static bool Prefix(ref float ___m_support, ref ZNetView ___m_nview)
             {
-                if (SkCommandPatcher.bFreeSupport)
+                if (SkCommandPatcher.BFreeSupport)
                 {
                     ___m_support += ___m_support;
                     ___m_nview.GetZDO().Set("support", ___m_support);
@@ -91,7 +97,7 @@ namespace SkToolbox
         {
             private static void Postfix(bool flashGuardStone)
             {
-                if (SkCommandPatcher.bBuildAnywhere)
+                if (SkCommandPatcher.BBuildAnywhere)
                 {
                     try
                     {
@@ -117,7 +123,7 @@ namespace SkToolbox
         {
             private static void Postfix(ref bool __result)
             {
-                if (SkCommandPatcher.bBuildAnywhere)
+                if (SkCommandPatcher.BBuildAnywhere)
                 {
                     __result = false;
                 }

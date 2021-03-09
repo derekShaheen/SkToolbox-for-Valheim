@@ -61,7 +61,7 @@ namespace SkToolbox
                     , "If /alt has been used (in-game or via auto run), the on screen menu will use this bind for going back in the on-screen menu.");
 
 
-                SkConfigEntry.cAllowLookCustomizations = Config.Bind("CustomizeConsoleLook", "ConsoleAllowLookCustomizations", true
+                SkConfigEntry.CAllowLookCustomizations = Config.Bind("CustomizeConsoleLook", "ConsoleAllowLookCustomizations", true
                     , "Toggle this to enable or disable the customization settings below.");
 
                 SkConfigEntry.CConsoleFont = Config.Bind("CustomizeConsoleLook", "ConsoleFont", "Consolas"

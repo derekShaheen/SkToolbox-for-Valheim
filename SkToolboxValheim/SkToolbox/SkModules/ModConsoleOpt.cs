@@ -130,7 +130,7 @@ namespace SkToolbox.SkModules
 
         public void LoadConsoleCustomizations()
         {
-            if(SkConfigEntry.cAllowLookCustomizations != null && SkConfigEntry.cAllowLookCustomizations.Value)
+            if(SkConfigEntry.CAllowLookCustomizations != null && SkConfigEntry.CAllowLookCustomizations.Value)
             {
                 try
                 {
@@ -405,9 +405,9 @@ namespace SkToolbox.SkModules
 
         void OnDestroy()
         {
-            if (SkCommandPatcher.harmony != null)
+            if (SkCommandPatcher.Harmony != null)
             {
-                SkCommandPatcher.harmony.UnpatchSelf();
+                SkCommandPatcher.Harmony.UnpatchSelf();
             }
         }
 

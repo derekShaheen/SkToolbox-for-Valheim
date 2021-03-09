@@ -735,8 +735,8 @@ namespace SkToolbox
             if (inCommand.StartsWith("/nores"))
             {
                 SkCommandPatcher.InitPatch();
-                SkCommandPatcher.bBuildAnywhere = !SkCommandPatcher.bBuildAnywhere;
-                PrintOut("No build restrictions toggled! (" + SkCommandPatcher.bBuildAnywhere.ToString() + ")", source);
+                SkCommandPatcher.BBuildAnywhere = !SkCommandPatcher.BBuildAnywhere;
+                PrintOut("No build restrictions toggled! (" + SkCommandPatcher.BBuildAnywhere.ToString() + ")", source);
                 return true;
             }
 
@@ -893,17 +893,17 @@ namespace SkToolbox
             if (inCommand.StartsWith("/imacheater"))
             {
                 SkCommandPatcher.InitPatch();
-                SkCommandPatcher.bCheat = !SkCommandPatcher.bCheat;
+                SkCommandPatcher.BCheat = !SkCommandPatcher.BCheat;
                 
-                PrintOut("Cheats toggled! (" + SkCommandPatcher.bCheat.ToString() + ")", source);
+                PrintOut("Cheats toggled! (" + SkCommandPatcher.BCheat.ToString() + ")", source);
                 return true;
             }
 
             if (inCommand.StartsWith("/nosup"))
             {
                 SkCommandPatcher.InitPatch();
-                SkCommandPatcher.bFreeSupport = !SkCommandPatcher.bFreeSupport;
-                PrintOut("No build support requirements toggled! (" + SkCommandPatcher.bFreeSupport.ToString() + ")", source);
+                SkCommandPatcher.BFreeSupport = !SkCommandPatcher.BFreeSupport;
+                PrintOut("No build support requirements toggled! (" + SkCommandPatcher.BFreeSupport.ToString() + ")", source);
                 return true;
             }
 
