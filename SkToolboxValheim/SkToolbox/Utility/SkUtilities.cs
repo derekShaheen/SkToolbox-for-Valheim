@@ -73,13 +73,6 @@ namespace SkToolbox.Utility
             return copy;
         }
 
-        public static T ParseEnum<T>(string value)
-        {
-            return (T)Enum.Parse(typeof(T), value, true);
-        }
-
-        public delegate object Command(params object[] args);
-
         public enum Status
         {
             Initialized,

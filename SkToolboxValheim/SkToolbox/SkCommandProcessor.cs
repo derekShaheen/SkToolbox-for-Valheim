@@ -1,4 +1,5 @@
 ﻿using SkToolbox.Configuration;
+using SkToolbox.SkModules;
 using SkToolbox.Utility;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,12 @@ namespace SkToolbox
 
         public static bool bCoords = false;
 
-        public static SkModules.ModConsoleOpt consoleOpt = null;
-
         public static int pageSize = 11;
+
+        static Vector3 chatPos = new Vector3(0, 0 - 99);
+
+        private static SkModules.ModConsoleOpt consoleOpt = null;
+        internal static ModConsoleOpt ConsoleOpt { get => consoleOpt; set => consoleOpt = value; }
 
         [Flags]
         public enum LogTo
@@ -45,8 +49,8 @@ namespace SkToolbox
             ,{"Clear"}
             ,{"Misty"}
             ,{"Darklands_dark"}
-            //,{"Heath clear"}
-            //,{"DeepForest Mist"}
+            ,{"Heath clear"}
+            ,{"DeepForest Mist"}
             ,{"GDKing"}
             ,{"Rain"}
             ,{"LightRain"}
@@ -68,24 +72,23 @@ namespace SkToolbox
 
         public static Dictionary<string, string> commandList = new Dictionary<string, string>()
         {
-             {"/alt", "- Use alternate on-screen controls. Press HOME to toggle if active."}
+             {"/alt", "- Use alternate on-screen controls. Press '" + (SkConfigEntry.OAltToggle == null ? "Home" : SkConfigEntry.OAltToggle.Value) + "' to toggle if active."}
             ,{"/coords", "- Show coords in corner of the screen"}
             ,{"/clear", "- Clear the current output shown in the console"}
             ,{"/clearinventory", "- Removes all items from your inventory. There is no confirmation, be careful."}
             ,{"/detect", "[Range=20] - Toggle enemy detection"}
             ,{"/farinteract", "[Distance=50] - Toggles far interactions (building as well). To change distance, toggle this off then back on with new distance"}
             ,{"/env", "[Weather] - Change the weather. No parameter provided will list all weather. -1 will allow the game to control the weather again."}
+            ,{"/event", "[Event] - Begin an event"}
             ,{"/findtomb", "- Pin nearby dead player tombstones on the map if any currently exist"}
-            //,{"/findtrader", "Pin the trader on the map if he currently exists"}
             ,{"/fly", "- Toggle flying"}
-            ,{"/ghost", "- Toggle Ghostmode"}
+            ,{"/freecam", "- Toggle freecam"}
+            ,{"/ghost", "- Toggle Ghostmode (enemy creatures cannot see you)"}
             ,{"/give", "[Item] [Qty=1], OR /give [Item] [Qty=1] [Player] [Level=1] - Gives item to player. If player has a space in name, only provide name before the space. Capital letters matter in item / player name!"}
             ,{"/god", "- Toggle Godmode"}
             ,{"/heal", "[Player=local] - Heal Player"}
             ,{"/imacheater", "- Use the toolbox to force enable standard cheats on any server"}
             ,{"/infstam", "- Toggles infinite stamina"}
-            //,{"/infstac", "Toggles infinite stacks"}
-            //,{"/itp", "Make all items in your inventory able to be teleported"}
             ,{"/killall", "- Kills all nearby creatures"}
             ,{"/listitems", "[Name Contains] - List all items. Optionally include name starts with. Ex. /listitems Woo returns any item that contains the letters 'Woo'"}
             ,{"/listskills", "- Lists all skills"}
@@ -93,6 +96,7 @@ namespace SkToolbox
             ,{"/nores", "- Toggle no restrictions to where you can build (except ward zones)"}
             ,{"/nosup", "- Toggle no supports required for buildings - WARNING! - IF YOU REJOIN AND THIS IS DISABLED, YOUR STRUCTURES MAY FALL APART - USE WITH CARE. Maybe use the AutoRun functionality?"}
             ,{"/portals", "- List all portal tags"}
+            ,{"/randomevent", "- Begins a random event"}
             ,{"/removedrops", "- Removes items from the ground"}
             ,{"/resetwind", "- If wind has been set, this will allow the game to take control of the wind again" }
             ,{"/repair", "- Repair your inventory"}
@@ -118,24 +122,27 @@ namespace SkToolbox
             ,{"/tp", "[X,Y] - Teleport you to the coords provided" }
             //,{"/tp [x, y] OR /tp [TO PLAYER] [FROM PLAYER=SELF]", "Teleport you to the coords or the target player to target other player If player has a space in name, only use first portion of the name.. "
             //                                                        + "\nEx. /tp 60,40 | /tp Skrip (Teleport to Skrip) | /tp TSkrip FSkrip (Teleport player FSkrip to player TSkrip)"}
-            //,{"/ttp", "Teleport to tombstone"}
             ,{"/wind [Angle] [Intensity]", "Set the wind direction and intensity"}
             ,{"/whois", "- List all players"}
         };
 
         public static void Announce()
         {
-            PrintOut("Toolbox by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
 
-            if(!SkVersionChecker.VersionCurrent())
+            if(SkVersionChecker.VersionCurrent())
             {
-                PrintOut("New Version Available on NexusMods! Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
+                PrintOut("Toolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
+            } else
+            {
+                PrintOut("Toolbox by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
+                PrintOut("►\tNew Version Available on NexusMods! Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
             }
 
             PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1  ====", LogTo.Console);
             try
             {
                 commandList = commandList.OrderBy(obj => obj.Key).ToDictionary(obj => obj.Key, obj => obj.Value); // Try to sort the commands in case I gave up with it eventually, lol.
+                weatherList.Sort(); // Try to sort the weather names
                 SkCommandPatcher.InitPatch();
             }
             catch (Exception)
@@ -163,7 +170,8 @@ namespace SkToolbox
                         if (inCommandSplt.Length > 1)
                         {
                             Console.instance.m_input.text = commandTrimmed;
-                            Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
+                            //Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
+                            SkUtilities.InvokePrivateMethod(Console.instance, "InputText", null);
                         }
                         Console.instance.m_input.text = string.Empty;
 
@@ -185,17 +193,14 @@ namespace SkToolbox
 
             string[] inCommandSpl = inCommand.Split(' ');
 
-            if (source.HasFlag(LogTo.Console))
+            if (inCommand.StartsWith("help") && source.HasFlag(LogTo.Console))
             {
-                if (inCommand.StartsWith("help"))
-                {
-                    Console.instance.Print("imacheater - Enable in-game cheats");
-                    Console.instance.Print("/? [Page] - SkToolbox Commands - Ex /? 1");
-                    return true;
-                }
+                Console.instance.Print("imacheater - Enable in-game cheats");
+                Console.instance.Print("/? [Page] - SkToolbox Commands - Ex /? 1");
+                return false;
             }
 
-            if (inCommandSpl[0].Equals("/?") || inCommandSpl[0].Equals("/?"))
+            if (inCommandSpl[0].Equals("/?"))
             {
                 int displayPage = 1;
                 if (inCommandSpl.Length > 1 && int.TryParse(inCommandSpl[1], out displayPage))
@@ -396,17 +401,15 @@ namespace SkToolbox
 
             if (inCommandSpl[0].Equals("/env"))
             {
-                inCommand = inCommand.Trim();
-                string[] inCommandSpli = inCommand.Split(' ');
-                if (inCommandSpli.Length == 1)
+                if (inCommandSpl.Length == 1)
                 {
                     foreach(string weather in weatherList.OrderBy(q => q).ToList())
                     {
                         PrintOut(weather, source, false);
                     }
-                } else if (inCommandSpli.Length == 2)
+                } else if (inCommandSpl.Length >= 2)
                 {
-                    if(inCommandSpli[1].Equals("-1"))
+                    if(inCommandSpl[1].Equals("-1"))
                     {
                         if(EnvMan.instance != null)
                         {
@@ -415,19 +418,32 @@ namespace SkToolbox
                         }
                     } else
                     {
-                        if(weatherList.Contains(inCommandSpli[1]))
+                        string finalWeatherName = string.Empty;
+                        if(inCommandSpl.Length > 2)
+                        {
+                            foreach(string str in inCommandSpl)
+                            {
+                                if(!str.Equals(inCommandSpl[0])) // Make sure it doesn't pass /env into the weather name
+                                {
+                                    finalWeatherName += " " + str;
+                                }
+                            }
+                            finalWeatherName = finalWeatherName.Trim();
+                        }
+
+                        if(weatherList.Contains(finalWeatherName))
                         {
                             if (EnvMan.instance != null)
                             {
-                                EnvMan.instance.m_debugEnv = inCommandSpli[1];
+                                EnvMan.instance.m_debugEnv = finalWeatherName;
                                 PrintOut("Weather set to: " + EnvMan.instance.m_debugEnv, source);
                             } else
                             {
-                                PrintOut("Failed to set weather. Can't find environment manager.", source);
+                                PrintOut("Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
                             }
                         } else
                         {
-                            PrintOut("Failed to set weather. Check parameters! Ex. /env, /env -1, /env Misty", source);
+                            PrintOut("Failed to set weatherto '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
                         }
                     }
                 }
@@ -701,17 +717,22 @@ namespace SkToolbox
                 return true;
             }
 
+            if (inCommandSpl[0].Equals("/freecam"))
+            {
+                GameCamera.instance.ToggleFreeFly();
+                PrintOut("Free cam toggled " + GameCamera.InFreeFly().ToString(), source, true);
+                return true;
+            }
+
             if (inCommandSpl[0].Equals("/heal"))
             {
-                inCommand = inCommand.Remove(0, 5);
-                if (inCommand.Length > 0)
+                if (inCommandSpl.Length > 1)
                 {
-                    inCommand = inCommand.Remove(0, 1);
                     foreach (Player pl in Player.GetAllPlayers())
                     {
                         if (pl != null)
                         {
-                            if (pl.GetPlayerName().Equals(inCommand))
+                            if (pl.GetPlayerName().ToLower().Equals(inCommandSpl[1].ToLower()))
                             {
                                 pl.Heal(pl.GetMaxHealth());
                                 PrintOut("Player healed: " + pl.GetPlayerName(), source, true);
@@ -745,9 +766,29 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommandSpl[0].Equals("/dump"))
+            if (inCommandSpl[0].Equals("/event"))
             {
-                PrintOut(SkUtilities.GetPrivateField<List<Minimap.PinData>>(Minimap.instance, "m_playerPins").Count.ToString(), source);
+                if(inCommandSpl.Length > 1)
+                {
+                    if(RandEventSystem.instance.HaveEvent(inCommandSpl[1]))
+                    {
+                        RandEventSystem.instance.SetRandomEventByName(inCommandSpl[1], Player.m_localPlayer.transform.position);
+                        PrintOut("Event started!", source);
+                    } else
+                    {
+                        PrintOut("Event does not exist, please try again.", source);
+                    }
+                } else
+                {
+                    PrintOut("Please provide an event name. Ex. /event NAME", source);
+                }
+                return true;
+            }
+
+            if (inCommandSpl[0].Equals("/randomevent"))
+            {
+                RandEventSystem.instance.StartRandomEvent();
+                PrintOut("Random event started!", source);
                 return true;
             }
 
@@ -871,6 +912,7 @@ namespace SkToolbox
                     try
                     {
                         bDetectRange = int.Parse(inCommandSpl[1]);
+                        bDetectRange = bDetectRange < 5 ? 5 : bDetectRange;
                     }
                     catch (Exception)
                     {
@@ -948,8 +990,9 @@ namespace SkToolbox
                     {
                         try
                         {
-                            Player.m_localPlayer.m_maxInteractDistance = float.Parse(inCommandSpl[1]);
-                            Player.m_localPlayer.m_maxPlaceDistance = float.Parse(inCommandSpl[1]);
+                            int value = int.Parse(inCommandSpl[1]) < 20 ? 20 : int.Parse(inCommandSpl[1]);
+                            Player.m_localPlayer.m_maxInteractDistance = value;
+                            Player.m_localPlayer.m_maxPlaceDistance = value;
                         }
                         catch (Exception)
                         {
@@ -1262,44 +1305,41 @@ namespace SkToolbox
                 return true;
             }
 
-            if (source.HasFlag(LogTo.Console)) // Run from console only
+            if (inCommandSpl[0].Equals("/listitems"))
             {
-                if (inCommandSpl[0].Equals("/listitems"))
-                {
-                    if (inCommandSpl.Length > 1)
-                    { //starts with
-                        foreach (GameObject gameObject in ObjectDB.instance.m_items)
+                if (inCommandSpl.Length > 1)
+                { //starts with
+                    foreach (GameObject gameObject in ObjectDB.instance.m_items)
+                    {
+                        ItemDrop component = gameObject.GetComponent<ItemDrop>();
+                        if (component.name.ToLower().Contains(inCommandSpl[1].ToLower()))
                         {
-                            ItemDrop component = gameObject.GetComponent<ItemDrop>();
-                            if (component.name.ToLower().Contains(inCommandSpl[1].ToLower()))
-                            {
-                                PrintOut("Item: '" + component.name + "'", source);
-                            }
-                        }
-                    }
-                    else
-                    { // return all
-                        foreach (GameObject gameObject in ObjectDB.instance.m_items)
-                        {
-                            ItemDrop component = gameObject.GetComponent<ItemDrop>();
                             PrintOut("Item: '" + component.name + "'", source);
                         }
                     }
-                    return true;
                 }
-
-                if (inCommandSpl[0].Equals("/listskills"))
-                {
-                    string skillList = "Skills found: ";
-                    foreach (object obj in Enum.GetValues(typeof(Skills.SkillType)))
+                else
+                { // return all
+                    foreach (GameObject gameObject in ObjectDB.instance.m_items)
                     {
-                        if (!obj.ToString().Contains("None") && !obj.ToString().Contains("All") && !obj.ToString().Contains("FireMagic") && !obj.ToString().Contains("FrostMagic"))
-                            skillList = skillList + obj.ToString() + ", ";
+                        ItemDrop component = gameObject.GetComponent<ItemDrop>();
+                        PrintOut("Item: '" + component.name + "'", source);
                     }
-                    skillList = skillList.Remove(skillList.Length - 2);
-                    PrintOut(skillList, source);
-                    return true;
                 }
+                return true;
+            }
+
+            if (inCommandSpl[0].Equals("/listskills"))
+            {
+                string skillList = "Skills found: ";
+                foreach (object obj in Enum.GetValues(typeof(Skills.SkillType)))
+                {
+                    if (!obj.ToString().Contains("None") && !obj.ToString().Contains("All") && !obj.ToString().Contains("FireMagic") && !obj.ToString().Contains("FrostMagic"))
+                        skillList = skillList + obj.ToString() + ", ";
+                }
+                skillList = skillList.Remove(skillList.Length - 2);
+                PrintOut(skillList, source);
+                return true;
             }
 
             if (inCommandSpl[0].Equals("/q"))
@@ -1337,7 +1377,7 @@ namespace SkToolbox
             if (source.HasFlag(LogTo.Console) && Console.instance != null)
             {
                 Console.instance.Print("(SkToolbox) " + text);
-                if (consoleOpt != null && consoleOpt.conWriteToFile)
+                if (ConsoleOpt != null && ConsoleOpt.conWriteToFile)
                 {
                     SkUtilities.Logz(new string[] { "DUMP", "ITEM" }, new string[] { text, });
                 }
@@ -1360,8 +1400,6 @@ namespace SkToolbox
             }
         }
 
-
-        static Vector3 chatPos = new Vector3(0, 0 - 99);
         public static void ChatPrint(string ln, string source = "(SkToolbox) " )
         {
             if (Chat.instance != null)

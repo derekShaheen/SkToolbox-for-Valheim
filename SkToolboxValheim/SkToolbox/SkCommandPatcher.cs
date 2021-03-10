@@ -33,7 +33,8 @@ namespace SkToolbox
                 catch (Exception ex)
                 //catch (Exception)
                 {
-                    SkUtilities.Logz(new string[] { "SkCommandPatcher", "INJECT" }, new string[] { "INJECT => FAILED. CHECK FOR OTHER MODS BLOCKING PATCHES.", ex.Message, ex.StackTrace }, UnityEngine.LogType.Error);
+                    SkCommandProcessor.PrintOut("Something failed, there is a strong possibility another mod blocked this operation.", SkCommandProcessor.LogTo.Console);
+                    SkUtilities.Logz(new string[] { "SkCommandPatcher", "PATCH" }, new string[] { "PATCH => FAILED. CHECK FOR OTHER MODS BLOCKING PATCHES.\n", ex.Message, ex.StackTrace }, UnityEngine.LogType.Error);
                 }
                 finally
                 {
@@ -43,9 +44,9 @@ namespace SkToolbox
         }
 
         [HarmonyPatch(typeof(Console), "IsCheatsEnabled")]
-        public static class PatchIsCheatsEnabled
+        private static class PatchIsCheatsEnabled
         {
-            public static void Postfix(bool __result)
+            private static void Postfix(bool __result)
             {
                 __result = SkCommandPatcher.BCheat;
             }

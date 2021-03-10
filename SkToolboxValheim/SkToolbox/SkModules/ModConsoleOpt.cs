@@ -16,7 +16,6 @@ namespace SkToolbox.SkModules
         string consoleLastMessage = string.Empty;
 
         string chatInLastMessage = string.Empty;
-        string chatOutLastMessage = string.Empty;
 
         private Rect EnemyWindow;
 
@@ -38,7 +37,7 @@ namespace SkToolbox.SkModules
 
         public void Start()
         {
-            SkCommandProcessor.consoleOpt = this;
+            SkCommandProcessor.ConsoleOpt = this;
             BeginMenu();
             base.Ready();
         }
@@ -55,12 +54,12 @@ namespace SkToolbox.SkModules
 
         //
 
-        public void ToggleWriteFile()
-        {
-            conWriteToFile = !conWriteToFile;
-            //SkToolbox.SkConsole.writeToFile = conWriteToFile;
-            BeginMenu();
-        }
+        //public void ToggleWriteFile()
+        //{
+        //    conWriteToFile = !conWriteToFile;
+        //    //SkToolbox.SkConsole.writeToFile = conWriteToFile;
+        //    BeginMenu();
+        //}
 
         public void OpenLogFolder()
         {
@@ -80,7 +79,7 @@ namespace SkToolbox.SkModules
             SkLoader.Unload();
         }
 
-        public void HookConsole()
+        public void HandleConsole()
         {             //Add console commands
             if (Console.instance != null)
             {
@@ -119,7 +118,7 @@ namespace SkToolbox.SkModules
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Slash)
-                    && ((SkConfigEntry.COpenConsoleWithSlash != null && SkConfigEntry.COpenConsoleWithSlash.Value) || SkConfigEntry.COpenConsoleWithSlash == null)
+                    && (SkConfigEntry.COpenConsoleWithSlash != null && SkConfigEntry.COpenConsoleWithSlash.Value)
                     && !global::Console.IsVisible() && !global::Chat.instance.IsChatDialogWindowVisible() && !TextInput.IsVisible())
                 {
                     Console.instance.m_chatWindow.gameObject.SetActive(true);
@@ -128,53 +127,7 @@ namespace SkToolbox.SkModules
             }
         }
 
-        public void LoadConsoleCustomizations()
-        {
-            if(SkConfigEntry.CAllowLookCustomizations != null && SkConfigEntry.CAllowLookCustomizations.Value)
-            {
-                try
-                {
-                    int fontSize = Console.instance.m_output.fontSize;
-                    string font = "Consolas";
-                    Color outputColor = Console.instance.m_output.color;
-                    Color inputColor = Console.instance.m_input.textComponent.color;
-                    Color selectionColor = Console.instance.m_input.selectionColor;
-                    Color caretColor = Color.white;
-                    try
-                    {
-                        fontSize = SkConfigEntry.CConsoleFontSize.Value;
-                        font = SkConfigEntry.CConsoleFont.Value;
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleOutputTextColor.Value, out outputColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleInputTextColor.Value, out inputColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleSelectionColor.Value, out selectionColor);
-                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleCaretColor.Value, out caretColor);
-                    }
-                    catch (Exception Ex)
-                    {
-                        SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to load something from the config.", Ex.Message }, LogType.Warning);
-                    }
-
-                    Font consoleFont = Font.CreateDynamicFontFromOSFont(font, fontSize);
-
-                    Console.instance.m_output.font = consoleFont;
-                    Console.instance.m_output.fontSize = fontSize;
-                    Console.instance.m_output.color = outputColor;
-
-                    Console.instance.m_input.textComponent.color = inputColor;
-                    Console.instance.m_input.textComponent.font = consoleFont;
-                    Console.instance.m_input.selectionColor = selectionColor;
-                    Console.instance.m_input.caretColor = caretColor;
-                    Console.instance.m_input.customCaretColor = true;
-                }
-                catch (Exception Ex)
-                {
-                    SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to set when customizing console style." , Ex.Message }, LogType.Warning);
-                }
-            }
-            
-        }
-
-        public void HookChat()
+        public void HandleChat()
         {             //Add chat commands
             if (Chat.instance != null)
             {
@@ -214,6 +167,52 @@ namespace SkToolbox.SkModules
             }
         }
 
+        public void LoadConsoleCustomizations()
+        {
+            if (SkConfigEntry.CAllowLookCustomizations != null && SkConfigEntry.CAllowLookCustomizations.Value)
+            {
+                try
+                {
+                    int fontSize = Console.instance.m_output.fontSize;
+                    string font = "Consolas";
+                    Color outputColor = Console.instance.m_output.color;
+                    Color inputColor = Console.instance.m_input.textComponent.color;
+                    Color selectionColor = Console.instance.m_input.selectionColor;
+                    Color caretColor = Color.white;
+                    try
+                    {
+                        fontSize = SkConfigEntry.CConsoleFontSize.Value;
+                        font = SkConfigEntry.CConsoleFont.Value;
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleOutputTextColor.Value, out outputColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleInputTextColor.Value, out inputColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleSelectionColor.Value, out selectionColor);
+                        ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleCaretColor.Value, out caretColor);
+                    }
+                    catch (Exception Ex)
+                    {
+                        SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to load something from the config.", Ex.Message }, LogType.Warning);
+                    }
+
+                    Font consoleFont = Font.CreateDynamicFontFromOSFont(font, fontSize);
+
+                    Console.instance.m_output.font = consoleFont;
+                    Console.instance.m_output.fontSize = fontSize;
+                    Console.instance.m_output.color = outputColor;
+
+                    Console.instance.m_input.textComponent.color = inputColor;
+                    Console.instance.m_input.textComponent.font = consoleFont;
+                    Console.instance.m_input.selectionColor = selectionColor;
+                    Console.instance.m_input.caretColor = caretColor;
+                    Console.instance.m_input.customCaretColor = true;
+                }
+                catch (Exception Ex)
+                {
+                    SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to set when customizing console style.", Ex.Message }, LogType.Warning);
+                }
+            }
+
+        }
+
         void OnGUI()
         {
             if (Player.m_localPlayer != null)
@@ -230,35 +229,28 @@ namespace SkToolbox.SkModules
             }
             if(FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
             {
-
                 GUILayout.BeginArea(new Rect(0, Screen.height/4, Screen.width, Screen.height));
-                GUILayout.FlexibleSpace();
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-
-                Color tempColor = GUI.color;
-                GUI.color = Color.yellow;
-                GUIStyle credStyle = new GUIStyle();
-                credStyle.font = (Font)Resources.Load("Consolas");
-                credStyle.fontStyle = FontStyle.Bold;
-                credStyle.fontSize = 18;
-                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
-                GUI.color = tempColor;
-
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                GUILayout.FlexibleSpace();
+                    GUILayout.FlexibleSpace();
+                        GUILayout.BeginHorizontal();
+                            GUILayout.FlexibleSpace();
+                                GUIStyle credStyle = new GUIStyle();
+                                credStyle.fontStyle = FontStyle.Bold;
+                                credStyle.fontSize = 18;
+                                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
+                            GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    GUILayout.FlexibleSpace();
                 GUILayout.EndArea();
             }
         }
 
         void Update()
         {
-            HookConsole();
+            HandleConsole();
 
-            if (SkConfigEntry.CAllowChatCommandInput != null && SkConfigEntry.CAllowChatCommandInput.Value)
+            if ((SkConfigEntry.CAllowChatCommandInput != null && SkConfigEntry.CAllowChatCommandInput.Value) || SkConfigEntry.CAllowChatCommandInput == null)
             {
-                HookChat();
+                HandleChat();
             }
 
             if (!anncounced1)
@@ -272,7 +264,7 @@ namespace SkToolbox.SkModules
             }
             else
             {
-                if (Console.instance == null)
+                if (Player.m_localPlayer != null)
                 {
                     anncounced1 = false;
                 }
