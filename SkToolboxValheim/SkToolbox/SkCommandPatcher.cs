@@ -12,12 +12,11 @@ namespace SkToolbox
 
         private static bool bCheat = false;
         private static bool bFreeSupport = false;
-        private static bool bBuildAnywhere = false;
+        public static bool bBuildAnywhere = false;
 
         public static Harmony Harmony { get => harmony; set => harmony = value; }
         public static bool BCheat { get => bCheat; set => bCheat = value; }
         public static bool BFreeSupport { get => bFreeSupport; set => bFreeSupport = value; }
-        public static bool BBuildAnywhere { get => bBuildAnywhere; set => bBuildAnywhere = value; }
         public static bool InitComplete { get => initComplete; set => initComplete = value; }
 
         public static void InitPatch()
@@ -97,7 +96,7 @@ namespace SkToolbox
         {
             private static void Postfix(bool flashGuardStone)
             {
-                if (SkCommandPatcher.BBuildAnywhere)
+                if (SkCommandPatcher.bBuildAnywhere)
                 {
                     try
                     {
@@ -123,7 +122,7 @@ namespace SkToolbox
         {
             private static void Postfix(ref bool __result)
             {
-                if (SkCommandPatcher.BBuildAnywhere)
+                if (SkCommandPatcher.bBuildAnywhere)
                 {
                     __result = false;
                 }

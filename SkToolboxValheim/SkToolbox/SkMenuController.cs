@@ -616,6 +616,7 @@ namespace SkToolbox
         {
             methodName.Invoke();
         }
+
         private void RunMethod(Action<string> methodName, string methodParameter = "")
         {
             try

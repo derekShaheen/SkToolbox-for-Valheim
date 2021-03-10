@@ -163,8 +163,8 @@ namespace SkToolbox
                         if (inCommandSplt.Length > 1)
                         {
                             Console.instance.m_input.text = commandTrimmed;
+                            Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
                         }
-                        Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
                         Console.instance.m_input.text = string.Empty;
 
                     }
@@ -225,14 +225,14 @@ namespace SkToolbox
             }
 
 
-            if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null && !inCommand.StartsWith("/q") && !inCommand.StartsWith("/clear"))
+            if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null && !inCommandSpl[0].Equals("/q") && !inCommandSpl[0].Equals("/clear"))
             {
                 PrintOut("You must be in-game to run commands!", source, false);
                 return true;
             }
 
 
-            if (inCommand.StartsWith("/repair"))
+            if (inCommandSpl[0].Equals("/repair"))
             {
                 List<ItemDrop.ItemData> itemList = new List<ItemDrop.ItemData>();
                 Player.m_localPlayer.GetInventory().GetWornItems(itemList);
@@ -251,13 +251,13 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/portals"))
+            if (inCommandSpl[0].Equals("/portals"))
             {
                 PrintOut(ListPortals(), source, true);
                 return true;
             }
 
-            if (inCommand.StartsWith("/tl"))
+            if (inCommandSpl[0].Equals("/tl"))
             {
                 GameObject tLevel = ZNetScene.instance.GetPrefab("digg_v2");
                 if (tLevel == null)
@@ -265,13 +265,12 @@ namespace SkToolbox
                     PrintOut("Terrain level failed. Report to mod author - terrain level error 1", source);
                     return true;
                 }
-                string[] command = inCommand.Split(' ');
                 float radius = 5f;
-                if (command.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     try
                     {
-                        radius = int.Parse(command[1]);
+                        radius = int.Parse(inCommandSpl[1]);
                     }
                     catch (Exception)
                     {
@@ -283,27 +282,26 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/tu"))
+            if (inCommandSpl[0].Equals("/tu"))
             {
-                string[] command = inCommand.Split(' ');
                 float radius = 5f;
-                if (command.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     try
                     {
-                        radius = int.Parse(command[1]);
+                        radius = int.Parse(inCommandSpl[1]);
                     }
                     catch (Exception)
                     {
                     }
                 }
-                ResetTerrain(Player.m_localPlayer.transform.position, radius);
+                TerrainModification.ResetTerrain(Player.m_localPlayer.transform.position, radius);
 
                 PrintOut("Terrain reset!", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/tr"))
+            if (inCommandSpl[0].Equals("/tr"))
             {
                 GameObject tLevel = ZNetScene.instance.GetPrefab("raise");
                 if (tLevel == null)
@@ -311,24 +309,23 @@ namespace SkToolbox
                     PrintOut("Terrain raise failed. Report to mod author - terrain raise error 1", source);
                     return true;
                 }
-                string[] command = inCommand.Split(' ');
                 float radius = 5f;
                 float height = 2f;
-                if (command.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     try
                     {
-                        radius = int.Parse(command[1]);
+                        radius = int.Parse(inCommandSpl[1]);
                     }
                     catch (Exception)
                     {
                     }
                 }
-                if (command.Length > 2)
+                if (inCommandSpl.Length > 2)
                 {
                     try
                     {
-                        height = int.Parse(command[2]);
+                        height = int.Parse(inCommandSpl[2]);
                     }
                     catch (Exception)
                     {
@@ -340,7 +337,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/td"))
+            if (inCommandSpl[0].Equals("/td"))
             {
                 GameObject tLevel = ZNetScene.instance.GetPrefab("digg_v2");
                 if (tLevel == null)
@@ -348,24 +345,23 @@ namespace SkToolbox
                     PrintOut("Terrain dig failed. Report to mod author - terrain dig error 1", source);
                     return true;
                 }
-                string[] command = inCommand.Split(' ');
                 float radius = 5f;
                 float height = 1f;
-                if (command.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     try
                     {
-                        radius = int.Parse(command[1]);
+                        radius = int.Parse(inCommandSpl[1]);
                     }
                     catch (Exception)
                     {
                     }
                 }
-                if (command.Length > 2)
+                if (inCommandSpl.Length > 2)
                 {
                     try
                     {
-                        height = int.Parse(command[2]);
+                        height = int.Parse(inCommandSpl[2]);
                     }
                     catch (Exception)
                     {
@@ -377,13 +373,13 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/resetwind"))
+            if (inCommandSpl[0].Equals("/resetwind"))
             {
                 EnvMan.instance.ResetDebugWind();
                 PrintOut("Wind unlocked and under game control.", source);
             }
 
-            if (inCommand.StartsWith("/wind"))
+            if (inCommandSpl[0].Equals("/wind"))
             {
                 string[] inCommandSpli = inCommand.Split(' ');
                 if (inCommandSpli.Length == 3)
@@ -398,7 +394,7 @@ namespace SkToolbox
                 }
             }
 
-            if (inCommand.StartsWith("/env"))
+            if (inCommandSpl[0].Equals("/env"))
             {
                 inCommand = inCommand.Trim();
                 string[] inCommandSpli = inCommand.Split(' ');
@@ -485,7 +481,7 @@ namespace SkToolbox
             //    //return true;
             //}
 
-            if (inCommand.StartsWith("/fly"))
+            if (inCommandSpl[0].Equals("/fly"))
             {
                 flyEnabled = !flyEnabled;
                 Player.m_debugMode = flyEnabled;
@@ -494,27 +490,27 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/alt"))
+            if (inCommandSpl[0].Equals("/alt"))
             {
                 altOnScreenControls = !altOnScreenControls;
                 PrintOut("Alt controls toggled! (" + altOnScreenControls.ToString() + ")", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/stopevent"))
+            if (inCommandSpl[0].Equals("/stopevent"))
             {
                 RandEventSystem.instance.ResetRandomEvent();
                 PrintOut("Event stopped!", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/revealmap"))
+            if (inCommandSpl[0].Equals("/revealmap"))
             {
                 Minimap.instance.ExploreAll();
                 PrintOut("Map revealed!", source);
             }
 
-            if (inCommand.StartsWith("/whois"))
+            if (inCommandSpl[0].Equals("/whois"))
             {
                 string playerStr = string.Empty;
                 //foreach (Player pl in Player.GetAllPlayers())
@@ -532,7 +528,7 @@ namespace SkToolbox
                 PrintOut("Active Players (" + Player.GetAllPlayers().Count + ") - " + playerStr, source, true);
             }
 
-            if (inCommand.StartsWith("/give"))
+            if (inCommandSpl[0].Equals("/give"))
             {
                 inCommand = inCommand.Remove(0, 6);
                 string[] cmdSplt = inCommand.Split(' ');
@@ -665,7 +661,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/god"))
+            if (inCommandSpl[0].Equals("/god"))
             {
                 godEnabled = !godEnabled;
                 Player.m_localPlayer.SetGodMode(godEnabled);
@@ -673,14 +669,14 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/clearinventory"))
+            if (inCommandSpl[0].Equals("/clearinventory"))
             {
                 Player.m_localPlayer.GetInventory().RemoveAll();
                 PrintOut("All items removed from inventory.", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/findtomb"))
+            if (inCommandSpl[0].Equals("/findtomb"))
             {
                 TombStone[] listTraders = GameObject.FindObjectsOfType<TombStone>();
                 if (listTraders.Length > 0)
@@ -698,14 +694,14 @@ namespace SkToolbox
             }
 
 
-            if (inCommand.StartsWith("/seed"))
+            if (inCommandSpl[0].Equals("/seed"))
             {
                 World wrld = SkUtilities.GetPrivateField<World>(WorldGenerator.instance, "m_world");
                 PrintOut("Map seed: " + wrld.m_seedName, source, true);
                 return true;
             }
 
-            if (inCommand.StartsWith("/heal"))
+            if (inCommandSpl[0].Equals("/heal"))
             {
                 inCommand = inCommand.Remove(0, 5);
                 if (inCommand.Length > 0)
@@ -732,15 +728,15 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/nores"))
+            if (inCommandSpl[0].Equals("/nores"))
             {
                 SkCommandPatcher.InitPatch();
-                SkCommandPatcher.BBuildAnywhere = !SkCommandPatcher.BBuildAnywhere;
-                PrintOut("No build restrictions toggled! (" + SkCommandPatcher.BBuildAnywhere.ToString() + ")", source);
+                SkCommandPatcher.bBuildAnywhere = !SkCommandPatcher.bBuildAnywhere;
+                PrintOut("No build restrictions toggled! (" + SkCommandPatcher.bBuildAnywhere.ToString() + ")", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/nocost"))
+            if (inCommandSpl[0].Equals("/nocost"))
             {
                 noCostEnabled = !noCostEnabled;
                 Player.m_debugMode = noCostEnabled;
@@ -749,26 +745,22 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/dump"))
+            if (inCommandSpl[0].Equals("/dump"))
             {
                 PrintOut(SkUtilities.GetPrivateField<List<Minimap.PinData>>(Minimap.instance, "m_playerPins").Count.ToString(), source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/tp"))
+            if (inCommandSpl[0].Equals("/tp"))
             {
-                //if (inCommand.Contains(","))
-                //{
-                inCommand = inCommand.Remove(0, 3);
-                inCommand = inCommand.Replace(" ", string.Empty);
-                string[] loc = inCommand.Split(',');
-                if (loc.Length > 2 || loc.Length < 2 || !inCommand.Contains(","))
+                if (inCommandSpl.Length != 2 || !inCommandSpl[1].Contains(","))
                 {
                     PrintOut("Syntax /tp X,Z", source);
                     return true;
                 }
                 try
                 {
+                    string[] loc = inCommandSpl[1].Split(',');
                     float x = float.Parse(loc[0]);
                     float z = float.Parse(loc[1]);
                     float y = ZoneSystem.instance.GetGroundHeight(new Vector3(x, 750, z));
@@ -871,15 +863,14 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/detect"))
+            if (inCommandSpl[0].Equals("/detect"))
             {
                 bDetectEnemies = !bDetectEnemies;
-                inCommand = inCommand.Remove(0, 8);
-                if (inCommand.Length > 0)
+                if (inCommandSpl.Length > 0)
                 {
                     try
                     {
-                        bDetectRange = int.Parse(inCommand);
+                        bDetectRange = int.Parse(inCommandSpl[1]);
                     }
                     catch (Exception)
                     {
@@ -890,7 +881,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/imacheater"))
+            if (inCommandSpl[0].Equals("/imacheater"))
             {
                 SkCommandPatcher.InitPatch();
                 SkCommandPatcher.BCheat = !SkCommandPatcher.BCheat;
@@ -899,7 +890,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/nosup"))
+            if (inCommandSpl[0].Equals("/nosup"))
             {
                 SkCommandPatcher.InitPatch();
                 SkCommandPatcher.BFreeSupport = !SkCommandPatcher.BFreeSupport;
@@ -907,20 +898,20 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/coords"))
+            if (inCommandSpl[0].Equals("/coords"))
             {
                 bCoords = !bCoords;
                 PrintOut("Show coords toggled! (" + bCoords.ToString() + ")", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/resetmap"))
+            if (inCommandSpl[0].Equals("/resetmap"))
             {
                 Minimap.instance.Reset();
                 return true;
             }
 
-            if (inCommand.StartsWith("/infstam"))
+            if (inCommandSpl[0].Equals("/infstam"))
             {
                 infStamina = !infStamina;
                 if (infStamina)
@@ -941,25 +932,24 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/tame"))
+            if (inCommandSpl[0].Equals("/tame"))
             {
                 Tameable.TameAllInArea(Player.m_localPlayer.transform.position, 20f);
                 PrintOut("Creatures tamed!", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/farinteract"))
+            if (inCommandSpl[0].Equals("/farinteract"))
             {
                 farInteract = !farInteract;
                 if (farInteract)
                 {
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length > 1)
+                    if (inCommandSpl.Length > 1)
                     {
                         try
                         {
-                            Player.m_localPlayer.m_maxInteractDistance = float.Parse(commandSpl[1]);
-                            Player.m_localPlayer.m_maxPlaceDistance = float.Parse(commandSpl[1]);
+                            Player.m_localPlayer.m_maxInteractDistance = float.Parse(inCommandSpl[1]);
+                            Player.m_localPlayer.m_maxPlaceDistance = float.Parse(inCommandSpl[1]);
                         }
                         catch (Exception)
                         {
@@ -983,219 +973,217 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/ghost"))
+            if (inCommandSpl[0].Equals("/ghost"))
             {
                 Player.m_localPlayer.SetGhostMode(!Player.m_localPlayer.InGhostMode());
                 PrintOut("Ghost mode toggled! (" + Player.m_localPlayer.InGhostMode().ToString() + ")", source);
                 return true;
             }
 
-            if (inCommand.StartsWith("/tod"))
+            if (inCommandSpl[0].Equals("/tod"))
             {
-
-                inCommand = inCommand.Remove(0, 5);
-                float num10;
-                if (!float.TryParse(inCommand, NumberStyles.Float, CultureInfo.InvariantCulture, out num10))
+                if(inCommandSpl.Length > 1)
                 {
-                    return true;
-                }
-                if (num10 < 0f)
+                    float num10;
+                    if (!float.TryParse(inCommandSpl[1], NumberStyles.Float, CultureInfo.InvariantCulture, out num10))
+                    {
+                        return true;
+                    }
+                    if (num10 < 0f)
+                    {
+                        EnvMan.instance.m_debugTimeOfDay = false;
+                        PrintOut("Time unlocked and under game control.", source);
+                    }
+                    else
+                    {
+                        EnvMan.instance.m_debugTimeOfDay = true;
+                        EnvMan.instance.m_debugTime = Mathf.Clamp01(num10);
+                        PrintOut("Setting time of day:" + num10, source);
+                    }
+                } else
                 {
-                    EnvMan.instance.m_debugTimeOfDay = false;
-                    PrintOut("Time unlocked and under game control.", source);
-                }
-                else
-                {
-                    EnvMan.instance.m_debugTimeOfDay = true;
-                    EnvMan.instance.m_debugTime = Mathf.Clamp01(num10);
-                    PrintOut("Setting time of day:" + num10, source);
+                    PrintOut("Failed. Syntax /tod [0-1] Ex. /tod 0.5", source);
                 }
                 
                 return true;
             }
 
-            if (inCommand.StartsWith("/set"))
+            if (inCommandSpl[0].Equals("/set"))
             {
-                inCommand = inCommand.Remove(0, 5);
-                if (inCommand.StartsWith("cw"))
+                if(inCommandSpl.Length > 1)
                 {
-                    inCommand = inCommand.Remove(0, 3);
-                    try
-                    {
-                        int newWeight = int.Parse(inCommand);
-                        Player.m_localPlayer.m_maxCarryWeight = newWeight;
-                        PrintOut("New carry weight set to: " + newWeight, source);
-                    }
-                    catch (Exception)
-                    {
-                        PrintOut("Failed to set new carry weight. Check params.", source);
-                    }
-                    return true;
-                }
-
-                if (inCommand.StartsWith("skill"))
-                {
-                    inCommand = inCommand.Remove(0, 6);
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length == 2 && !commandSpl[0].Contains("None") && !commandSpl[0].Contains("All") && !commandSpl[0].Contains("FireMagic") && !commandSpl[0].Contains("FrostMagic"))
+                    if (inCommandSpl[1].Equals("cw"))
                     {
                         try
                         {
-                            string cmdSkill = commandSpl[0];
-                            int cmdLvl = int.Parse(commandSpl[1]);
-                            Player.m_localPlayer.GetSkills().CheatResetSkill(cmdSkill.ToLower());
-                            Player.m_localPlayer.GetSkills().CheatRaiseSkill(cmdSkill.ToLower(), (float)cmdLvl);
-                            return true;
+                            int newWeight = int.Parse(inCommandSpl[2]);
+                            Player.m_localPlayer.m_maxCarryWeight = newWeight;
+                            PrintOut("New carry weight set to: " + newWeight, source);
                         }
                         catch (Exception)
                         {
-                            PrintOut("Failed to set skill. Check params / skill name. See /listskills. /set skill [skill] [level]", source);
-                            return true;
-                        }
-                    }
-                    PrintOut("Failed to set skill. Check params / skill name. See /listskills.  /set skill [skill] [level]", source);
-                    return true;
-                }
-
-                if (inCommand.StartsWith("pickup"))
-                {
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length == 2)
-                    {
-                        try
-                        {
-                            int cmdRange = int.Parse(commandSpl[1]);
-                            Player.m_localPlayer.m_autoPickupRange = cmdRange;
-                            PrintOut("New range set to: " + cmdRange, source);
-                            return true;
-                        }
-                        catch (Exception)
-                        {
-                            PrintOut("Failed to set pickup range. Check params. /set pickup 2", source);
-                            return true;
-                        }
-                    }
-
-                    PrintOut("Failed to set pickup range. Check params.  /set pickup 2", source);
-                    return true;
-                }
-
-                if (inCommand.StartsWith("jumpforce"))
-                {
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length == 2)
-                    {
-                        try
-                        {
-                            int cmdRange = int.Parse(commandSpl[1]);
-                            Player.m_localPlayer.m_jumpForce = cmdRange;
-                            PrintOut("New range set to: " + cmdRange, source);
-                            return true;
-                        }
-                        catch (Exception)
-                        {
-                            PrintOut("Failed to set jump force. Check params. /set jumpforce 10", source);
-                            return true;
-                        }
-                    }
-
-                    PrintOut("Failed to set jump force. Check params.  /set jumpforce 10", source);
-                    return true;
-                }
-
-                if (inCommand.StartsWith("exploreradius"))
-                {
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length == 2)
-                    {
-                        try
-                        {
-                            int cmdRange = int.Parse(commandSpl[1]);
-                            Minimap.instance.m_exploreRadius = cmdRange;
-                            PrintOut("New range set to: " + cmdRange, source);
-                            return true;
-                        }
-                        catch (Exception)
-                        {
-                            PrintOut("Failed to set explore radius. Check params. /set exploreradius 100", source);
-                            return true;
-                        }
-                    }
-
-                    PrintOut("Failed to set explore radius. Check params.  /set exploreradius 100", source);
-                    return true;
-                }
-
-                if (inCommand.StartsWith("speed"))
-                {
-                    string[] commandSpl = inCommand.Split(' ');
-                    int cmdSpeed;
-                    if (commandSpl.Length == 3)
-                    {
-                        string cmdType = commandSpl[1];
-                        String[] types = { "crouch", "run", "swim" };
-                        if (types.Contains(cmdType))
-                        {
-                            try
-                            {
-
-                                cmdSpeed = int.Parse(commandSpl[2]);
-                                switch (cmdType)
-                                {
-                                    case "crouch":
-                                        Player.m_localPlayer.m_crouchSpeed = cmdSpeed;
-                                        break;
-                                    case "run":
-                                        Player.m_localPlayer.m_runSpeed = cmdSpeed;
-                                        break;
-                                    case "swim":
-                                        Player.m_localPlayer.m_swimSpeed = cmdSpeed;
-                                        break;
-                                }
-                                PrintOut("New " + cmdType + " speed set to: " + cmdSpeed, source);
-                            }
-                            catch (Exception)
-                            {
-                                PrintOut("Failed to set speed. Check params name. Ex. /set speed crouch 2", source);
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            PrintOut("Failed to set speed. Check params name. Ex.  /set speed crouch 2", source);
+                            PrintOut("Failed to set new carry weight. Check params.", source);
                         }
                         return true;
                     }
-                    PrintOut("Failed to set speed. Check params name. Ex.  /set speed crouch 2", source);
-                    return true;
-                }
 
-                if (inCommand.StartsWith("difficulty"))
-                {
-                    string[] commandSpl = inCommand.Split(' ');
-                    if (commandSpl.Length == 2)
+                    if (inCommandSpl[1].Equals("skill"))
                     {
-                        try
+                        if (inCommandSpl.Length == 4 && !inCommandSpl[2].Contains("None") && !inCommandSpl[2].Contains("All") && !inCommandSpl[2].Contains("FireMagic") && !inCommandSpl[2].Contains("FrostMagic"))
                         {
-                            int diffLvl = int.Parse(commandSpl[1]);
-                            Game.instance.SetForcePlayerDifficulty(diffLvl);
-                            PrintOut("Difficulty set to " + diffLvl.ToString(), source);
-                            return true;
+                            try
+                            {
+                                string cmdSkill = inCommandSpl[2];
+                                int cmdLvl = int.Parse(inCommandSpl[3]);
+                                Player.m_localPlayer.GetSkills().CheatResetSkill(cmdSkill.ToLower());
+                                Player.m_localPlayer.GetSkills().CheatRaiseSkill(cmdSkill.ToLower(), (float)cmdLvl);
+                                return true;
+                            }
+                            catch (Exception)
+                            {
+                                PrintOut("Failed to set skill. Check params / skill name. See /listskills. /set skill [skill] [level]", source);
+                                return true;
+                            }
                         }
-                        catch (Exception)
-                        {
-                            PrintOut("Failed to set difficulty. Check params. /set difficulty 5", source);
-                            return true;
-                        }
+                        PrintOut("Failed to set skill. Check params / skill name. See /listskills.  /set skill [skill] [level]", source);
+                        return true;
                     }
-                    PrintOut("Failed to set difficulty. Check params.  /set difficulty 5", source);
-                    return true;
-                }
 
+                    if (inCommandSpl[1].Equals("pickup"))
+                    {
+                        if (inCommandSpl.Length >= 3)
+                        {
+                            try
+                            {
+                                int cmdRange = int.Parse(inCommandSpl[2]);
+                                Player.m_localPlayer.m_autoPickupRange = cmdRange;
+                                PrintOut("New range set to: " + cmdRange, source);
+                                return true;
+                            }
+                            catch (Exception) 
+                            {
+                                PrintOut("Failed to set pickup range. Check params. /set pickup 2", source);
+                                return true;
+                            }
+                        }
+
+                        PrintOut("Failed to set pickup range. Check params.  /set pickup 2", source);
+                        return true;
+                    }
+
+                    if (inCommandSpl[1].Equals("jumpforce"))
+                    {
+                        if (inCommandSpl.Length >= 3)
+                        {
+                            try
+                            {
+                                int cmdRange = int.Parse(inCommandSpl[2]);
+                                Player.m_localPlayer.m_jumpForce = cmdRange;
+                                PrintOut("New range set to: " + cmdRange, source);
+                                return true;
+                            }
+                            catch (Exception)
+                            {
+                                PrintOut("Failed to set jump force. Check params. /set jumpforce 10", source);
+                                return true;
+                            }
+                        }
+
+                        PrintOut("Failed to set jump force. Check params.  /set jumpforce 10", source);
+                        return true;
+                    }
+
+                    if (inCommandSpl[1].Equals("exploreradius"))
+                    {
+                        if (inCommandSpl.Length >= 3)
+                        {
+                            try
+                            {
+                                int cmdRange = int.Parse(inCommandSpl[2]);
+                                Minimap.instance.m_exploreRadius = cmdRange;
+                                PrintOut("New range set to: " + cmdRange, source);
+                                return true;
+                            }
+                            catch (Exception)
+                            {
+                                PrintOut("Failed to set explore radius. Check params. /set exploreradius 100", source);
+                                return true;
+                            }
+                        }
+
+                        PrintOut("Failed to set explore radius. Check params.  /set exploreradius 100", source);
+                        return true;
+                    }
+
+                    if (inCommandSpl[1].Equals("speed"))
+                    {
+                        int cmdSpeed;
+                        if (inCommandSpl.Length >= 4)
+                        {
+                            string cmdType = inCommandSpl[2];
+                            String[] types = { "crouch", "run", "swim" };
+                            if (types.Contains(cmdType))
+                            {
+                                try
+                                {
+
+                                    cmdSpeed = int.Parse(inCommandSpl[3]);
+                                    switch (cmdType)
+                                    {
+                                        case "crouch":
+                                            Player.m_localPlayer.m_crouchSpeed = cmdSpeed;
+                                            break;
+                                        case "run":
+                                            Player.m_localPlayer.m_runSpeed = cmdSpeed;
+                                            break;
+                                        case "swim":
+                                            Player.m_localPlayer.m_swimSpeed = cmdSpeed;
+                                            break;
+                                    }
+                                    PrintOut("New " + cmdType + " speed set to: " + cmdSpeed, source);
+                                }
+                                catch (Exception)
+                                {
+                                    PrintOut("Failed to set speed. Check params name. Ex. /set speed crouch 2", source);
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                PrintOut("Failed to set speed. Check params name. Ex.  /set speed crouch 2", source);
+                            }
+                            return true;
+                        }
+                        PrintOut("Failed to set speed. Check params name. Ex.  /set speed crouch 2", source);
+                        return true;
+                    }
+
+                    if (inCommandSpl[1].Equals("difficulty"))
+                    {
+                        if (inCommandSpl.Length >= 3)
+                        {
+                            try
+                            {
+                                int diffLvl = int.Parse(inCommandSpl[2]);
+                                Game.instance.SetForcePlayerDifficulty(diffLvl);
+                                PrintOut("Difficulty set to " + diffLvl.ToString(), source);
+                                return true;
+                            }
+                            catch (Exception)
+                            {
+                                PrintOut("Failed to set difficulty. Check params. /set difficulty 5", source);
+                                return true;
+                            }
+                        }
+                        PrintOut("Failed to set difficulty. Check params.  /set difficulty 5", source);
+                        return true;
+                    }
+                }
+                
                 return true;
             }
 
-            if (inCommand.StartsWith("/removedrops"))
+            if (inCommandSpl[0].Equals("/removedrops"))
             {
                 ItemDrop[] array2 = UnityEngine.Object.FindObjectsOfType<ItemDrop>();
                 for (int i = 0; i < array2.Length; i++)
@@ -1210,7 +1198,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("/spawn"))
+            if (inCommandSpl[0].Equals("/spawn"))
             {
                 ZNetView[] ZNetObject = GameObject.FindObjectsOfType<ZNetView>();
                 if (ZNetObject.Length == 0)
@@ -1218,11 +1206,9 @@ namespace SkToolbox
                     PrintOut("Couldn't find zdo...", source);
                 }
 
-                inCommand = inCommand.Remove(0, 7);
-                string[] commandSpl = inCommand.Split(' ');
-                if (commandSpl.Length > 0)
+                if (inCommandSpl.Length > 1)
                 {
-                    GameObject creature = ZNetScene.instance.GetPrefab(commandSpl[0]);
+                    GameObject creature = ZNetScene.instance.GetPrefab(inCommandSpl[1]);
                     if (creature == null)
                     {
                         PrintOut("Creature not found.", source);
@@ -1236,12 +1222,12 @@ namespace SkToolbox
                     ZNetView component = createdCreature.GetComponent<ZNetView>();
                     BaseAI component2 = createdCreature.GetComponent<BaseAI>();
 
-                    if (commandSpl.Length > 1) // A level was included
+                    if (inCommandSpl.Length > 2) // A level was included
                     {
                         Character creatureComponent = createdCreature.GetComponent<Character>();
                         if (creatureComponent)
                         {
-                            int lvl = int.Parse(commandSpl[1]);
+                            int lvl = int.Parse(inCommandSpl[2]);
                             if (lvl > 10) lvl = 10;
                             creatureComponent.SetLevel(lvl);
                         }
@@ -1253,13 +1239,13 @@ namespace SkToolbox
                         ZNetObject[0].GetZDO().Set("alive_time", ZNet.instance.GetTime().Ticks);
                         //this.SpawnEffect(createdCreature);
                     }
-                    PrintOut("Creature spawned - " + inCommand, source);
+                    PrintOut("Creature spawned - " + inCommandSpl[1], source);
                 }
 
                 return true;
             }
 
-            if (inCommand.StartsWith("/killall"))
+            if (inCommandSpl[0].Equals("/killall"))
             {
                 List<Character> CharList = new List<Character>();
                 Character.GetCharactersInRange(Player.m_localPlayer.transform.position, 50f, CharList);
@@ -1278,19 +1264,14 @@ namespace SkToolbox
 
             if (source.HasFlag(LogTo.Console)) // Run from console only
             {
-                if (inCommand.StartsWith("/listitems"))
+                if (inCommandSpl[0].Equals("/listitems"))
                 {
-                    inCommand = inCommand.Remove(0, 10);
-                    if (inCommand.Length > 0)
+                    if (inCommandSpl.Length > 1)
                     { //starts with
-                        if (inCommand.StartsWith(" "))
-                        {
-                            inCommand = inCommand.Remove(0, 1);
-                        }
                         foreach (GameObject gameObject in ObjectDB.instance.m_items)
                         {
                             ItemDrop component = gameObject.GetComponent<ItemDrop>();
-                            if (component.name.ToLower().Contains(inCommand.ToLower()))
+                            if (component.name.ToLower().Contains(inCommandSpl[1].ToLower()))
                             {
                                 PrintOut("Item: '" + component.name + "'", source);
                             }
@@ -1307,7 +1288,7 @@ namespace SkToolbox
                     return true;
                 }
 
-                if (inCommand.StartsWith("/listskills"))
+                if (inCommandSpl[0].Equals("/listskills"))
                 {
                     string skillList = "Skills found: ";
                     foreach (object obj in Enum.GetValues(typeof(Skills.SkillType)))
@@ -1321,14 +1302,14 @@ namespace SkToolbox
                 }
             }
 
-            if (inCommand.StartsWith("/q"))
+            if (inCommandSpl[0].Equals("/q"))
             {
                 PrintOut("Quitting game...", source);
                 Application.Quit();
                 return true;
             }
 
-            if (inCommand.StartsWith("/clear"))
+            if (inCommandSpl[0].Equals("/clear"))
             {
                 if (Console.instance != null)
                 {
@@ -1436,114 +1417,113 @@ namespace SkToolbox
             }
         }
 
-        internal static  class TerrainModification {
+        internal static class TerrainModification
+        {
             // Thank you to BlueAmulet for this code
-        private static void CreateTerrain(GameObject prefab, Vector3 position, ZNetView component)
-        {
-            float levelOffset = prefab.GetComponent<TerrainModifier>().m_levelOffset;
-            GameObject terrainObject = UnityEngine.Object.Instantiate(prefab, position - Vector3.up * levelOffset, Quaternion.identity);
-            terrainObject.GetComponent<ZNetView>().GetZDO().SetPGWVersion(component.GetZDO().GetPGWVersion());
-        }
-
-        //Thank you to BlueAmulet for this code
-        public static void ModifyTerrain(int operation, Vector3 centerLocation, GameObject prefab, float radius)
-        {
-            if (radius > 30f)
+            private static void CreateTerrain(GameObject prefab, Vector3 position, ZNetView component)
             {
-                PrintOut("Radius clamped to 30 max!", LogTo.Console);
+                float levelOffset = prefab.GetComponent<TerrainModifier>().m_levelOffset;
+                GameObject terrainObject = UnityEngine.Object.Instantiate(prefab, position - Vector3.up * levelOffset, Quaternion.identity);
+                terrainObject.GetComponent<ZNetView>().GetZDO().SetPGWVersion(component.GetZDO().GetPGWVersion());
             }
-            //radius = Mathf.Clamp(radius, 0f, 25f) / 2f + 0.25f;
-            radius = Mathf.Clamp(radius, 0f, 30f);
-            Vector3 a = centerLocation;
-            ZNetView component = Player.m_localPlayer.gameObject.GetComponent<ZNetView>();
-            int iSize = Mathf.CeilToInt(radius / 3) * 3;
-            for (int x = -iSize; x <= iSize; x += 3)
+
+            //Thank you to BlueAmulet for this code
+            public static void ModifyTerrain(int operation, Vector3 centerLocation, GameObject prefab, float radius)
             {
-                for (int z = -iSize; z <= iSize; z += 3)
+                if (radius > 30f)
                 {
-                    Vector3 vector = new Vector3(a.x + x, a.y, a.z + z);
-                    if (Utils.DistanceXZ(a, vector) <= radius)
+                    PrintOut("Radius clamped to 30 max!", LogTo.Console);
+                }
+                //radius = Mathf.Clamp(radius, 0f, 25f) / 2f + 0.25f;
+                radius = Mathf.Clamp(radius, 0f, 30f);
+                Vector3 a = centerLocation;
+                ZNetView component = Player.m_localPlayer.gameObject.GetComponent<ZNetView>();
+                int iSize = Mathf.CeilToInt(radius / 3) * 3;
+                for (int x = -iSize; x <= iSize; x += 3)
+                {
+                    for (int z = -iSize; z <= iSize; z += 3)
                     {
-                        CreateTerrain(prefab, vector, component);
+                        Vector3 vector = new Vector3(a.x + x, a.y, a.z + z);
+                        if (Utils.DistanceXZ(a, vector) <= radius)
+                        {
+                            CreateTerrain(prefab, vector, component);
+                        }
                     }
                 }
-            }
 
-            int lx = int.MaxValue;
-            int lz = int.MaxValue;
-            for (int x = -iSize; x <= 0; x++)
-            {
-                for (int z = -iSize; z <= -iSize / 2; z++)
+                int lx = int.MaxValue;
+                int lz = int.MaxValue;
+                for (int x = -iSize; x <= 0; x++)
                 {
-                    Vector3 vector = new Vector3(a.x + x, a.y, a.z + z);
-                    if (Utils.DistanceXZ(a, vector) <= radius)
+                    for (int z = -iSize; z <= -iSize / 2; z++)
                     {
-                        if (x >= z && (z < lz || x > lx + 2 || x == 0))
+                        Vector3 vector = new Vector3(a.x + x, a.y, a.z + z);
+                        if (Utils.DistanceXZ(a, vector) <= radius)
                         {
-                            lx = x;
-                            lz = z;
-                            if (x / 3 * 3 != x || z / 3 * 3 != z)
+                            if (x >= z && (z < lz || x > lx + 2 || x == 0))
                             {
-                                CreateTerrain(prefab, new Vector3(a.x + x, a.y, a.z + z), component);
-                                CreateTerrain(prefab, new Vector3(a.x + x, a.y, a.z - z), component);
-                                if (x != 0)
+                                lx = x;
+                                lz = z;
+                                if (x / 3 * 3 != x || z / 3 * 3 != z)
                                 {
-                                    CreateTerrain(prefab, new Vector3(a.x - x, a.y, a.z + z), component);
-                                    CreateTerrain(prefab, new Vector3(a.x - x, a.y, a.z - z), component);
-                                }
-                                if (x != z)
-                                {
-                                    CreateTerrain(prefab, new Vector3(a.x + z, a.y, a.z + x), component);
-                                    CreateTerrain(prefab, new Vector3(a.x - z, a.y, a.z + x), component);
+                                    CreateTerrain(prefab, new Vector3(a.x + x, a.y, a.z + z), component);
+                                    CreateTerrain(prefab, new Vector3(a.x + x, a.y, a.z - z), component);
                                     if (x != 0)
                                     {
-                                        CreateTerrain(prefab, new Vector3(a.x + z, a.y, a.z - x), component);
-                                        CreateTerrain(prefab, new Vector3(a.x - z, a.y, a.z - x), component);
+                                        CreateTerrain(prefab, new Vector3(a.x - x, a.y, a.z + z), component);
+                                        CreateTerrain(prefab, new Vector3(a.x - x, a.y, a.z - z), component);
+                                    }
+                                    if (x != z)
+                                    {
+                                        CreateTerrain(prefab, new Vector3(a.x + z, a.y, a.z + x), component);
+                                        CreateTerrain(prefab, new Vector3(a.x - z, a.y, a.z + x), component);
+                                        if (x != 0)
+                                        {
+                                            CreateTerrain(prefab, new Vector3(a.x + z, a.y, a.z - x), component);
+                                            CreateTerrain(prefab, new Vector3(a.x - z, a.y, a.z - x), component);
+                                        }
                                     }
                                 }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
             }
-        }
-    }
 
-        
-
-        public static void ResetTerrain(Vector3 centerLocation, float radius)
-        {
-            if (radius > 50)
+            public static void ResetTerrain(Vector3 centerLocation, float radius)
             {
-                PrintOut("Radius clamped to 50 max!", LogTo.Console);
-            }
-            radius = Mathf.Clamp(radius, 2, 50);
-            Vector3 centerpos = centerLocation;
-            try
-            {
-                var tList = TerrainModifier.GetAllInstances();
-                foreach (TerrainModifier terrainModifier in tList)
+                if (radius > 50)
                 {
-                    if (terrainModifier != null)
+                    PrintOut("Radius clamped to 50 max!", LogTo.Console);
+                }
+                radius = Mathf.Clamp(radius, 2, 50);
+                Vector3 centerpos = centerLocation;
+                try
+                {
+                    var tList = TerrainModifier.GetAllInstances();
+                    foreach (TerrainModifier terrainModifier in tList)
                     {
-                        if (Utils.DistanceXZ(Player.m_localPlayer.transform.position, terrainModifier.transform.position) < radius)
+                        if (terrainModifier != null)
                         {
-                            ZNetView component = terrainModifier.GetComponent<ZNetView>();
-                            if (component != null && component.IsValid())
+                            if (Utils.DistanceXZ(Player.m_localPlayer.transform.position, terrainModifier.transform.position) < radius)
                             {
-                                component.ClaimOwnership();
-                                component.Destroy();
+                                ZNetView component = terrainModifier.GetComponent<ZNetView>();
+                                if (component != null && component.IsValid())
+                                {
+                                    component.ClaimOwnership();
+                                    component.Destroy();
+                                }
                             }
                         }
                     }
                 }
+                catch (Exception)
+                {
+                    //
+                }
+                return;
             }
-            catch (Exception)
-            {
-                //
-            }
-            return;
         }
     }
 }
