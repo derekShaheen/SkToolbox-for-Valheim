@@ -58,12 +58,12 @@ namespace SkToolbox.SkModules
         public void BeginHeightMenu()
         {
             SkMenu GenericMenu = new SkMenu();
+            GenericMenu.AddItem("1", new Action<string>(SetHeight), "Current: " + height);
+            GenericMenu.AddItem("2", new Action<string>(SetHeight), "Current: " + height);
+            GenericMenu.AddItem("3", new Action<string>(SetHeight), "Current: " + height);
             GenericMenu.AddItem("5", new Action<string>(SetHeight), "Current: " + height);
-            GenericMenu.AddItem("7", new Action<string>(SetHeight), "Current: " + height);
-            GenericMenu.AddItem("10", new Action<string>(SetHeight), "Current: " + height);
-            GenericMenu.AddItem("20", new Action<string>(SetHeight), "Current: " + height);
-            GenericMenu.AddItem("30", new Action<string>(SetHeight), "Current: " + height);
-            GenericMenu.AddItem("40", new Action<string>(SetHeight), "Current: " + height);
+            GenericMenu.AddItem("6", new Action<string>(SetHeight), "Current: " + height);
+            GenericMenu.AddItem("8", new Action<string>(SetHeight), "Current: " + height);
             base.RequestMenu(GenericMenu);
         }
         public void SetHeight(string ln = "")

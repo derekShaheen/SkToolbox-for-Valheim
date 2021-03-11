@@ -52,7 +52,7 @@ namespace SkToolbox.SkModules
             GenericMenu.AddItemToggle("Godmode", ref SkCommandProcessor.godEnabled, new Action(ToggleGodmode), "Godmode for yourself");
             GenericMenu.AddItemToggle("Flying", ref SkCommandProcessor.flyEnabled, new Action(ToggleFlying), "Flying for yourself");
             GenericMenu.AddItemToggle("Infinite Stamina", ref SkCommandProcessor.infStamina, new Action(ToggleInfStam), "Infinite stamina for yourself");
-            GenericMenu.AddItem("Give Item\t►", new Action(BeginListItems), "Give item(s) to self");
+            GenericMenu.AddItem("Give Item\t\t►", new Action(BeginListItems), "Give item(s) to self");
             MenuOptions = GenericMenu;
         }
 
