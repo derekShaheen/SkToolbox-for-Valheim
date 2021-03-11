@@ -44,9 +44,9 @@ namespace SkToolbox
         }
 
         [HarmonyPatch(typeof(Console), "IsCheatsEnabled")]
-        private static class PatchIsCheatsEnabled
+        public static class PatchIsCheatsEnabled
         {
-            private static void Postfix(bool __result)
+            public static void Postfix(bool __result)
             {
                 __result = SkCommandPatcher.BCheat;
             }

@@ -429,6 +429,9 @@ namespace SkToolbox
                                 }
                             }
                             finalWeatherName = finalWeatherName.Trim();
+                        } else
+                        {
+                            finalWeatherName = inCommandSpl[1];
                         }
 
                         if(weatherList.Contains(finalWeatherName))
@@ -439,11 +442,11 @@ namespace SkToolbox
                                 PrintOut("Weather set to: " + EnvMan.instance.m_debugEnv, source);
                             } else
                             {
-                                PrintOut("Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
+                                PrintOut("1Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
                             }
                         } else
                         {
-                            PrintOut("Failed to set weatherto '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
+                            PrintOut("2Failed to set weatherto '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
                         }
                     }
                 }
@@ -927,7 +930,20 @@ namespace SkToolbox
             {
                 SkCommandPatcher.InitPatch();
                 SkCommandPatcher.BCheat = !SkCommandPatcher.BCheat;
-                
+
+                if (Player.m_localPlayer != null)
+                {
+                    try
+                    {
+                        SkUtilities.SetPrivateField(Player.m_localPlayer, "m_debugMode", SkCommandPatcher.BCheat);
+                        SkUtilities.SetPrivateField(Console.instance, "m_cheat", SkCommandPatcher.BCheat);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
                 PrintOut("Cheats toggled! (" + SkCommandPatcher.BCheat.ToString() + ")", source);
                 return true;
             }
