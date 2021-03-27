@@ -79,7 +79,7 @@ namespace SkToolbox
             ,{"/detect", "[Range=20] - Toggle enemy detection"}
             ,{"/farinteract", "[Distance=50] - Toggles far interactions (building as well). To change distance, toggle this off then back on with new distance"}
             ,{"/env", "[Weather] - Change the weather. No parameter provided will list all weather. -1 will allow the game to control the weather again."}
-            ,{"/event", "[Event] - Begin an event"}
+            //,{"/event", "[Event] - Begin an event"}
             ,{"/findtomb", "- Pin nearby dead player tombstones on the map if any currently exist"}
             ,{"/fly", "- Toggle flying"}
             ,{"/freecam", "- Toggle freecam"}
@@ -96,7 +96,7 @@ namespace SkToolbox
             ,{"/nores", "- Toggle no restrictions to where you can build (except ward zones)"}
             ,{"/nosup", "- Toggle no supports required for buildings - WARNING! - IF YOU REJOIN AND THIS IS DISABLED, YOUR STRUCTURES MAY FALL APART - USE WITH CARE. Maybe use the AutoRun functionality?"}
             ,{"/portals", "- List all portal tags"}
-            ,{"/randomevent", "- Begins a random event"}
+            //,{"/randomevent", "- Begins a random event"}
             ,{"/removedrops", "- Removes items from the ground"}
             ,{"/resetwind", "- If wind has been set, this will allow the game to take control of the wind again" }
             ,{"/repair", "- Repair your inventory"}
@@ -110,7 +110,7 @@ namespace SkToolbox
             ,{"/set jumpforce", "[Force] - Set jump force (default 10). Careful if you fall too far!"}
             ,{"/set pickup", "[Radius] - Set your auto pickup radius (default 2)"}
             ,{"/set skill", "[Skill] [Level] - Set your skill level"}
-            ,{"/set speed", "[Speed Type] [Speed] - Speed Types: crouch (def: 2), run (def: 120), swim (def: 2)"}
+            ,{"/set speed", "[Speed Type] [Speed] - Speed Types: crouch (def: 2), run (def: 7), swim (def: 2)"}
             ,{"/td", "[Radius=5] [Height=1] - Dig nearby terrain. Radius 30 max."}
             ,{"/tl", "[Radius=5] - Level nearby terrain. Radius 30 max."}
             ,{"/tr", "[Radius=5] [Height=1] - Raise nearby terrain. Radius 30 max."}
@@ -195,7 +195,7 @@ namespace SkToolbox
 
             if (inCommand.StartsWith("help") && source.HasFlag(LogTo.Console))
             {
-                Console.instance.Print("imacheater - Enable in-game cheats");
+                Console.instance.Print("devcommands - Enable standard developer/cheat commands");
                 Console.instance.Print("/? [Page] - SkToolbox Commands - Ex /? 1");
                 return false;
             }
@@ -769,31 +769,31 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommandSpl[0].Equals("/event"))
-            {
-                if(inCommandSpl.Length > 1)
-                {
-                    if(RandEventSystem.instance.HaveEvent(inCommandSpl[1]))
-                    {
-                        RandEventSystem.instance.SetRandomEventByName(inCommandSpl[1], Player.m_localPlayer.transform.position);
-                        PrintOut("Event started!", source);
-                    } else
-                    {
-                        PrintOut("Event does not exist, please try again.", source);
-                    }
-                } else
-                {
-                    PrintOut("Please provide an event name. Ex. /event NAME", source);
-                }
-                return true;
-            }
+            //if (inCommandSpl[0].Equals("/event"))
+            //{
+            //    if(inCommandSpl.Length > 1)
+            //    {
+            //        if(RandEventSystem.instance.HaveEvent(inCommandSpl[1]))
+            //        {
+            //            RandEventSystem.instance.SetRandomEventByName(inCommandSpl[1], Player.m_localPlayer.transform.position);
+            //            PrintOut("Event started!", source);
+            //        } else
+            //        {
+            //            PrintOut("Event does not exist, please try again.", source);
+            //        }
+            //    } else
+            //    {
+            //        PrintOut("Please provide an event name. Ex. /event NAME", source);
+            //    }
+            //    return true;
+            //}
 
-            if (inCommandSpl[0].Equals("/randomevent"))
-            {
-                RandEventSystem.instance.StartRandomEvent();
-                PrintOut("Random event started!", source);
-                return true;
-            }
+            //if (inCommandSpl[0].Equals("/randomevent"))
+            //{
+            //    RandEventSystem.instance.StartRandomEvent();
+            //    PrintOut("Random event started!", source);
+            //    return true;
+            //}
 
             if (inCommandSpl[0].Equals("/tp"))
             {
@@ -1183,6 +1183,7 @@ namespace SkToolbox
                             String[] types = { "crouch", "run", "swim" };
                             if (types.Contains(cmdType))
                             {
+                                float wasSpeed = 0f;
                                 try
                                 {
 
@@ -1190,16 +1191,19 @@ namespace SkToolbox
                                     switch (cmdType)
                                     {
                                         case "crouch":
+                                            wasSpeed = Player.m_localPlayer.m_crouchSpeed;
                                             Player.m_localPlayer.m_crouchSpeed = cmdSpeed;
                                             break;
                                         case "run":
+                                            wasSpeed = Player.m_localPlayer.m_runSpeed;
                                             Player.m_localPlayer.m_runSpeed = cmdSpeed;
                                             break;
                                         case "swim":
+                                            wasSpeed = Player.m_localPlayer.m_swimSpeed;
                                             Player.m_localPlayer.m_swimSpeed = cmdSpeed;
                                             break;
                                     }
-                                    PrintOut("New " + cmdType + " speed set to: " + cmdSpeed, source);
+                                    PrintOut("New " + cmdType + " speed set to: " + cmdSpeed + " (was: " + wasSpeed + ")", source);
                                 }
                                 catch (Exception)
                                 {

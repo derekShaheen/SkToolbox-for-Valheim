@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.8.2.0";
+            VERSION = "1.8.5.0";
 
         private void Start()
         {
@@ -28,6 +28,10 @@ namespace SkToolbox
         {
             try
             {
+                SkConfigEntry.CConsoleEnabled = Config.Bind("General", "ConsoleEnabled", true
+                    , "Enables the console without launch option.");
+                SkConfigEntry.CConsoleAutoComplete = Config.Bind("General", "AutoComplete", true
+                    , "Press tab to auto-complete SkToolbox commands if you have partially typed a command.");
                 SkConfigEntry.CAllowChatCommandInput = Config.Bind("General", "AllowChatCommandInput", true
                     , "Toggle this if you want to allow or disable the entry of commands in the chat. If this is disabled, you can only input commands into the console.");
                 SkConfigEntry.CAllowPublicChatOutput = Config.Bind("General", "AllowPublicResponse", true

@@ -124,6 +124,20 @@ namespace SkToolbox.SkModules
                     Console.instance.m_chatWindow.gameObject.SetActive(true);
                     Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
                 }
+
+                if (Input.GetKeyDown(KeyCode.Tab))
+                {
+                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value)
+                    {
+                        var match = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage) && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+
+                        if (!string.IsNullOrEmpty(match.Key))
+                        {
+                            Console.instance.m_input.text = match.Key;
+                            Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                        }
+                    }
+                }
             }
         }
 
@@ -246,6 +260,11 @@ namespace SkToolbox.SkModules
 
         void Update()
         {
+            if (Console.instance != null && SkConfigEntry.CConsoleEnabled.Value && !Console.instance.IsConsoleEnabled()) {
+                    SkUtilities.SetPrivateField(Console.instance, "m_consoleEnabled", true);
+            }
+
+
             HandleConsole();
 
             if ((SkConfigEntry.CAllowChatCommandInput != null && SkConfigEntry.CAllowChatCommandInput.Value) || SkConfigEntry.CAllowChatCommandInput == null)
