@@ -3,9 +3,6 @@ using SkToolbox.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SkToolbox.SkModules
@@ -27,6 +24,8 @@ namespace SkToolbox.SkModules
         bool anncounced1 = false;
         bool anncounced2 = false;
 
+        public Dictionary<string, string> AliasList = new Dictionary<string, string>();
+
 
         List<Character> nearbyCharacters = new List<Character>();
         public ModConsoleOpt() : base()
@@ -39,6 +38,13 @@ namespace SkToolbox.SkModules
         {
             SkCommandProcessor.ConsoleOpt = this;
             BeginMenu();
+            //try
+            //{
+                BuildAliases();
+            //} catch (Exception)
+            //{
+
+            //}
             base.Ready();
         }
 
@@ -52,14 +58,6 @@ namespace SkToolbox.SkModules
             MenuOptions = consoleOptMenu;
         }
 
-        //
-
-        //public void ToggleWriteFile()
-        //{
-        //    conWriteToFile = !conWriteToFile;
-        //    //SkToolbox.SkConsole.writeToFile = conWriteToFile;
-        //    BeginMenu();
-        //}
 
         public void OpenLogFolder()
         {
@@ -98,10 +96,7 @@ namespace SkToolbox.SkModules
                     {
                         if (inputText.Equals(string.Empty) && !consoleLastMessage.Equals(string.Empty))
                         {
-                            //if(!inputText.Equals(consoleHistory.Peek()))
-                            //{
                             consoleHistory.Add(consoleLastMessage);
-                            //}
                             SkCommandProcessor.ProcessCommands(consoleLastMessage, SkCommandProcessor.LogTo.Console);
 
                             consoleLastMessage = string.Empty;
@@ -117,7 +112,7 @@ namespace SkToolbox.SkModules
                         Console.instance.m_input.text = consoleHistory.Fetch(inputText, false);
                     }
                 }
-                if (Input.GetKeyDown(KeyCode.Slash)
+                if (Input.GetKeyDown(KeyCode.Slash) // Open console with slash
                     && (SkConfigEntry.COpenConsoleWithSlash != null && SkConfigEntry.COpenConsoleWithSlash.Value)
                     && !global::Console.IsVisible() && !global::Chat.instance.IsChatDialogWindowVisible() && !TextInput.IsVisible())
                 {
@@ -125,16 +120,23 @@ namespace SkToolbox.SkModules
                     Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Tab))
+                if (Input.GetKeyDown(KeyCode.Tab)) // Autocomplete
                 {
-                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value)
+                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value && global::Console.IsVisible())
                     {
-                        var match = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage) && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
-
-                        if (!string.IsNullOrEmpty(match.Key))
+                        if(!string.IsNullOrEmpty(consoleLastMessage))
                         {
-                            Console.instance.m_input.text = match.Key;
-                            Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                            var matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+
+                            var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+
+                            if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                            {
+                                Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
+                                Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                            }
                         }
                     }
                 }
@@ -419,6 +421,137 @@ namespace SkToolbox.SkModules
             if (SkCommandPatcher.Harmony != null)
             {
                 SkCommandPatcher.Harmony.UnpatchSelf();
+            }
+        }
+
+        private void BuildAliases()
+        {
+            try
+            {
+                if (SkConfigEntry.CAlias1 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias1.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias1.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias2 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias2.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias2.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias3 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias3.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias3.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias4 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias4.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias4.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias5 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias5.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias5.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias6 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias6.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias6.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias7 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias7.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias7.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias8 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias8.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias8.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias9 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias9.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias9.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias10 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias10.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias10.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias11 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias11.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias11.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias12 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias12.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias12.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias13 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias13.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias13.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias14 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias14.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias14.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CAlias15 != null && !string.IsNullOrEmpty(SkConfigEntry.CAlias15.Value))
+                {
+                    string[] AliasSplit = SkConfigEntry.CAlias15.Value.Split(':');
+                    if (AliasSplit.Length == 2)
+                    {
+                        AliasList.Add(AliasSplit[0], AliasSplit[1]);
+                    }
+                }
+            }
+            catch(Exception)
+            {
+                SkCommandProcessor.PrintOut("Something failed while loading command aliases! Check your config file.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
             }
         }
 

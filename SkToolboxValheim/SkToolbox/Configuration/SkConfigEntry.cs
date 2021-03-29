@@ -30,5 +30,21 @@ namespace SkToolbox.Configuration
         public static ConfigEntry<string> OAltDown { get; set; }
         public static ConfigEntry<string> OAltChoose { get; set; }
         public static ConfigEntry<string> OAltBack { get; set; }
+
+        public static ConfigEntry<string> CAlias1 { get; set; }
+        public static ConfigEntry<string> CAlias2 { get; set; }
+        public static ConfigEntry<string> CAlias3 { get; set; }
+        public static ConfigEntry<string> CAlias4 { get; set; }
+        public static ConfigEntry<string> CAlias5 { get; set; }
+        public static ConfigEntry<string> CAlias6 { get; set; }
+        public static ConfigEntry<string> CAlias7 { get; set; }
+        public static ConfigEntry<string> CAlias8 { get; set; }
+        public static ConfigEntry<string> CAlias9 { get; set; }
+        public static ConfigEntry<string> CAlias10 { get; set; }
+        public static ConfigEntry<string> CAlias11 { get; set; }
+        public static ConfigEntry<string> CAlias12 { get; set; }
+        public static ConfigEntry<string> CAlias13 { get; set; }
+        public static ConfigEntry<string> CAlias14 { get; set; }
+        public static ConfigEntry<string> CAlias15 { get; set; }
     }
 }

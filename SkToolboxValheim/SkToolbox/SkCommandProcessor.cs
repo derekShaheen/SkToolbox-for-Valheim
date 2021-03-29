@@ -151,6 +151,44 @@ namespace SkToolbox
             }
         }
 
+        public static string DecomposeAlias(string inCommand)
+        {
+            string[] tempCommandSpl = inCommand.Split(';');
+            string buildCommand = inCommand; //default if not alias
+            if (ConsoleOpt != null && ConsoleOpt.AliasList != null && ConsoleOpt.AliasList.Count > 0)
+            {
+                for(int commandIndex = 0; commandIndex < tempCommandSpl.Length; commandIndex++)
+                {
+                    if(!string.IsNullOrEmpty(tempCommandSpl[commandIndex])) {
+                        tempCommandSpl[commandIndex] = tempCommandSpl[commandIndex].Trim();
+                    }
+
+                    if (ConsoleOpt.AliasList.Keys.Contains(tempCommandSpl[commandIndex]))
+                    {
+                        string tempCommand = string.Empty;
+                        ConsoleOpt.AliasList.TryGetValue(tempCommandSpl[commandIndex], out tempCommand);
+                        tempCommand = tempCommand.Trim();
+                        if(tempCommand.EndsWith(";")) {
+                            tempCommand = tempCommand.Substring(0, tempCommand.Length - 1);
+                        }
+                        tempCommandSpl[commandIndex] = tempCommand; // we found an alias
+                    }
+                }
+                buildCommand = string.Empty;
+                foreach(string str in tempCommandSpl)
+                {
+                    if(tempCommandSpl.Length > 1)
+                    {
+                        buildCommand = buildCommand + str + ";";
+                    } else
+                    {
+                        buildCommand = buildCommand + str;
+                    }
+                }
+            }
+            return buildCommand; // otherwise return the original command
+        }
+
         public static void ProcessCommands(string inCommand, LogTo source, GameObject go = null)
         {
             if (!string.IsNullOrEmpty(inCommand))
@@ -159,22 +197,28 @@ namespace SkToolbox
                 {
                     SkUtilities.SetPrivateField(Console.instance, "m_lastEntry", inCommand);
                 }
-                
+                inCommand = inCommand.Trim();
+
+                inCommand = DecomposeAlias(inCommand); // Does the input command contain an alias? Decompose it into separate commands for the processor
+
                 string[] inCommandSplt = inCommand.Split(';');
                 foreach (string command in inCommandSplt)
                 {
                     string commandTrimmed = command.Trim();
-
-                    if (!ProcessCommand(commandTrimmed, source, go)) // Process SkToolbox Command
-                    { // Unless the command wasn't found, then push it to the console to try and run it elsewhere
-                        if (inCommandSplt.Length > 1)
-                        {
-                            Console.instance.m_input.text = commandTrimmed;
-                            //Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
-                            SkUtilities.InvokePrivateMethod(Console.instance, "InputText", null);
+                    if (!string.IsNullOrEmpty(commandTrimmed)) {
+                        if (!ProcessCommand(commandTrimmed, source, go)) // Process SkToolbox Command
+                        { // Unless the command wasn't found, then push it to the console to try and run it elsewhere
+                            if (inCommandSplt.Length > 1)
+                            {
+                                if (!string.IsNullOrEmpty(commandTrimmed))
+                                {
+                                    Console.instance.m_input.text = commandTrimmed;
+                                    //Console.instance.GetType().GetMethod("InputText", SkUtilities.BindFlags).Invoke(Console.instance, null);
+                                    SkUtilities.InvokePrivateMethod(Console.instance, "InputText", null);
+                                }
+                            }
+                            Console.instance.m_input.text = string.Empty;
                         }
-                        Console.instance.m_input.text = string.Empty;
-
                     }
                 }
             }
@@ -229,10 +273,17 @@ namespace SkToolbox
                 return true;
             }
 
+            if (inCommand.StartsWith("echo") && source.HasFlag(LogTo.Console))
+            {
+                inCommand = inCommand.Remove(0, 5);
+                PrintOut(inCommand, source, false);
+                return true;
+            }
+
 
             if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null && !inCommandSpl[0].Equals("/q") && !inCommandSpl[0].Equals("/clear"))
             {
-                PrintOut("You must be in-game to run commands!", source, false);
+                PrintOut("You must be in-game to run this command.", source, false);
                 return true;
             }
 
