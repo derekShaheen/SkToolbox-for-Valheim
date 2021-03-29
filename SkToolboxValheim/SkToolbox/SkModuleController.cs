@@ -33,7 +33,7 @@ namespace SkToolbox
 
         #endregion
 
-        SkModules.ModConsoleOpt moduleConsole;
+        SkModules.ModConsole moduleConsole;
         //SkModules.ModGeneric moduleGeneric;
         SkModules.ModPlayer modulePlayer;
         SkModules.ModWorld moduleWorld;
@@ -177,8 +177,8 @@ namespace SkToolbox
                     {
                         if (RetryModule[Module].ModuleStatus == Status.Ready)
                         {
+                            SkUtilities.Logz(new string[] { "TOOLBOX", "NOTIFY" }, new string[] { "MODULE READY.", "MODULE: " + RetryModule[Module].ModuleName.ToUpper() });
                             RetryModule.Remove(RetryModule[Module]);
-                            SkUtilities.Logz(new string[] { "TOOLBOX", "NOTIFY" }, new string[] { "MODULE READY.", "MODULE: " + MenuOptions[Module].ModuleName.ToUpper() });
                             if (RetryModule.Count == 0)
                             {
                                 break;
@@ -232,7 +232,7 @@ namespace SkToolbox
 
             //RegisterModules();
             //Create a game object for each module
-            moduleConsole = gameObject.AddComponent<SkModules.ModConsoleOpt>();
+            moduleConsole = gameObject.AddComponent<SkModules.ModConsole>();
             //moduleGeneric = gameObject.AddComponent<SkModules.ModGeneric>();
             modulePlayer = gameObject.AddComponent<SkModules.ModPlayer>();
             moduleWorld = gameObject.AddComponent<SkModules.ModWorld>();

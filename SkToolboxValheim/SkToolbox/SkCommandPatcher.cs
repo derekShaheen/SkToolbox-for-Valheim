@@ -28,6 +28,7 @@ namespace SkToolbox
                 {
                     //Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
                     harmony = Harmony.CreateAndPatchAll(typeof(SkCommandPatcher).Assembly);
+
                     //SkUtilities.Logz(new string[] { "SkCommandPatcher", "INJECT" }, new string[] { "INJECT => COMPLETE" });
                 }
                 catch (Exception ex)

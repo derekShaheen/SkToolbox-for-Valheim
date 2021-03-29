@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace SkToolbox.SkModules
 {
-    internal class ModConsoleOpt : SkBaseModule, IModule
+    internal class ModConsole : SkBaseModule, IModule
     {
         internal bool conWriteToFile = false;
         string consoleLastMessage = string.Empty;
@@ -29,7 +29,7 @@ namespace SkToolbox.SkModules
         public List<string> PrefabList = new List<string>();
 
         List<Character> nearbyCharacters = new List<Character>();
-        public ModConsoleOpt() : base()
+        public ModConsole() : base()
         {
             base.ModuleName = "CC Controller";
             base.Loading();
@@ -41,7 +41,7 @@ namespace SkToolbox.SkModules
             BeginMenu();
             //try
             //{
-                BuildAliases();
+            BuildAliases();
             //} catch (Exception)
             //{
 
@@ -123,9 +123,10 @@ namespace SkToolbox.SkModules
 
                 if (Input.GetKeyDown(KeyCode.Tab)) // Autocomplete
                 {
-                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value && global::Console.IsVisible())
+                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value 
+                        && Console.instance != null && global::Console.IsVisible())
                     {
-                        if(!string.IsNullOrEmpty(consoleLastMessage))
+                        if (!string.IsNullOrEmpty(consoleLastMessage))
                         {
                             if (consoleLastMessage.StartsWith("/spawn")) // Spawn command
                             {
@@ -141,35 +142,51 @@ namespace SkToolbox.SkModules
 
                                 if (!string.IsNullOrEmpty(matchString))
                                 {
-
-                                    var matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
+                                    try
+                                    {
+                                        var matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
                                         && item.StartsWith(matchString, true,
                                         System.Globalization.CultureInfo.InvariantCulture));
-                                    if (!string.IsNullOrEmpty(matchString))
-                                    {
-                                        Console.instance.m_input.text = "/spawn " + matchPrefab;
-                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                        if (!string.IsNullOrEmpty(matchString))
+                                        {
+                                            Console.instance.m_input.text = "/spawn " + matchPrefab;
+                                            Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                        }
                                     }
+                                    catch (Exception)
+                                    {
+                                        //
+                                    }
+
                                 }
-                            } else // Sktoolbox command or Alias
+                            }
+                            else // Sktoolbox command or Alias
                             {
-                                var matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, 
+                                try
+                                {
+                                    var matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true,
                                         System.Globalization.CultureInfo.InvariantCulture));
 
-                                var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                    && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+                                    var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
 
-                                if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                                    if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                                    {
+                                        Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
+                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                    }
+                                } catch (Exception)
                                 {
-                                    Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
-                                    Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                    //
                                 }
+
                             }
                         }
                     }
                 }
             }
+            base.ModuleStatus = SkUtilities.Status.Ready;
         }
 
         public void HandleChat()
@@ -182,7 +199,7 @@ namespace SkToolbox.SkModules
                     string outputText = Chat.instance.m_output.text;
 
                     //Input
-                    if ((Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape)) 
+                    if ((Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape))
                         && ((SkConfigEntry.CAllowExecuteOnClear != null && !SkConfigEntry.CAllowExecuteOnClear.Value) || SkConfigEntry.CAllowExecuteOnClear == null))
                     {
                         chatInLastMessage = string.Empty;
@@ -255,7 +272,6 @@ namespace SkToolbox.SkModules
                     SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to set when customizing console style.", Ex.Message }, LogType.Warning);
                 }
             }
-
         }
 
         void OnGUI()
@@ -272,19 +288,19 @@ namespace SkToolbox.SkModules
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
                 }
             }
-            if(FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
+            if (FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
             {
-                GUILayout.BeginArea(new Rect(0, Screen.height/4, Screen.width, Screen.height));
-                    GUILayout.FlexibleSpace();
-                        GUILayout.BeginHorizontal();
-                            GUILayout.FlexibleSpace();
-                                GUIStyle credStyle = new GUIStyle();
-                                credStyle.fontStyle = FontStyle.Bold;
-                                credStyle.fontSize = 18;
-                                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
-                            GUILayout.FlexibleSpace();
-                        GUILayout.EndHorizontal();
-                    GUILayout.FlexibleSpace();
+                GUILayout.BeginArea(new Rect(0, Screen.height / 4, Screen.width, Screen.height));
+                GUILayout.FlexibleSpace();
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                GUIStyle credStyle = new GUIStyle();
+                credStyle.fontStyle = FontStyle.Bold;
+                credStyle.fontSize = 18;
+                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                GUILayout.FlexibleSpace();
                 GUILayout.EndArea();
             }
         }
@@ -302,16 +318,34 @@ namespace SkToolbox.SkModules
 
         void Update()
         {
-            if (Console.instance != null && SkConfigEntry.CConsoleEnabled.Value && !Console.instance.IsConsoleEnabled()) {
-                    SkUtilities.SetPrivateField(Console.instance, "m_consoleEnabled", true);
+            if (Console.instance != null && SkConfigEntry.CConsoleEnabled.Value && !Console.instance.IsConsoleEnabled())
+            {
+                SkUtilities.SetPrivateField(Console.instance, "m_consoleEnabled", true);
+            }
+
+            try
+            {
+                HandleConsole();
+            }
+            catch (Exception Ex)
+            {
+                base.ModuleStatus = SkUtilities.Status.Error;
+                SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Error detected!", Ex.Message, Ex.Source }, LogType.Warning);
+                SkCommandProcessor.PrintOut("An error was detected with SkToolbox. You may need to restart your game.", SkCommandProcessor.LogTo.Console);
             }
 
 
-            HandleConsole();
-
             if ((SkConfigEntry.CAllowChatCommandInput != null && SkConfigEntry.CAllowChatCommandInput.Value) || SkConfigEntry.CAllowChatCommandInput == null)
             {
-                HandleChat();
+                try
+                {
+
+                    HandleChat();
+                }
+                catch (Exception)
+                {
+                    base.ModuleStatus = SkUtilities.Status.Error;
+                }
             }
 
             if (!anncounced1)
@@ -381,13 +415,20 @@ namespace SkToolbox.SkModules
             {
                 if (Input.GetKeyDown(KeyCode.BackQuote))
                 {
-                    Ray rayCast = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-                    if (Physics.Raycast(rayCast, out hit))
+                    try
                     {
-                        Vector3 targetLoc = hit.point;
-                        Player.m_localPlayer.transform.position = targetLoc;
-                        Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Warp!", 0, null);
+                        Ray rayCast = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hit;
+                        if (Physics.Raycast(rayCast, out hit))
+                        {
+                            Vector3 targetLoc = hit.point;
+                            Player.m_localPlayer.transform.position = targetLoc;
+                            Player.m_localPlayer.Message(MessageHud.MessageType.TopLeft, "Warp!", 0, null);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        //
                     }
                 }
             }
@@ -589,7 +630,7 @@ namespace SkToolbox.SkModules
                     }
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 SkCommandProcessor.PrintOut("Something failed while loading command aliases! Check your config file.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
             }

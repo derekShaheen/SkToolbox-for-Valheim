@@ -32,8 +32,8 @@ namespace SkToolbox
 
         static Vector3 chatPos = new Vector3(0, 0 - 99);
 
-        private static SkModules.ModConsoleOpt consoleOpt = null;
-        internal static ModConsoleOpt ConsoleOpt { get => consoleOpt; set => consoleOpt = value; }
+        private static SkModules.ModConsole consoleOpt = null;
+        internal static ModConsole ConsoleOpt { get => consoleOpt; set => consoleOpt = value; }
 
         [Flags]
         public enum LogTo

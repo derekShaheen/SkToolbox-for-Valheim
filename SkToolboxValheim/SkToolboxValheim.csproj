@@ -112,7 +112,7 @@
     <Compile Include="SkToolbox\SkMenuItem.cs" />
     <Compile Include="SkToolbox\SkModuleController.cs" />
     <Compile Include="SkToolbox\SkModules\IModule.cs" />
-    <Compile Include="SkToolbox\SkModules\ModConsoleOpt.cs" />
+    <Compile Include="SkToolbox\SkModules\ModConsole.cs" />
     <Compile Include="SkToolbox\SkModules\ModPlayer.cs" />
     <Compile Include="SkToolbox\SkModules\ModWorld.cs" />
     <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
