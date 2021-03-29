@@ -26,6 +26,7 @@ namespace SkToolbox.SkModules
 
         public Dictionary<string, string> AliasList = new Dictionary<string, string>();
 
+        public List<string> PrefabList = new List<string>();
 
         List<Character> nearbyCharacters = new List<Character>();
         public ModConsoleOpt() : base()
@@ -126,16 +127,44 @@ namespace SkToolbox.SkModules
                     {
                         if(!string.IsNullOrEmpty(consoleLastMessage))
                         {
-                            var matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
-
-                            var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
-
-                            if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                            if (consoleLastMessage.StartsWith("/spawn")) // Spawn command
                             {
-                                Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
-                                Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                BuildPrebabs();
+
+                                string matchString = consoleLastMessage.Remove(0, 6);
+                                matchString = matchString.Trim();
+
+                                if (string.IsNullOrEmpty(matchString))
+                                {
+                                    matchString = "a";
+                                }
+
+                                if (!string.IsNullOrEmpty(matchString))
+                                {
+
+                                    var matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
+                                        && item.StartsWith(matchString, true,
+                                        System.Globalization.CultureInfo.InvariantCulture));
+                                    if (!string.IsNullOrEmpty(matchString))
+                                    {
+                                        Console.instance.m_input.text = "/spawn " + matchPrefab;
+                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                    }
+                                }
+                            } else // Sktoolbox command or Alias
+                            {
+                                var matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, 
+                                        System.Globalization.CultureInfo.InvariantCulture));
+
+                                var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                                    && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+
+                                if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                                {
+                                    Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
+                                    Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                }
                             }
                         }
                     }
@@ -257,6 +286,17 @@ namespace SkToolbox.SkModules
                         GUILayout.EndHorizontal();
                     GUILayout.FlexibleSpace();
                 GUILayout.EndArea();
+            }
+        }
+
+        public void BuildPrebabs()
+        {
+            if (PrefabList.Count == 0 && ZNetScene.instance != null)
+            {
+                foreach (GameObject Prefab in SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Values)
+                {
+                    PrefabList.Add(ZNetView.GetPrefabName(Prefab));
+                }
             }
         }
 

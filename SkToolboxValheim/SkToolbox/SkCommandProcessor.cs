@@ -91,6 +91,7 @@ namespace SkToolbox
             ,{"/infstam", "- Toggles infinite stamina"}
             ,{"/killall", "- Kills all nearby creatures"}
             ,{"/listitems", "[Name Contains] - List all items. Optionally include name starts with. Ex. /listitems Woo returns any item that contains the letters 'Woo'"}
+            ,{"/listprefabs", "- Lists all prefabs - List all prefabs/creatures. Optionally include name starts with. Ex. /listprefabs Troll returns any prefab that starts with the letters 'Troll'"}
             ,{"/listskills", "- Lists all skills"}
             ,{"/nocost", "- Toggle no requirement building"}
             ,{"/nores", "- Toggle no restrictions to where you can build (except ward zones)"}
@@ -273,7 +274,7 @@ namespace SkToolbox
                 return true;
             }
 
-            if (inCommand.StartsWith("echo") && source.HasFlag(LogTo.Console))
+            if (inCommand.StartsWith("/echo") && source.HasFlag(LogTo.Console))
             {
                 inCommand = inCommand.Remove(0, 5);
                 PrintOut(inCommand, source, false);
@@ -1385,7 +1386,7 @@ namespace SkToolbox
                         ItemDrop component = gameObject.GetComponent<ItemDrop>();
                         if (component.name.ToLower().Contains(inCommandSpl[1].ToLower()))
                         {
-                            PrintOut("Item: '" + component.name + "'", source);
+                            PrintOut("Item: '" + component.name + "'", source | LogTo.DebugConsole);
                         }
                     }
                 }
@@ -1394,7 +1395,30 @@ namespace SkToolbox
                     foreach (GameObject gameObject in ObjectDB.instance.m_items)
                     {
                         ItemDrop component = gameObject.GetComponent<ItemDrop>();
-                        PrintOut("Item: '" + component.name + "'", source);
+                        PrintOut("Item: '" + component.name + "'", source | LogTo.DebugConsole);
+                    }
+                }
+                return true;
+            }
+
+            if (inCommandSpl[0].Equals("/listprefabs"))
+            {
+                ConsoleOpt.BuildPrebabs();
+                if (inCommandSpl.Length > 1)
+                { //starts with
+                    foreach (string prefab in ConsoleOpt.PrefabList)
+                    {
+                        if (prefab.ToLower().StartsWith(inCommandSpl[1].ToLower()))
+                        {
+                            PrintOut("Prefab: '" + prefab + "'", source | LogTo.DebugConsole);
+                        }
+                    }
+                }
+                else
+                { // return all
+                    foreach (string prefab in ConsoleOpt.PrefabList)
+                    {
+                        PrintOut("Prefab: '" + prefab + "'", source | LogTo.DebugConsole);
                     }
                 }
                 return true;
@@ -1409,9 +1433,10 @@ namespace SkToolbox
                         skillList = skillList + obj.ToString() + ", ";
                 }
                 skillList = skillList.Remove(skillList.Length - 2);
-                PrintOut(skillList, source);
+                PrintOut(skillList, source | LogTo.DebugConsole);
                 return true;
             }
+
 
             if (inCommandSpl[0].Equals("/q"))
             {
