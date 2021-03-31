@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.8.6.0";
+            VERSION = "1.9.0.0";
 
         private void Start()
         {
@@ -83,39 +83,42 @@ namespace SkToolbox
                     , "Set the color of the input text caret shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
 
                 SkConfigEntry.CAlias1 = Config.Bind("3 - CommandAliasing", "Alias1", "/creative: /god; /ghost; /imacheater; /nores; /nocost; echo Creative mode activated!"
-                    , "Set this to create a command alias. Specify what the user will type, and what will be executed. Command chaining does work here, and these aliases can be used with the AutoRun functionality above." +
+                    , "Set this to create a command alias. Specify what the user will type, and what will be executed. " +
+                    "Command chaining does work here, and these aliases can be used with the AutoRun functionality above." +
+                    " Note that aliases cannot reference other aliases. The slash (/) prefix is also not required - command aliases can be set to anything you want!" +
+                    " Aliases do work from chat as well, if the execute from chat setting is enabled above. Alias commands also appear in the /? help menus." +
                     "\nFormat: WhatToType: WhatToExecute" +
                     "\nExample: This will create a new command, '/Cmd1', and when entered it will execute /god and /fly" +
-                    "\n/Cmd1: /god; /fly");
+                    "\n/Cmd1: /god; /fly" +
+                    "\n\nSet this to create command alias 1.");
                 SkConfigEntry.CAlias2 = Config.Bind("3 - CommandAliasing", "Alias2", ""
-                    , "Set this to create a command alias 2.");
+                    , "Set this to create command alias 2.");
                 SkConfigEntry.CAlias3 = Config.Bind("3 - CommandAliasing", "Alias3", ""
-                    , "Set this to create a command alias 3.");
+                    , "Set this to create command alias 3.");
                 SkConfigEntry.CAlias4 = Config.Bind("3 - CommandAliasing", "Alias4", ""
-                    , "Set this to create a command alias 4.");
+                    , "Set this to create command alias 4.");
                 SkConfigEntry.CAlias5 = Config.Bind("3 - CommandAliasing", "Alias5", ""
-                    , "Set this to create a command alias 5.");
+                    , "Set this to create command alias 5.");
                 SkConfigEntry.CAlias6 = Config.Bind("3 - CommandAliasing", "Alias6", ""
-                    , "Set this to create a command alias 6.");
+                    , "Set this to create command alias 6.");
                 SkConfigEntry.CAlias7 = Config.Bind("3 - CommandAliasing", "Alias7", ""
-                    , "Set this to create a command alias 7.");
+                    , "Set this to create command alias 7.");
                 SkConfigEntry.CAlias8 = Config.Bind("3 - CommandAliasing", "Alias8", ""
-                    , "Set this to create a command alias 8.");
+                    , "Set this to create command alias 8.");
                 SkConfigEntry.CAlias9 = Config.Bind("3 - CommandAliasing", "Alias9", ""
-                    , "Set this to create a command alias 9.");
+                    , "Set this to create command alias 9.");
                 SkConfigEntry.CAlias10 = Config.Bind("3 - CommandAliasing", "Alias10", ""
-                    , "Set this to create a command alias 10.");
+                    , "Set this to create command alias 10.");
                 SkConfigEntry.CAlias11 = Config.Bind("3 - CommandAliasing", "Alias11", ""
-                    , "Set this to create a command alias 11.");
+                    , "Set this to create command alias 11.");
                 SkConfigEntry.CAlias12 = Config.Bind("3 - CommandAliasing", "Alias12", ""
-                    , "Set this to create a command alias 12.");
+                    , "Set this to create command alias 12.");
                 SkConfigEntry.CAlias13 = Config.Bind("3 - CommandAliasing", "Alias13", ""
-                    , "Set this to create a command alias 13.");
+                    , "Set this to create command alias 13.");
                 SkConfigEntry.CAlias14 = Config.Bind("3 - CommandAliasing", "Alias14", ""
-                    , "Set this to create a command alias 14.");
-                SkConfigEntry.CAlias11 = Config.Bind("3 - CommandAliasing", "Alias15", ""
-                    , "Set this to create a command alias 15.");
-                
+                    , "Set this to create command alias 14.");
+                SkConfigEntry.CAlias15 = Config.Bind("3 - CommandAliasing", "Alias15", ""
+                    , "Set this to create command alias 15.");
             }
             catch (Exception Ex)
             {

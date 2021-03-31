@@ -1,4 +1,5 @@
 ﻿using SkToolbox.Utility;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -85,6 +86,17 @@ namespace SkToolbox
 
             SkLoader.Load.transform.parent = null;
             Transform root = SkLoader.Load.transform.parent;
+
+            //if(ZNetScene.instance != null)
+            //{
+            //    ZNetScene.instance.m_prefabs.Add(_SkGameObject);
+            //    ZNetView netView = SkLoader._SkGameObject.AddComponent<ZNetView>();
+            //    netView.m_persistent = true;
+            //    SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Add(_SkGameObject.name.GetStableHashCode(), _SkGameObject);
+            //    SkUtilities.Logz(new string[] { "LOADER", "SPREAD BB" }, new string[] { "SUCCESS!" });
+                //SkUtilities.InvokePrivateMethod(ObjectDB.instance, "UpdateItemHashes");
+            //}
+
             if (root != null)
             {
                 if (root.gameObject != SkLoader.Load)

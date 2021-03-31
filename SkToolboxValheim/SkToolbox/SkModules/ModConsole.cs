@@ -27,6 +27,7 @@ namespace SkToolbox.SkModules
         public Dictionary<string, string> AliasList = new Dictionary<string, string>();
 
         public List<string> PrefabList = new List<string>();
+        public List<string> ItemList = new List<string>();
 
         List<Character> nearbyCharacters = new List<Character>();
         public ModConsole() : base()
@@ -39,13 +40,14 @@ namespace SkToolbox.SkModules
         {
             SkCommandProcessor.ConsoleOpt = this;
             BeginMenu();
-            //try
-            //{
-            BuildAliases();
-            //} catch (Exception)
-            //{
+            try
+            {
+                BuildAliases();
+            }
+            catch (Exception)
+            {
 
-            //}
+            }
             base.Ready();
         }
 
@@ -123,7 +125,7 @@ namespace SkToolbox.SkModules
 
                 if (Input.GetKeyDown(KeyCode.Tab)) // Autocomplete
                 {
-                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value 
+                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value
                         && Console.instance != null && global::Console.IsVisible())
                     {
                         if (!string.IsNullOrEmpty(consoleLastMessage))
@@ -139,25 +141,74 @@ namespace SkToolbox.SkModules
                                 {
                                     matchString = "a";
                                 }
-
-                                if (!string.IsNullOrEmpty(matchString))
+                                try
                                 {
-                                    try
+                                    var matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
+                                    && item.StartsWith(matchString, true,
+                                    System.Globalization.CultureInfo.InvariantCulture));
+                                    if (!string.IsNullOrEmpty(matchString))
                                     {
-                                        var matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
-                                        && item.StartsWith(matchString, true,
-                                        System.Globalization.CultureInfo.InvariantCulture));
-                                        if (!string.IsNullOrEmpty(matchString))
-                                        {
-                                            Console.instance.m_input.text = "/spawn " + matchPrefab;
-                                            Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                                        }
+                                        Console.instance.m_input.text = "/spawn " + matchPrefab;
+                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
                                     }
-                                    catch (Exception)
-                                    {
-                                        //
-                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    //
+                                }
+                            }
+                            else if (consoleLastMessage.StartsWith("/give")) // Spawn command
+                            {
+                                BuildPrebabs();
 
+                                string matchString = consoleLastMessage.Remove(0, 5);
+                                matchString = matchString.Trim();
+
+                                if (string.IsNullOrEmpty(matchString))
+                                {
+                                    matchString = "Woo";
+                                }
+
+                                try
+                                {
+                                    var matchItem = ItemList.FirstOrDefault(item => !item.Equals(matchString)
+                                    && item.StartsWith(matchString, true,
+                                    System.Globalization.CultureInfo.InvariantCulture));
+                                    if (!string.IsNullOrEmpty(matchString))
+                                    {
+                                        Console.instance.m_input.text = "/give " + matchItem;
+                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    //
+                                }
+                            }
+                            else if (consoleLastMessage.StartsWith("/env")) // env command
+                            {
+                                string matchString = consoleLastMessage.Remove(0, 4);
+                                matchString = matchString.Trim();
+
+                                if (string.IsNullOrEmpty(matchString))
+                                {
+                                    matchString = "Cle";
+                                }
+
+                                try
+                                {
+                                    var matchEnv = SkCommandProcessor.weatherList.FirstOrDefault(item => !item.Equals(matchString)
+                                    && item.StartsWith(matchString, true,
+                                    System.Globalization.CultureInfo.InvariantCulture));
+                                    if (!string.IsNullOrEmpty(matchString))
+                                    {
+                                        Console.instance.m_input.text = "/env " + matchEnv;
+                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    //
                                 }
                             }
                             else // Sktoolbox command or Alias
@@ -176,7 +227,8 @@ namespace SkToolbox.SkModules
                                         Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
                                         Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
                                     }
-                                } catch (Exception)
+                                }
+                                catch (Exception)
                                 {
                                     //
                                 }
@@ -288,21 +340,21 @@ namespace SkToolbox.SkModules
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
                 }
             }
-            if (FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
-            {
-                GUILayout.BeginArea(new Rect(0, Screen.height / 4, Screen.width, Screen.height));
-                GUILayout.FlexibleSpace();
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                GUIStyle credStyle = new GUIStyle();
-                credStyle.fontStyle = FontStyle.Bold;
-                credStyle.fontSize = 18;
-                GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-                GUILayout.FlexibleSpace();
-                GUILayout.EndArea();
-            }
+            //if (FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
+            //{
+            //    GUILayout.BeginArea(new Rect(0, Screen.height / 4, Screen.width, Screen.height));
+            //    GUILayout.FlexibleSpace();
+            //    GUILayout.BeginHorizontal();
+            //    GUILayout.FlexibleSpace();
+            //    GUIStyle credStyle = new GUIStyle();
+            //    credStyle.fontStyle = FontStyle.Bold;
+            //    credStyle.fontSize = 18;
+            //    GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
+            //    GUILayout.FlexibleSpace();
+            //    GUILayout.EndHorizontal();
+            //    GUILayout.FlexibleSpace();
+            //    GUILayout.EndArea();
+            //}
         }
 
         public void BuildPrebabs()
@@ -312,6 +364,11 @@ namespace SkToolbox.SkModules
                 foreach (GameObject Prefab in SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Values)
                 {
                     PrefabList.Add(ZNetView.GetPrefabName(Prefab));
+                    var ItemComponent = Prefab.GetComponent<ItemDrop>();
+                    if (ItemComponent != null)
+                    {
+                        ItemList.Add(ZNetView.GetPrefabName(Prefab));
+                    }
                 }
             }
         }
@@ -331,7 +388,7 @@ namespace SkToolbox.SkModules
             {
                 base.ModuleStatus = SkUtilities.Status.Error;
                 SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Error detected!", Ex.Message, Ex.Source }, LogType.Warning);
-                SkCommandProcessor.PrintOut("An error was detected with SkToolbox. You may need to restart your game.", SkCommandProcessor.LogTo.Console);
+                SkCommandProcessor.PrintOut("An error was detected. You may need to restart your game.", SkCommandProcessor.LogTo.Console);
             }
 
 
@@ -382,34 +439,7 @@ namespace SkToolbox.SkModules
                 }
             }
 
-            if (!SkConfigEntry.CAutoRunComplete)
-            {
-                if (SkConfigEntry.CAutoRun != null && SkConfigEntry.CAutoRun.Value == true)
-                {
-                    if (Player.m_localPlayer != null && Chat.instance != null && Console.instance != null) // Wait until fully logged in
-                    {
-                        try
-                        {
-                            SkUtilities.Logz(new string[] { "CMD", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.CAutoRunCommand.Value });
-                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
-                            SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
-                        }
-                        catch (Exception)
-                        {
-                            SkUtilities.Logz(new string[] { "Console" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value }, LogType.Warning);
-                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
-                        }
-                        finally
-                        {
-                            SkConfigEntry.CAutoRunComplete = true;
-                        }
-                    }
-                }
-                else
-                {
-                    SkConfigEntry.CAutoRunComplete = true;
-                }
-            }
+            ProcessAutoRun();
 
             if (SkCommandProcessor.bTeleport)
             {
@@ -502,6 +532,38 @@ namespace SkToolbox.SkModules
             if (SkCommandPatcher.Harmony != null)
             {
                 SkCommandPatcher.Harmony.UnpatchSelf();
+            }
+        }
+
+        private void ProcessAutoRun()
+        {
+            if (!SkConfigEntry.CAutoRunComplete)
+            {
+                if (SkConfigEntry.CAutoRun != null && SkConfigEntry.CAutoRun.Value == true)
+                {
+                    if (Player.m_localPlayer != null && Chat.instance != null && Console.instance != null) // Wait until fully logged in
+                    {
+                        try
+                        {
+                            SkUtilities.Logz(new string[] { "CONTROLLER", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.CAutoRunCommand.Value });
+                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
+                        }
+                        catch (Exception)
+                        {
+                            SkUtilities.Logz(new string[] { "CONTROLLER" }, new string[] { "AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value }, LogType.Warning);
+                            SkCommandProcessor.PrintOut("==> AutoRun Failed. Something went wrong. Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                        }
+                        finally
+                        {
+                            SkConfigEntry.CAutoRunComplete = true;
+                        }
+                    }
+                }
+                else
+                {
+                    SkConfigEntry.CAutoRunComplete = true;
+                }
             }
         }
 
@@ -629,10 +691,34 @@ namespace SkToolbox.SkModules
                         AliasList.Add(AliasSplit[0], AliasSplit[1]);
                     }
                 }
+
+                if (AliasList != null && AliasList.Count > 0)
+                {
+                    List<string> trashKeys = new List<string>();
+                    foreach (string key in AliasList.Keys)
+                    {
+                        if (!SkCommandProcessor.commandList.Keys.Contains(key))
+                        {
+                            SkCommandProcessor.commandList.Add(key, "- (Alias) " + AliasList[key].Trim());
+                        }
+                        else
+                        {
+                            SkCommandProcessor.PrintOut("Alias\t► '" + key + "' is invalid. This command is already in the list.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
+                            trashKeys.Add(key);
+                        }
+                    }
+                    if (trashKeys.Count > 0)
+                    {
+                        foreach (string key in trashKeys)
+                        {
+                            AliasList.Remove(key);
+                        }
+                    }
+                }
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                SkCommandProcessor.PrintOut("Something failed while loading command aliases! Check your config file.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
+                SkCommandProcessor.PrintOut("Something failed while loading command aliases! Check your config file. " + Ex.Message, SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
             }
         }
 

@@ -43,7 +43,7 @@ namespace SkToolbox
             DebugConsole
         }
 
-        private static List<string> weatherList = new List<string>()
+        public static List<string> weatherList = new List<string>()
         {
              {"Twilight_Clear"}
             ,{"Clear"}
@@ -78,6 +78,7 @@ namespace SkToolbox
             ,{"/clearinventory", "- Removes all items from your inventory. There is no confirmation, be careful."}
             ,{"/detect", "[Range=20] - Toggle enemy detection"}
             ,{"/farinteract", "[Distance=50] - Toggles far interactions (building as well). To change distance, toggle this off then back on with new distance"}
+            ,{"/echo", "[Text] - Echo the text back to the console. This is intended for use with aliases and the autorun features."}
             ,{"/env", "[Weather] - Change the weather. No parameter provided will list all weather. -1 will allow the game to control the weather again."}
             //,{"/event", "[Event] - Begin an event"}
             ,{"/findtomb", "- Pin nearby dead player tombstones on the map if any currently exist"}
@@ -123,7 +124,7 @@ namespace SkToolbox
             ,{"/tp", "[X,Y] - Teleport you to the coords provided" }
             //,{"/tp [x, y] OR /tp [TO PLAYER] [FROM PLAYER=SELF]", "Teleport you to the coords or the target player to target other player If player has a space in name, only use first portion of the name.. "
             //                                                        + "\nEx. /tp 60,40 | /tp Skrip (Teleport to Skrip) | /tp TSkrip FSkrip (Teleport player FSkrip to player TSkrip)"}
-            ,{"/wind [Angle] [Intensity]", "Set the wind direction and intensity"}
+            ,{"/wind", "[Angle] [Intensity] - Set the wind direction and intensity"}
             ,{"/whois", "- List all players"}
         };
 
@@ -136,13 +137,14 @@ namespace SkToolbox
             } else
             {
                 PrintOut("Toolbox by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
-                PrintOut("►\tNew Version Available on NexusMods! Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
+                PrintOut("New Version Available on NexusMods!\t► Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
             }
 
             PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1  ====", LogTo.Console);
             try
             {
                 commandList = commandList.OrderBy(obj => obj.Key).ToDictionary(obj => obj.Key, obj => obj.Value); // Try to sort the commands in case I gave up with it eventually, lol.
+                  // Add the aliases to the end of the list
                 weatherList.Sort(); // Try to sort the weather names
                 SkCommandPatcher.InitPatch();
             }
@@ -151,7 +153,15 @@ namespace SkToolbox
 
             }
         }
-
+        /// <summary>
+        /// This decomposes alias commands into commands that can be passed into the processor or back through the console
+        /// Alias                   /creative: /god; /ghost; /fly; /nores; /nocost;
+        /// User typed			    /god; /creative;
+        /// Alias transformed to    /god; /ghost; /fly; /nores; /nocost;
+        /// Pass to processor	    /god; /god; /ghost; /fly; /nores; /nocost; /fly
+        /// </summary>
+        /// <param name="inCommand"></param>
+        /// <returns></returns>
         public static string DecomposeAlias(string inCommand)
         {
             string[] tempCommandSpl = inCommand.Split(';');
@@ -277,6 +287,7 @@ namespace SkToolbox
             if (inCommand.StartsWith("/echo") && source.HasFlag(LogTo.Console))
             {
                 inCommand = inCommand.Remove(0, 5);
+                inCommand = inCommand.Trim();
                 PrintOut(inCommand, source, false);
                 return true;
             }
@@ -674,6 +685,15 @@ namespace SkToolbox
                         break;
                     }
                 }
+
+                //foreach(string Item in ConsoleOpt.ItemList)
+                //{
+                //    if (Item.ToLower().StartsWith(cmdSplt[0]))
+                //    {
+                //        itemExists = true;
+                //        break;
+                //    }
+                //}
 
                 if (!itemExists)
                 {
@@ -1339,22 +1359,45 @@ namespace SkToolbox
 
                     if (inCommandSpl.Length > 2) // A level was included
                     {
-                        Character creatureComponent = createdCreature.GetComponent<Character>();
-                        if (creatureComponent)
+                        try
                         {
-                            int lvl = int.Parse(inCommandSpl[2]);
-                            if (lvl > 10) lvl = 10;
-                            creatureComponent.SetLevel(lvl);
+                            Character creatureComponent = createdCreature.GetComponent<Character>();
+                            if (creatureComponent != null)
+                            {
+                                int lvl = int.Parse(inCommandSpl[2]);
+                                if (lvl > 10) lvl = 10;
+                                creatureComponent.SetLevel(lvl);
+                            }
+                            else
+                            {
+                                ItemDrop itemObj = (ItemDrop)createdCreature.GetComponent(typeof(ItemDrop));
+                                if (itemObj != null && itemObj.m_itemData != null)
+                                {
+                                    itemObj.m_itemData.m_quality = 1;
+                                    itemObj.m_itemData.m_stack = int.Parse(inCommandSpl[2]);
+                                    itemObj.m_itemData.m_durability = itemObj.m_itemData.GetMaxDurability();
+                                }
+                            }
+                        } catch(Exception)
+                        {
+                            //
                         }
                     }
                     if (ZNetObject.Length > 0)
                     {
-                        component.GetZDO().SetPGWVersion(ZNetObject[0].GetZDO().GetPGWVersion());
-                        ZNetObject[0].GetZDO().Set("spawn_id", component.GetZDO().m_uid);
-                        ZNetObject[0].GetZDO().Set("alive_time", ZNet.instance.GetTime().Ticks);
+                        try
+                        {
+                            component.GetZDO().SetPGWVersion(ZNetObject[0].GetZDO().GetPGWVersion());
+                            ZNetObject[0].GetZDO().Set("spawn_id", component.GetZDO().m_uid);
+                            ZNetObject[0].GetZDO().Set("alive_time", ZNet.instance.GetTime().Ticks);
+                        }
+                        catch (Exception)
+                        {
+                            //
+                        }
                         //this.SpawnEffect(createdCreature);
                     }
-                    PrintOut("Creature spawned - " + inCommandSpl[1], source);
+                    PrintOut("Spawned - " + inCommandSpl[1], source);
                 }
 
                 return true;
