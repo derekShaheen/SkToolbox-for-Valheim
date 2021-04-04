@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.9.1.0";
+            VERSION = "1.10.0.0";
 
         private void Start()
         {
@@ -30,6 +30,8 @@ namespace SkToolbox
             {
                 SkConfigEntry.CConsoleEnabled = Config.Bind("0 - General", "ConsoleEnabled", true
                     , "Enables the console without launch option.");
+                SkConfigEntry.CScrollable = Config.Bind("0 - General", "ConsoleScrollable", true
+                    , "Enables the console to be scrollable.");
                 SkConfigEntry.CConsoleAutoComplete = Config.Bind("0 - General", "AutoComplete", true
                     , "Press tab to auto-complete SkToolbox commands if you have partially typed a command.");
                 SkConfigEntry.CAllowChatCommandInput = Config.Bind("0 - General", "AllowChatCommandInput", true
@@ -82,7 +84,7 @@ namespace SkToolbox
                 SkConfigEntry.CConsoleCaretColor = Config.Bind("2 - CustomizeConsoleLook", "ConsoleCaretColor", "#DCE6F5FF"
                     , "Set the color of the input text caret shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
 
-                SkConfigEntry.CAlias1 = Config.Bind("3 - CommandAliasing", "Alias1", "/creative: /god; /ghost; /imacheater; /nores; /nocost; echo Creative mode activated!"
+                SkConfigEntry.CAlias1 = Config.Bind("3 - CommandAliasing", "Alias1", "/creative: /god; /ghost; /imacheater; /nores; /nocost; echo Creative mode toggled!"
                     , "Set this to create a command alias. Specify what the user will type, and what will be executed. " +
                     "Command chaining does work here, and these aliases can be used with the AutoRun functionality above." +
                     " Note that aliases cannot reference other aliases. The slash (/) prefix is also not required - command aliases can be set to anything you want!" +
@@ -126,6 +128,7 @@ namespace SkToolbox
                     "\nValid Format is WhatToPress: WhatToExecute" +
                     "\nExample 1 Press z to input /fly; /god        | z: /fly; /god" +
                     "\nExample 2 Press Shift+Z to input /creative   | Z: /creative" +
+                    "\nExample 3 Press Tilde to open the console    | `: /console" +
                     "\nOnly 'Printable ASCII characters' are valid! (https://theasciicode.com.ar/). Capital letters make the hotkey require Shift before the hotkey press.");
                 SkConfigEntry.CHotkey2 = Config.Bind("5 - CommandHotkeys", "Hotkey 2", ""
                     , "Set this to create a hotkey for a command or command chain.");

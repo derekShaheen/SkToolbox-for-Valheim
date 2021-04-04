@@ -29,8 +29,7 @@ namespace SkToolbox
         public static bool bCoords = false;
 
         public static int pageSize = 11;
-
-        static Vector3 chatPos = new Vector3(0, 0 - 99);
+        private static Vector3 chatPos = new Vector3(0, 0 - 99);
 
         private static SkModules.ModConsole consoleOpt = null;
         internal static ModConsole ConsoleOpt { get => consoleOpt; set => consoleOpt = value; }
@@ -73,6 +72,7 @@ namespace SkToolbox
         public static Dictionary<string, string> commandList = new Dictionary<string, string>()
         {
              {"/alt", "- Use alternate on-screen controls. Press '" + (SkConfigEntry.OAltToggle == null ? "Home" : SkConfigEntry.OAltToggle.Value) + "' to toggle if active."}
+            ,{"/console [1/0]", "- Toggle the console. No parameter with toggle. 1 = Open, 0 = Closed. Intended for use with hotkeys and aliases."}
             ,{"/coords", "- Show coords in corner of the screen"}
             ,{"/clear", "- Clear the current output shown in the console"}
             ,{"/clearinventory", "- Removes all items from your inventory. There is no confirmation, be careful."}
@@ -130,21 +130,24 @@ namespace SkToolbox
 
         public static void Announce()
         {
+            if (SkConfigEntry.CScrollable != null & !SkConfigEntry.CScrollable.Value)
+            {
+                if (SkVersionChecker.VersionCurrent())
+                {
+                    PrintOut("====  Toolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS) is enabled.\t\t====", LogTo.Console);
+                }
+                else
+                {
+                    PrintOut("Toolbox by Skrip (DS) is enabled.", LogTo.Console);
+                    PrintOut("New Version Available on NexusMods!\t► Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
+                }
 
-            if(SkVersionChecker.VersionCurrent())
-            {
-                PrintOut("====  Toolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS) is enabled.\t\t\t====", LogTo.Console);
-            } else
-            {
-                PrintOut("Toolbox by Skrip (DS) is enabled.", LogTo.Console);
-                PrintOut("New Version Available on NexusMods!\t► Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
+                PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1\t====", LogTo.Console);
             }
-
-            PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1\t====", LogTo.Console);
             try
             {
                 commandList = commandList.OrderBy(obj => obj.Key).ToDictionary(obj => obj.Key, obj => obj.Value); // Try to sort the commands in case I gave up with it eventually, lol.
-                  // Add the aliases to the list
+                                                                                                                  // Add the aliases to the list
                 weatherList.Sort(); // Try to sort the weather names
                 SkCommandPatcher.InitPatch();
             }
@@ -169,9 +172,10 @@ namespace SkToolbox
             string buildCommand = inCommand; //default if not alias
             if (ConsoleOpt != null && ConsoleOpt.AliasList != null && ConsoleOpt.AliasList.Count > 0)
             {
-                for(int commandIndex = 0; commandIndex < tempCommandSpl.Length; commandIndex++)
+                for (int commandIndex = 0; commandIndex < tempCommandSpl.Length; commandIndex++)
                 {
-                    if(!string.IsNullOrEmpty(tempCommandSpl[commandIndex])) {
+                    if (!string.IsNullOrEmpty(tempCommandSpl[commandIndex]))
+                    {
                         tempCommandSpl[commandIndex] = tempCommandSpl[commandIndex].Trim();
                     }
 
@@ -180,19 +184,21 @@ namespace SkToolbox
                         string tempCommand = string.Empty;
                         ConsoleOpt.AliasList.TryGetValue(tempCommandSpl[commandIndex], out tempCommand);
                         tempCommand = tempCommand.Trim();
-                        if(tempCommand.EndsWith(";")) {
+                        if (tempCommand.EndsWith(";"))
+                        {
                             tempCommand = tempCommand.Substring(0, tempCommand.Length - 1);
                         }
                         tempCommandSpl[commandIndex] = tempCommand; // we found an alias
                     }
                 }
                 buildCommand = string.Empty;
-                foreach(string str in tempCommandSpl)
+                foreach (string str in tempCommandSpl)
                 {
-                    if(tempCommandSpl.Length > 1)
+                    if (tempCommandSpl.Length > 1)
                     {
                         buildCommand = buildCommand + str + ";";
-                    } else
+                    }
+                    else
                     {
                         buildCommand = buildCommand + str;
                     }
@@ -205,7 +211,7 @@ namespace SkToolbox
         {
             if (!string.IsNullOrEmpty(inCommand))
             {
-                if(Console.instance != null)
+                if (Console.instance != null)
                 {
                     SkUtilities.SetPrivateField(Console.instance, "m_lastEntry", inCommand);
                 }
@@ -217,7 +223,8 @@ namespace SkToolbox
                 foreach (string command in inCommandSplt)
                 {
                     string commandTrimmed = command.Trim();
-                    if (!string.IsNullOrEmpty(commandTrimmed)) {
+                    if (!string.IsNullOrEmpty(commandTrimmed))
+                    {
                         if (!ProcessCommand(commandTrimmed, source, go)) // Process SkToolbox Command
                         { // Unless the command wasn't found, then push it to the console to try and run it elsewhere
                             if (inCommandSplt.Length > 1)
@@ -239,10 +246,11 @@ namespace SkToolbox
 
         public static bool ProcessCommand(string inCommand, LogTo source, GameObject go = null) // source = true is console out, false is chat
         {
-            if(string.IsNullOrEmpty(inCommand) || string.IsNullOrWhiteSpace(inCommand))
+            if (string.IsNullOrEmpty(inCommand) || string.IsNullOrWhiteSpace(inCommand))
             {
                 return true;
-            } else
+            }
+            else
             {
                 inCommand = inCommand.Trim();
             }
@@ -252,7 +260,8 @@ namespace SkToolbox
             if (inCommand.StartsWith("help") && source.HasFlag(LogTo.Console))
             {
                 Console.instance.Print("devcommands - Enable standard developer/cheat commands");
-                Console.instance.Print("/? [Page] - SkToolbox Commands - Ex /? 1");
+                Console.instance.Print("/? [Page] - SkToolbox Commands - Pages 1 through " + (Mathf.Ceil(commandList.Count / pageSize) + (commandList.Count % pageSize == 0 ? 0 : 1)) + " - Example /? 1");
+                Console.instance.Print("SkToolbox On-Screen Menu - Close the console and press " + (altOnScreenControls ? SkConfigEntry.OAltToggle.Value : "Numpad 0"));
                 return false;
             }
 
@@ -287,14 +296,63 @@ namespace SkToolbox
 
             if (inCommand.StartsWith("/echo") && source.HasFlag(LogTo.Console))
             {
-                inCommand = inCommand.Remove(0, 5);
-                inCommand = inCommand.Trim();
-                PrintOut(inCommand, source, false);
+                if (inCommandSpl.Length > 1)
+                {
+                    PrintOut(inCommandSpl[1], source, false);
+                }
+                return true;
+            }
+
+            if (inCommand.StartsWith("/console"))
+            {
+                if (Console.instance != null)
+                {
+                    if (inCommandSpl.Length > 1)
+                    {
+                        if (inCommandSpl[1].Equals("1"))
+                        {
+                            Console.instance.m_chatWindow.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            Console.instance.m_chatWindow.gameObject.SetActive(false);
+                        }
+                    }
+                    else
+                    {
+                        Console.instance.m_chatWindow.gameObject.SetActive(!Console.instance.m_chatWindow.gameObject.activeSelf);
+                    }
+                }
+                return true;
+            }
+            
+            if (inCommandSpl[0].Equals("/q"))
+            {
+                PrintOut("Quitting game...", source | LogTo.DebugConsole);
+                Application.Quit();
+                return true;
+            }
+
+            if (inCommandSpl[0].Equals("/clear"))
+            {
+                if (Console.instance != null)
+                {
+                    Console.instance.m_output.text = string.Empty;
+                    try
+                    {
+                        SkUtilities.SetPrivateField(Console.instance, "m_chatBuffer", new List<string>());
+                        ConsoleOpt.consoleOutputHistory.Clear();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
                 return true;
             }
 
 
-            if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null && !inCommandSpl[0].Equals("/q") && !inCommandSpl[0].Equals("/clear"))
+            if (commandList.ContainsKey(inCommandSpl[0]) && Player.m_localPlayer == null)
             {
                 PrintOut("You must be in-game to run this command.", source, false);
                 return true;
@@ -467,48 +525,53 @@ namespace SkToolbox
             {
                 if (inCommandSpl.Length == 1)
                 {
-                    foreach(string weather in weatherList.OrderBy(q => q).ToList())
+                    foreach (string weather in weatherList.OrderBy(q => q).ToList())
                     {
                         PrintOut(weather, source, false);
                     }
-                } else if (inCommandSpl.Length >= 2)
+                }
+                else if (inCommandSpl.Length >= 2)
                 {
-                    if(inCommandSpl[1].Equals("-1"))
+                    if (inCommandSpl[1].Equals("-1"))
                     {
-                        if(EnvMan.instance != null)
+                        if (EnvMan.instance != null)
                         {
                             EnvMan.instance.m_debugEnv = "";
                             PrintOut("Weather unlocked and under game control.", source);
                         }
-                    } else
+                    }
+                    else
                     {
                         string finalWeatherName = string.Empty;
-                        if(inCommandSpl.Length > 2)
+                        if (inCommandSpl.Length > 2)
                         {
-                            foreach(string str in inCommandSpl)
+                            foreach (string str in inCommandSpl)
                             {
-                                if(!str.Equals(inCommandSpl[0])) // Make sure it doesn't pass /env into the weather name
+                                if (!str.Equals(inCommandSpl[0])) // Make sure it doesn't pass /env into the weather name
                                 {
                                     finalWeatherName += " " + str;
                                 }
                             }
                             finalWeatherName = finalWeatherName.Trim();
-                        } else
+                        }
+                        else
                         {
                             finalWeatherName = inCommandSpl[1];
                         }
 
-                        if(weatherList.Contains(finalWeatherName))
+                        if (weatherList.Contains(finalWeatherName))
                         {
                             if (EnvMan.instance != null)
                             {
                                 EnvMan.instance.m_debugEnv = finalWeatherName;
                                 PrintOut("Weather set to: " + EnvMan.instance.m_debugEnv, source);
-                            } else
+                            }
+                            else
                             {
                                 PrintOut("Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
                             }
-                        } else
+                        }
+                        else
                         {
                             PrintOut("Failed to set weather to '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
                         }
@@ -1114,7 +1177,7 @@ namespace SkToolbox
 
             if (inCommandSpl[0].Equals("/tod"))
             {
-                if(inCommandSpl.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     float num10;
                     if (!float.TryParse(inCommandSpl[1], NumberStyles.Float, CultureInfo.InvariantCulture, out num10))
@@ -1132,17 +1195,18 @@ namespace SkToolbox
                         EnvMan.instance.m_debugTime = Mathf.Clamp01(num10);
                         PrintOut("Setting time of day:" + num10, source);
                     }
-                } else
+                }
+                else
                 {
                     PrintOut("Failed. Syntax /tod [0-1] Ex. /tod 0.5", source);
                 }
-                
+
                 return true;
             }
 
             if (inCommandSpl[0].Equals("/set"))
             {
-                if(inCommandSpl.Length > 1)
+                if (inCommandSpl.Length > 1)
                 {
                     if (inCommandSpl[1].Equals("cw"))
                     {
@@ -1192,7 +1256,7 @@ namespace SkToolbox
                                 PrintOut("New range set to: " + cmdRange, source);
                                 return true;
                             }
-                            catch (Exception) 
+                            catch (Exception)
                             {
                                 PrintOut("Failed to set pickup range. Check params. /set pickup 2", source);
                                 return true;
@@ -1315,7 +1379,7 @@ namespace SkToolbox
                         return true;
                     }
                 }
-                
+
                 return true;
             }
 
@@ -1379,7 +1443,8 @@ namespace SkToolbox
                                     itemObj.m_itemData.m_durability = itemObj.m_itemData.GetMaxDurability();
                                 }
                             }
-                        } catch(Exception)
+                        }
+                        catch (Exception)
                         {
                             //
                         }
@@ -1480,31 +1545,6 @@ namespace SkToolbox
                 PrintOut(skillList, source | LogTo.DebugConsole);
                 return true;
             }
-
-
-            if (inCommandSpl[0].Equals("/q"))
-            {
-                PrintOut("Quitting game...", source);
-                Application.Quit();
-                return true;
-            }
-
-            if (inCommandSpl[0].Equals("/clear"))
-            {
-                if (Console.instance != null)
-                {
-                    Console.instance.m_output.text = string.Empty;
-                    try
-                    {
-                        SkUtilities.SetPrivateField(Console.instance, "m_chatBuffer", new List<string>());
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-                return true;
-            }
             return false;
         }
 
@@ -1517,10 +1557,10 @@ namespace SkToolbox
             if (source.HasFlag(LogTo.Console) && Console.instance != null)
             {
                 Console.instance.Print("(SkToolbox) " + text);
-                if (ConsoleOpt != null && ConsoleOpt.conWriteToFile)
-                {
-                    SkUtilities.Logz(new string[] { "DUMP", "ITEM" }, new string[] { text, });
-                }
+                //if (ConsoleOpt != null && ConsoleOpt.conWriteToFile)
+                //{
+                //    SkUtilities.Logz(new string[] { "DUMP", "ITEM" }, new string[] { text, });
+                //}
 
             }
             if (source.HasFlag(LogTo.Chat) && Chat.instance != null)
@@ -1540,7 +1580,7 @@ namespace SkToolbox
             }
         }
 
-        public static void ChatPrint(string ln, string source = "(SkToolbox) " )
+        public static void ChatPrint(string ln, string source = "(SkToolbox) ")
         {
             if (Chat.instance != null)
             {
@@ -1691,7 +1731,7 @@ namespace SkToolbox
                 Vector3 centerpos = centerLocation;
                 try
                 {
-                    var tList = TerrainModifier.GetAllInstances();
+                    List<TerrainModifier> tList = TerrainModifier.GetAllInstances();
                     foreach (TerrainModifier terrainModifier in tList)
                     {
                         if (terrainModifier != null)
