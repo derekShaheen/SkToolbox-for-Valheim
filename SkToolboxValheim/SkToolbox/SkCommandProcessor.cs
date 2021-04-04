@@ -133,18 +133,18 @@ namespace SkToolbox
 
             if(SkVersionChecker.VersionCurrent())
             {
-                PrintOut("Toolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
+                PrintOut("====  Toolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS) is enabled.\t\t\t====", LogTo.Console);
             } else
             {
-                PrintOut("Toolbox by Skrip (DS) is enabled. Custom commands are working.", LogTo.Console);
+                PrintOut("Toolbox by Skrip (DS) is enabled.", LogTo.Console);
                 PrintOut("New Version Available on NexusMods!\t► Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, LogTo.Console | LogTo.DebugConsole);
             }
 
-            PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1  ====", LogTo.Console);
+            PrintOut("====  Press numpad 0 to open on-screen menu or type /? 1\t====", LogTo.Console);
             try
             {
                 commandList = commandList.OrderBy(obj => obj.Key).ToDictionary(obj => obj.Key, obj => obj.Value); // Try to sort the commands in case I gave up with it eventually, lol.
-                  // Add the aliases to the end of the list
+                  // Add the aliases to the list
                 weatherList.Sort(); // Try to sort the weather names
                 SkCommandPatcher.InitPatch();
             }
@@ -153,12 +153,13 @@ namespace SkToolbox
 
             }
         }
+
         /// <summary>
         /// This decomposes alias commands into commands that can be passed into the processor or back through the console
         /// Alias                   /creative: /god; /ghost; /fly; /nores; /nocost;
-        /// User typed			    /god; /creative;
+        /// User typed			    /god; /creative
         /// Alias transformed to    /god; /ghost; /fly; /nores; /nocost;
-        /// Pass to processor	    /god; /god; /ghost; /fly; /nores; /nocost; /fly
+        /// Pass to processor	    /god; /god; /ghost; /fly; /nores; /nocost; /fly;
         /// </summary>
         /// <param name="inCommand"></param>
         /// <returns></returns>
@@ -505,11 +506,11 @@ namespace SkToolbox
                                 PrintOut("Weather set to: " + EnvMan.instance.m_debugEnv, source);
                             } else
                             {
-                                PrintOut("1Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
+                                PrintOut("Failed to set weather to '" + finalWeatherName + "'. Can't find environment manager.", source);
                             }
                         } else
                         {
-                            PrintOut("2Failed to set weatherto '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
+                            PrintOut("Failed to set weather to '" + finalWeatherName + "'. Check parameters! Ex. /env, /env -1, /env Misty", source);
                         }
                     }
                 }
@@ -1558,6 +1559,18 @@ namespace SkToolbox
                         continue;
 
                     }
+                }
+            }
+        }
+
+        public static void PassBack(string input)
+        {
+            if (Console.instance != null)
+            {
+                if (!string.IsNullOrEmpty(input))
+                {
+                    Console.instance.m_input.text = input;
+                    SkUtilities.InvokePrivateMethod(Console.instance, "InputText", null);
                 }
             }
         }

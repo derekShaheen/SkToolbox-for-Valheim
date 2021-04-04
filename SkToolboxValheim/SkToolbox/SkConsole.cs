@@ -19,7 +19,7 @@ namespace SkToolbox
         /// <summary>
         /// The hotkey to show and hide the console window.
         /// </summary>
-        public KeyCode toggleKey = KeyCode.BackQuote;
+        public KeyCode toggleKey = KeyCode.F4;
 
         /// <summary>
         /// Whether to open as soon as the game starts.
@@ -46,7 +46,7 @@ namespace SkToolbox
         /// <summary>
         /// Font size to display log entries with.
         /// </summary>
-        public int logFontSize = 12;
+        public int logFontSize = 18;
         private int logLineNumber = 0;
         /// <summary>
         /// Amount to scale UI by.
@@ -55,12 +55,15 @@ namespace SkToolbox
 
         public static bool writeToFile = false;
         private string logSavePath;
-        public static bool cursorUnlock = false;
+        public static bool cursorUnlock = true;
         #endregion
 
+
+        static string outputString = string.Empty;
+        static readonly GUIContent submitLabel = new GUIContent("Submit", "Submit the input.");
         static readonly GUIContent clearLabel = new GUIContent("Clear", "Clear the contents of the console.");
         static readonly GUIContent collapseLabel = new GUIContent("Collapse", "Hide repeated messages.");
-        const int margin = 150;
+        const int margin = 350;
         const string windowTitle = "Console [SkToolbox]";
 
         static readonly Dictionary<LogType, Color> logTypeColors = new Dictionary<LogType, Color>
@@ -69,7 +72,7 @@ namespace SkToolbox
             { LogType.Error, Color.red },
             { LogType.Exception, Color.red },
             { LogType.Log, Color.white },
-            { LogType.Warning, Color.yellow },
+            { LogType.Warning, Color.yellow }
         };
 
         bool isCollapsed;
@@ -84,23 +87,23 @@ namespace SkToolbox
 
         readonly Dictionary<LogType, bool> logTypeFilters = new Dictionary<LogType, bool>
         {
-            { LogType.Assert, true },
-            { LogType.Error, true },
-            { LogType.Exception, true },
+            { LogType.Assert, false },
+            { LogType.Error, false },
+            { LogType.Exception, false },
             { LogType.Log, true },
-            { LogType.Warning, true },
+            { LogType.Warning, false },
         };
 
         #region MonoBehaviour Messages
 
         void OnDisable()
         {
-            Application.logMessageReceivedThreaded -= HandleLogThreaded;
+            //Application.logMessageReceivedThreaded -= HandleLogThreaded;
         }
 
         void OnEnable()
         {
-            Application.logMessageReceivedThreaded += HandleLogThreaded;
+            //Application.logMessageReceivedThreaded += HandleLogThreaded;
         }
 
         void OnGUI()
@@ -112,7 +115,7 @@ namespace SkToolbox
 
             GUI.matrix = Matrix4x4.Scale(Vector3.one * scaleFactor);
 
-            float width = (Screen.width / scaleFactor) - (margin * 2);
+            float width = (Screen.width / (scaleFactor * 2)) - (margin * 2);
             float height = (Screen.height / scaleFactor) - (margin * 2);
             Rect windowRect = new Rect(windowX, windowY, width, height);
 
@@ -180,7 +183,7 @@ namespace SkToolbox
             badgeStyle.fontSize = logFontSize;
             try
             {
-                badgeStyle.font = Font.CreateDynamicFontFromOSFont("CascadiaCode.ttf", 12);
+                badgeStyle.font = Font.CreateDynamicFontFromOSFont("Consolas.ttf", 12);
             }
             catch (Exception)
             {
@@ -191,7 +194,7 @@ namespace SkToolbox
             logStyle.fontSize = logFontSize;
             try
             {
-                logStyle.font = Font.CreateDynamicFontFromOSFont("CascadiaCode.ttf", 12);
+                logStyle.font = Font.CreateDynamicFontFromOSFont("Consolas.ttf", 12);
             } catch(Exception)
             {
 
@@ -242,9 +245,24 @@ namespace SkToolbox
             GUILayout.EndHorizontal();
         }
 
+        void DrawInput()
+        {
+            GUILayout.BeginHorizontal();
+
+            outputString = GUILayout.TextField(outputString, 2000);
+
+            if (GUILayout.Button(submitLabel, GUILayout.ExpandWidth(false)))
+            {
+                SkCommandProcessor.PassBack(outputString);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
         void DrawWindow(int windowID)
         {
             DrawLogList();
+            DrawInput();
             DrawToolbar();
 
             // Allow the window to be dragged by its title bar.
@@ -268,6 +286,18 @@ namespace SkToolbox
             {
                 ProcessLogItem(log);
             }
+        }
+
+        public void AddLogEntry(string message)
+        {
+            var log = new Log
+            {
+                count = 1,
+                message = message,
+                stackTrace = "",
+                type = LogType.Log,
+            };
+            queuedLogs.Enqueue(log);
         }
 
         void HandleLogThreaded(string message, string stackTrace, LogType type)

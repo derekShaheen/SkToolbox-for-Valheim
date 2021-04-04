@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.9.0.0";
+            VERSION = "1.9.1.0";
 
         private void Start()
         {
@@ -90,7 +90,8 @@ namespace SkToolbox
                     "\nFormat: WhatToType: WhatToExecute" +
                     "\nExample: This will create a new command, '/Cmd1', and when entered it will execute /god and /fly" +
                     "\n/Cmd1: /god; /fly" +
-                    "\n\nSet this to create command alias 1.");
+                    "\n##################" +
+                    "\nSet this to create command alias 1.");
                 SkConfigEntry.CAlias2 = Config.Bind("3 - CommandAliasing", "Alias2", ""
                     , "Set this to create command alias 2.");
                 SkConfigEntry.CAlias3 = Config.Bind("3 - CommandAliasing", "Alias3", ""
@@ -119,6 +120,42 @@ namespace SkToolbox
                     , "Set this to create command alias 14.");
                 SkConfigEntry.CAlias15 = Config.Bind("3 - CommandAliasing", "Alias15", ""
                     , "Set this to create command alias 15.");
+
+                SkConfigEntry.CHotkey1 = Config.Bind("5 - CommandHotkeys", "Hotkey 1", ""
+                    , "Set this to create a hotkey for a command or command chain." +
+                    "\nValid Format is WhatToPress: WhatToExecute" +
+                    "\nExample 1 Press z to input /fly; /god        | z: /fly; /god" +
+                    "\nExample 2 Press Shift+Z to input /creative   | Z: /creative" +
+                    "\nOnly 'Printable ASCII characters' are valid! (https://theasciicode.com.ar/). Capital letters make the hotkey require Shift before the hotkey press.");
+                SkConfigEntry.CHotkey2 = Config.Bind("5 - CommandHotkeys", "Hotkey 2", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey3 = Config.Bind("5 - CommandHotkeys", "Hotkey 3", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey4 = Config.Bind("5 - CommandHotkeys", "Hotkey 4", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey5 = Config.Bind("5 - CommandHotkeys", "Hotkey 5", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey6 = Config.Bind("5 - CommandHotkeys", "Hotkey 6", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey7 = Config.Bind("5 - CommandHotkeys", "Hotkey 7", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey8 = Config.Bind("5 - CommandHotkeys", "Hotkey 8", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey9 = Config.Bind("5 - CommandHotkeys", "Hotkey 9", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey10 = Config.Bind("5 - CommandHotkeys", "Hotkey 10", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey11 = Config.Bind("5 - CommandHotkeys", "Hotkey 11", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey12 = Config.Bind("5 - CommandHotkeys", "Hotkey 12", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey13 = Config.Bind("5 - CommandHotkeys", "Hotkey 13", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey14 = Config.Bind("5 - CommandHotkeys", "Hotkey 14", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+                SkConfigEntry.CHotkey15 = Config.Bind("5 - CommandHotkeys", "Hotkey 15", ""
+                    , "Set this to create a hotkey for a command or command chain.");
+
             }
             catch (Exception Ex)
             {

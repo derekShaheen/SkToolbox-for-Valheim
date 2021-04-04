@@ -99,6 +99,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>D:\Games\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,9 +121,6 @@
     <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
     <Compile Include="SkToolbox\Utility\SkUtilities.cs" />
     <Compile Include="SkToolbox\Configuration\SkVersionChecker.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SkToolboxIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

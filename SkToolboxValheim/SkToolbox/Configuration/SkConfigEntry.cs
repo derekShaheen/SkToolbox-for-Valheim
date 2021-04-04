@@ -46,5 +46,21 @@ namespace SkToolbox.Configuration
         public static ConfigEntry<string> CAlias13 { get; set; }
         public static ConfigEntry<string> CAlias14 { get; set; }
         public static ConfigEntry<string> CAlias15 { get; set; }
+
+        public static ConfigEntry<string> CHotkey1 { get; set; }
+        public static ConfigEntry<string> CHotkey2 { get; set; }
+        public static ConfigEntry<string> CHotkey3 { get; set; }
+        public static ConfigEntry<string> CHotkey4 { get; set; }
+        public static ConfigEntry<string> CHotkey5 { get; set; }
+        public static ConfigEntry<string> CHotkey6 { get; set; }
+        public static ConfigEntry<string> CHotkey7 { get; set; }
+        public static ConfigEntry<string> CHotkey8 { get; set; }
+        public static ConfigEntry<string> CHotkey9 { get; set; }
+        public static ConfigEntry<string> CHotkey10 { get; set; }
+        public static ConfigEntry<string> CHotkey11 { get; set; }
+        public static ConfigEntry<string> CHotkey12 { get; set; }
+        public static ConfigEntry<string> CHotkey13 { get; set; }
+        public static ConfigEntry<string> CHotkey14 { get; set; }
+        public static ConfigEntry<string> CHotkey15 { get; set; }
     }
 }

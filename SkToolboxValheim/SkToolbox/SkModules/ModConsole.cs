@@ -11,6 +11,7 @@ namespace SkToolbox.SkModules
     {
         internal bool conWriteToFile = false;
         string consoleLastMessage = string.Empty;
+        string lastOutput = string.Empty;
 
         string chatInLastMessage = string.Empty;
 
@@ -28,8 +29,11 @@ namespace SkToolbox.SkModules
 
         public List<string> PrefabList = new List<string>();
         public List<string> ItemList = new List<string>();
+        private Dictionary<string, string> hotkeyList = new Dictionary<string, string>();
 
         List<Character> nearbyCharacters = new List<Character>();
+
+        //SkConsole SkConsole;
         public ModConsole() : base()
         {
             base.ModuleName = "CC Controller";
@@ -39,10 +43,12 @@ namespace SkToolbox.SkModules
         public void Start()
         {
             SkCommandProcessor.ConsoleOpt = this;
+            //SkConsole = gameObject.AddComponent<SkConsole>();
             BeginMenu();
             try
             {
                 BuildAliases();
+                BuildHotkeys();
             }
             catch (Exception)
             {
@@ -84,6 +90,32 @@ namespace SkToolbox.SkModules
         {             //Add console commands
             if (Console.instance != null)
             {
+                //New console
+                //if(Console.instance != null)
+                //{
+                //    List<string> chatBuffer = SkUtilities.GetPrivateField<List<string>>(Console.instance, "m_chatBuffer");
+                //     if (chatBuffer != null 
+                //            && chatBuffer.Count > 0) {
+
+                //    //    if(!string.IsNullOrEmpty(chatBuffer[chatBuffer.Count - 1]))
+                //    //    {
+                //    //        if(!chatBuffer[chatBuffer.Count - 1].Equals(lastOutput)) {
+                //    //            lastOutput = chatBuffer[chatBuffer.Count - 1];
+                //    //            SkConsole.AddLogEntry(lastOutput);
+                //    //        }
+                //    //    }
+                //        for(int x = 0; x < chatBuffer.Count; x++)
+                //        {
+                //            SkConsole.AddLogEntry(chatBuffer[0]);
+                //            chatBuffer.RemoveAt(0);
+                //        }
+
+                //    }
+
+
+                //}
+
+                // Old console
                 if (Console.instance.m_chatWindow.gameObject.activeInHierarchy)
                 {
                     string inputText = Console.instance.m_input.text;
@@ -220,7 +252,8 @@ namespace SkToolbox.SkModules
                                         System.Globalization.CultureInfo.InvariantCulture));
 
                                     var matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, System.Globalization.CultureInfo.InvariantCulture));
+                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true, 
+                                        System.Globalization.CultureInfo.InvariantCulture));
 
                                     if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
                                     {
@@ -318,6 +351,7 @@ namespace SkToolbox.SkModules
                     Console.instance.m_input.selectionColor = selectionColor;
                     Console.instance.m_input.caretColor = caretColor;
                     Console.instance.m_input.customCaretColor = true;
+
                 }
                 catch (Exception Ex)
                 {
@@ -340,21 +374,6 @@ namespace SkToolbox.SkModules
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
                 }
             }
-            //if (FejdStartup.instance != null && FejdStartup.instance.m_creditsPanel != null && FejdStartup.instance.m_creditsPanel.activeInHierarchy)
-            //{
-            //    GUILayout.BeginArea(new Rect(0, Screen.height / 4, Screen.width, Screen.height));
-            //    GUILayout.FlexibleSpace();
-            //    GUILayout.BeginHorizontal();
-            //    GUILayout.FlexibleSpace();
-            //    GUIStyle credStyle = new GUIStyle();
-            //    credStyle.fontStyle = FontStyle.Bold;
-            //    credStyle.fontSize = 18;
-            //    GUILayout.Label("<color=yellow>Skrip from NexusMods</color>", credStyle);
-            //    GUILayout.FlexibleSpace();
-            //    GUILayout.EndHorizontal();
-            //    GUILayout.FlexibleSpace();
-            //    GUILayout.EndArea();
-            //}
         }
 
         public void BuildPrebabs()
@@ -440,6 +459,8 @@ namespace SkToolbox.SkModules
             }
 
             ProcessAutoRun();
+
+            ProcessHotkeys();
 
             if (SkCommandProcessor.bTeleport)
             {
@@ -535,6 +556,31 @@ namespace SkToolbox.SkModules
             }
         }
 
+        private void ProcessHotkeys()
+        {
+            if(hotkeyList != null && hotkeyList.Count > 0)
+            {
+                foreach(char c in Input.inputString)
+                {
+                    try
+                    {
+                        var matchHotkey = hotkeyList.Keys.First(item => item.ToString().Equals(c.ToString()));
+                        //SkUtilities.Logz(new string[] { "CONTROLLER" }, new string[] { "Found: " + matchHotkey });
+
+                        if (!string.IsNullOrEmpty(matchHotkey.ToString()))
+                        {
+                            //SkUtilities.Logz(new string[] { "CONTROLLER", "RUN HOTKEY" }, new string[] { "Command List: " + matchHotkey, hotkeyList[matchHotkey] });
+                            SkCommandProcessor.ProcessCommands(hotkeyList[matchHotkey], SkCommandProcessor.LogTo.Chat | SkCommandProcessor.LogTo.Console);
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        //
+                    }
+                }
+            }
+        }
+
         private void ProcessAutoRun()
         {
             if (!SkConfigEntry.CAutoRunComplete)
@@ -545,7 +591,7 @@ namespace SkToolbox.SkModules
                     {
                         try
                         {
-                            SkUtilities.Logz(new string[] { "CONTROLLER", "AUTORUN" }, new string[] { "Command List:" + SkConfigEntry.CAutoRunCommand.Value });
+                            SkUtilities.Logz(new string[] { "CONTROLLER", "AUTORUN" }, new string[] { "Command List: " + SkConfigEntry.CAutoRunCommand.Value });
                             SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
                             SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
                         }
@@ -564,6 +610,138 @@ namespace SkToolbox.SkModules
                 {
                     SkConfigEntry.CAutoRunComplete = true;
                 }
+            }
+        }
+
+        private void BuildHotkeys()
+        {
+            try
+            {
+                if (SkConfigEntry.CHotkey1 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey1.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey1.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey2 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey2.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey2.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey3 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey3.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey3.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey4 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey4.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey4.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey5 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey5.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey5.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey6 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey6.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey6.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey7 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey7.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey7.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey8 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey8.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey8.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey9 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey9.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey9.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey10 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey10.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey10.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey11 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey11.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey11.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey12 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey12.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey12.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey13 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey13.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey13.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey14 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey14.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey14.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+                if (SkConfigEntry.CHotkey15 != null && !string.IsNullOrEmpty(SkConfigEntry.CHotkey15.Value))
+                {
+                    string[] HotkeySplit = SkConfigEntry.CHotkey15.Value.Split(':');
+                    if (HotkeySplit.Length == 2)
+                    {
+                        hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
+                    }
+                }
+
+            }
+            catch (Exception Ex)
+            {
+                SkCommandProcessor.PrintOut("Something failed while loading command hotkeys! Check your config file. " + Ex.Message, SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
             }
         }
 
