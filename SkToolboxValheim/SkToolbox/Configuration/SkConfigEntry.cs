@@ -4,6 +4,7 @@ namespace SkToolbox.Configuration
 {
     internal static class SkConfigEntry
     {
+        public static ConfigEntry<bool> CDescriptor { get; set; }
         public static ConfigEntry<bool> CAutoRun { get; set; }
         public static bool CAutoRunComplete { get; set; }
         public static ConfigEntry<string> CAutoRunCommand { get; set; }

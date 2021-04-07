@@ -78,7 +78,10 @@ namespace SkToolbox
 
         void Update()
         {
-
+            if(Console.instance != null && global::Console.IsVisible())
+            {
+                MenuOpen = false;
+            }
             if (SkCommandProcessor.altOnScreenControls)
             {
                 if(SkConfigEntry.OAltToggle != null && SkConfigEntry.OAltUp != null && SkConfigEntry.OAltDown != null && SkConfigEntry.OAltChoose != null && SkConfigEntry.OAltBack != null)
@@ -131,7 +134,9 @@ namespace SkToolbox
                 }
             }
             //Keycode menu activation
-            if (Input.GetKeyDown(keyBindings["selToggle"]) && !global::Console.IsVisible() && !global::Chat.instance.m_input.isFocused)
+            if (Input.GetKeyDown(keyBindings["selToggle"]) 
+                && Console.instance != null && !global::Console.IsVisible() 
+                && Chat.instance != null && !global::Chat.instance.m_input.isFocused)
             {
                 firstRun = false;
                 MenuOpen = !MenuOpen;

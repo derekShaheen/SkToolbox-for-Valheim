@@ -26,7 +26,7 @@ namespace SkToolbox.SkModules
         private bool anncounced1 = false;
         private bool anncounced2 = false;
 
-        private int ConsoleOutputMaxHistory = 3000;
+        private int ConsoleOutputMaxHistory = 1000;
 
         public Dictionary<string, string> AliasList = new Dictionary<string, string>();
 
@@ -56,6 +56,7 @@ namespace SkToolbox.SkModules
                 //ConsoleOutputStyle.active.background = OutputTexture;
                 BuildAliases();
                 BuildHotkeys();
+                SkVersionChecker.VersionCurrent(); // Try to load the version so we don't have to when they open the console
             }
             catch (Exception)
             {
@@ -90,46 +91,46 @@ namespace SkToolbox.SkModules
         public void UnloadMenu()
         {
             SkUtilities.Logz(new string[] { "BASE", "CMD", "REQ" }, new string[] { "SKTOOLBOX UNLOAD REQUESTED.", "UNLOADING CONTROLLERS AND MODULES..." });
+            if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value && Console.instance != null)
+            {
+                Console.instance.m_output.gameObject.SetActive(true);
+            }
             SkLoader.Unload();
         }
 
         public void HandleConsole()
-        {             //Add console commands
+        {
             if (Console.instance != null)
             {
                 //Scrollable console
                 if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
                 {
-                    if (Console.instance != null)
+                    List<string> consoleOutputBuffer = SkUtilities.GetPrivateField<List<string>>(Console.instance, "m_chatBuffer");
+                    if (consoleOutputBuffer != null
+                           && consoleOutputBuffer.Count > 0)
                     {
-                        List<string> consoleOutputBuffer = SkUtilities.GetPrivateField<List<string>>(Console.instance, "m_chatBuffer");
-                        if (consoleOutputBuffer != null
-                               && consoleOutputBuffer.Count > 0)
+                        try
                         {
-
-                            //    if(!string.IsNullOrEmpty(chatBuffer[chatBuffer.Count - 1]))
-                            //    {
-                            //        if(!chatBuffer[chatBuffer.Count - 1].Equals(lastOutput)) {
-                            //            lastOutput = chatBuffer[chatBuffer.Count - 1];
-                            //            SkConsole.AddLogEntry(lastOutput);
-                            //        }
-                            //    }
-                            for (int x = 0; x < consoleOutputBuffer.Count; x++)
+                            while (consoleOutputBuffer.Count > 0)
                             {
                                 consoleOutputHistory.Add(consoleOutputBuffer[0]);
                                 consoleOutputBuffer.RemoveAt(0);
+                            }
+                        } catch (Exception)
+                        {
+                            //
+                        }
 
-                            }
-                            if (consoleOutputBuffer.Count == 0)
-                            {
-                                Console.instance.m_output.text = string.Empty;
-                            }
-                            scrollPosition = new Vector2(0, Int32.MaxValue);
+                        if (consoleOutputBuffer.Count == 0)
+                        {
+                            Console.instance.m_output.text = string.Empty;
+                        }
+                        scrollPosition = new Vector2(0, Int32.MaxValue);
 
-                            while(consoleOutputHistory.Count > ConsoleOutputMaxHistory)
-                            {
-                                consoleOutputHistory.RemoveAt(0);
-                            }
+                        // Make sure we don't actually make too many console entries
+                        while (consoleOutputHistory.Count > ConsoleOutputMaxHistory)
+                        {
+                            consoleOutputHistory.RemoveAt(0);
                         }
                     }
                 }
@@ -368,6 +369,10 @@ namespace SkToolbox.SkModules
                     Console.instance.m_input.caretColor = caretColor;
                     Console.instance.m_input.customCaretColor = true;
 
+                    Console.instance.m_output.font = consoleFont;
+                    Console.instance.m_output.fontSize = fontSize;
+                    Console.instance.m_output.color = outputColor;
+
                     if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
                     {
                         ConsoleOutputStyle.fontSize = fontSize;
@@ -378,16 +383,25 @@ namespace SkToolbox.SkModules
                         SkCommandProcessor.ProcessCommand("/clear", SkCommandProcessor.LogTo.Console);
                         Console.instance.Print("type \"help\" - for commands");
                         Console.instance.Print("");
-                    } else
-                    {
-                        Console.instance.m_output.font = consoleFont;
-                        Console.instance.m_output.fontSize = fontSize;
-                        Console.instance.m_output.color = outputColor;
                     }
                 }
                 catch (Exception Ex)
                 {
                     SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to set when customizing console style.", Ex.Message }, LogType.Warning);
+                }
+            } else
+            {
+                if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
+                {
+                    Font consoleFont = Font.CreateDynamicFontFromOSFont("Consolas", 18);
+                    ConsoleOutputStyle.fontSize = 18;
+                    ConsoleOutputStyle.font = consoleFont;
+                    ConsoleOutputStyle.normal.textColor = Color.white;
+
+                    Console.instance.m_output.gameObject.SetActive(false);
+                    SkCommandProcessor.ProcessCommand("/clear", SkCommandProcessor.LogTo.Console);
+                    Console.instance.Print("type \"help\" - for commands");
+                    Console.instance.Print("");
                 }
             }
         }
@@ -406,8 +420,6 @@ namespace SkToolbox.SkModules
                     GUI.Label(rectCoords, "Coords: " + Mathf.RoundToInt(plPos.x) + "/" + Mathf.RoundToInt(plPos.z));
                 }
             }
-            if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
-            {
                 if (Console.instance != null && global::Console.IsVisible())
                 {
                     rectConsoleOutput = new Rect
@@ -420,24 +432,31 @@ namespace SkToolbox.SkModules
                     if (SkVersionChecker.VersionCurrent())
                     {
                         ConsoleOutput = GUILayout.Window(39979, rectConsoleOutput, ProcessConsoleOutput, " SkToolbox (" + SkVersionChecker.currentVersion + ") by Skrip (DS)", ConsoleOutputStyle);
-                    } else
+                    }
+                    else
                     {
                         ConsoleOutput = GUILayout.Window(39979, rectConsoleOutput, ProcessConsoleOutput, " SkToolbox by Skrip (DS) ► " +
                             "New Version Available on NexusMods!\t► Current: " + SkVersionChecker.currentVersion + " Latest: " + SkVersionChecker.latestVersion, ConsoleOutputStyle);
                     }
                 }
-            }
         }
 
         private void ProcessConsoleOutput(int windowID)
         {
-            if(!Cursor.visible)
+            if (!Cursor.visible)
             {
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             }
 
-            GUILayout.Space(18);
+            if (SkConfigEntry.CConsoleFontSize != null)
+            {
+                GUILayout.Space(SkConfigEntry.CConsoleFontSize.Value);
+            } else
+            {
+                GUILayout.Space(18);
+            }
+
             GUILayout.FlexibleSpace();
             GUILayout.BeginVertical();
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
@@ -625,6 +644,10 @@ namespace SkToolbox.SkModules
 
         private void OnDestroy()
         {
+            if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value && Console.instance != null)
+            {
+                Console.instance.m_output.gameObject.SetActive(true);
+            }
             if (SkCommandPatcher.Harmony != null)
             {
                 SkCommandPatcher.Harmony.UnpatchSelf();
@@ -638,7 +661,7 @@ namespace SkToolbox.SkModules
 
                 foreach (char c in Input.inputString)
                 {
-                    if (Console.instance != null && !global::Console.IsVisible() && !global::Chat.instance.m_input.isFocused)
+                    if (Console.instance != null && !global::Console.IsVisible() && Chat.instance != null && !global::Chat.instance.m_input.isFocused)
                     {
                         try
                         {

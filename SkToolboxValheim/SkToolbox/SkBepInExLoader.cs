@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.10.0.0";
+            VERSION = "1.10.1.0";
 
         private void Start()
         {
@@ -28,6 +28,16 @@ namespace SkToolbox
         {
             try
             {
+                SkConfigEntry.CDescriptor = Config.Bind("- Index", "ThisIsJustAnIndex-NotASetting", true
+                    , "Config sections:" +
+                    "\n0 - General" +
+                    "\n1 - Auto Run" +
+                    "\n2 - Customize Console Look" +
+                    "\n3 - Command Aliasing" +
+                    "\n4 - On-Screen Menu" +
+                    "\n5 - Command Hotkeys" +
+                    "\n");
+
                 SkConfigEntry.CConsoleEnabled = Config.Bind("0 - General", "ConsoleEnabled", true
                     , "Enables the console without launch option.");
                 SkConfigEntry.CScrollable = Config.Bind("0 - General", "ConsoleScrollable", true
@@ -129,7 +139,8 @@ namespace SkToolbox
                     "\nExample 1 Press z to input /fly; /god        | z: /fly; /god" +
                     "\nExample 2 Press Shift+Z to input /creative   | Z: /creative" +
                     "\nExample 3 Press Tilde to open the console    | `: /console" +
-                    "\nOnly 'Printable ASCII characters' are valid! (https://theasciicode.com.ar/). Capital letters make the hotkey require Shift before the hotkey press.");
+                    "\nOnly 'Printable ASCII characters' are valid! (https://theasciicode.com.ar/). Capital letters make the hotkey require Shift before the hotkey press." +
+                    " Only one command or command chain can be assigned to each key (if hotkey 1 assigns to q, hotkey 2 cannot also assign to q).");
                 SkConfigEntry.CHotkey2 = Config.Bind("5 - CommandHotkeys", "Hotkey 2", ""
                     , "Set this to create a hotkey for a command or command chain.");
                 SkConfigEntry.CHotkey3 = Config.Bind("5 - CommandHotkeys", "Hotkey 3", ""

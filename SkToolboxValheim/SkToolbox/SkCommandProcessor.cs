@@ -92,7 +92,7 @@ namespace SkToolbox
             ,{"/infstam", "- Toggles infinite stamina"}
             ,{"/killall", "- Kills all nearby creatures"}
             ,{"/listitems", "[Name Contains] - List all items. Optionally include name starts with. Ex. /listitems Woo returns any item that contains the letters 'Woo'"}
-            ,{"/listprefabs", "- Lists all prefabs - List all prefabs/creatures. Optionally include name starts with. Ex. /listprefabs Troll returns any prefab that starts with the letters 'Troll'"}
+            ,{"/listprefabs", "[Name Contains] - Lists all prefabs - List all prefabs/creatures. Optionally include name starts with. Ex. /listprefabs Troll returns any prefab that starts with the letters 'Troll'"}
             ,{"/listskills", "- Lists all skills"}
             ,{"/nocost", "- Toggle no requirement building"}
             ,{"/nores", "- Toggle no restrictions to where you can build (except ward zones)"}
