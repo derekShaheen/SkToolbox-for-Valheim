@@ -2,8 +2,6 @@ Official Valheim mod release page: https://www.nexusmods.com/valheim/mods/8
 
 SkToolbox - Valheim
 AUTHOR: Skrip (https://steamcommunity.com/id/Skrip037/)
-Toolbox Version: 1.8.0
-Valheim at time of release: 0.147.3
 
 SkToolbox is a fully clientside utility meant for improving the gameplay experience, by enabling the player to modify their character or the environment to their liking. The mod enables features that could allow a player to drastically change their character or others.
 
