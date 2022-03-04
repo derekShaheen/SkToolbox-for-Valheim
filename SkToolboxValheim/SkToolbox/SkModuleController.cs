@@ -45,7 +45,7 @@ namespace SkToolbox
         {
             SkMainStatus = Status.Loading;
             SkUtilities.Logz(new string[] { "TOOLBOX", "NOTIFY" }, new string[] { "LOADING...", "MODULES LOADING..." }); // Notify the console that the menu is ready
-
+            //SkUtilities.Logz(new string[] { "TOOLBOX", "NOTIFY" }, new string[] { "MODULES INITIALIZED.", "WAITING FOR VALHEIM..." }); // Notify the console that the menu is ready
             // Load the main menu
             BeginMainMenu();
 

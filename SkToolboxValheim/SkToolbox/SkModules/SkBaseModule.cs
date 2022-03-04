@@ -1,19 +1,19 @@
-﻿using SkToolbox.Utility;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using SkToolbox.Utility;
 
 namespace SkToolbox.SkModules
 {
     /// <summary>
     /// All modules must inerhit from this base class. Within those modules, base.Ready() must be called when the module is ready for use, and this must happen within 3 frames of module initialization.
     /// </summary>
-    internal class SkBaseModule : MonoBehaviour
+    public class SkBaseModule : MonoBehaviour
     {
         internal SkMenuController SkMC;
-        internal SkMenu MenuOptions { get; set; } = new SkMenu();
-        internal SkMenuItem CallerEntry { get; set; } = new SkMenuItem();
-        internal SkUtilities.Status ModuleStatus { get; set; } = SkUtilities.Status.Initialized;
-        internal string ModuleName = "UNNAMED";
+        public SkMenu MenuOptions { get; set; } = new SkMenu();
+        public SkMenuItem CallerEntry { get; set; } = new SkMenuItem();
+        public SkUtilities.Status ModuleStatus { get; set; } = SkUtilities.Status.Initialized;
+        public string ModuleName = "UNNAMED";
 
         public SkBaseModule()
         {
@@ -31,7 +31,7 @@ namespace SkToolbox.SkModules
 
         public List<SkMenuItem> FlushMenu()
         {
-          return MenuOptions.FlushMenu();
+            return MenuOptions.FlushMenu();
         }
 
         public void RequestMenu()
@@ -50,19 +50,19 @@ namespace SkToolbox.SkModules
             Destroy(this);
         }
 
-        internal void Ready()
+        public void Ready()
         {
             ModuleStatus = SkUtilities.Status.Ready;
         }
-        internal void Loading()
+        public void Loading()
         {
             ModuleStatus = SkUtilities.Status.Loading;
         }
-        internal void Error()
+        public void Error()
         {
             ModuleStatus = SkUtilities.Status.Error;
         }
-        internal void Unload()
+        public void Unload()
         {
             ModuleStatus = SkUtilities.Status.Unload;
         }

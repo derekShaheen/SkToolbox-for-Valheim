@@ -15,7 +15,7 @@ namespace SkToolbox
     public class SkLoader : MonoBehaviour
     {
         private static GameObject _SkGameObject;
-
+        private static SkBepInExLoader BepLoader;
         private static bool FirstLoad = true;
         private static bool InitLogging = false;
 
@@ -27,6 +27,12 @@ namespace SkToolbox
         public static void Reload()
         {
             Unload();
+           
+            if(BepLoader != null)
+            {
+                BepLoader.InitConfig();
+            }
+
             Init();
         }
 
@@ -44,7 +50,7 @@ namespace SkToolbox
 
         private void Start()
         {
-            SkLoader.Init();
+            SkLoader.InitThreading();
         }
 
         public static void Main(string[] args)
@@ -56,7 +62,19 @@ namespace SkToolbox
         {
             new Thread(() =>
             {
-                Thread.Sleep(5000); // 5 second sleep as initialization occurs *really* early
+                Thread.Sleep(2000); // 5 second sleep as initialization occurs *really* early
+
+                Init();
+
+            }).Start();
+        }
+
+        public static void InitBepThreading(SkBepInExLoader bepLoader)
+        {
+            BepLoader = bepLoader;
+            new Thread(() =>
+            {
+                Thread.Sleep(2000); // 5 second sleep as initialization occurs *really* early
 
                 Init();
 
@@ -94,7 +112,7 @@ namespace SkToolbox
             //    netView.m_persistent = true;
             //    SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Add(_SkGameObject.name.GetStableHashCode(), _SkGameObject);
             //    SkUtilities.Logz(new string[] { "LOADER", "SPREAD BB" }, new string[] { "SUCCESS!" });
-                //SkUtilities.InvokePrivateMethod(ObjectDB.instance, "UpdateItemHashes");
+            //    SkUtilities.InvokePrivateMethod(ObjectDB.instance, "UpdateItemHashes");
             //}
 
             if (root != null)

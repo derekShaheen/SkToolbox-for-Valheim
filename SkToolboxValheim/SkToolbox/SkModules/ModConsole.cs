@@ -26,7 +26,7 @@ namespace SkToolbox.SkModules
         private bool anncounced1 = false;
         private bool anncounced2 = false;
 
-        private int ConsoleOutputMaxHistory = 1000;
+        private int ConsoleOutputMaxHistory = 250;
 
         public Dictionary<string, string> AliasList = new Dictionary<string, string>();
 
@@ -34,6 +34,7 @@ namespace SkToolbox.SkModules
         public List<string> ItemList = new List<string>();
         private Dictionary<string, string> hotkeyList = new Dictionary<string, string>();
         private List<Character> nearbyCharacters = new List<Character>();
+        private Terminal terminal;
 
         //SkConsole SkConsole;
         public ModConsole() : base()
@@ -56,7 +57,11 @@ namespace SkToolbox.SkModules
                 //ConsoleOutputStyle.active.background = OutputTexture;
                 BuildAliases();
                 BuildHotkeys();
-                SkVersionChecker.VersionCurrent(); // Try to load the version so we don't have to when they open the console
+                //SkVersionChecker.VersionCurrent(); // Try to load the version so we don't have to when they open the console
+                if(SkConfigEntry.CScrollableLimit != null)
+                {
+                    ConsoleOutputMaxHistory = SkConfigEntry.CScrollableLimit.Value;
+                }
             }
             catch (Exception)
             {
@@ -100,7 +105,14 @@ namespace SkToolbox.SkModules
 
         public void HandleConsole()
         {
-            if (Console.instance != null)
+            if(terminal == null)
+            {
+                if (Console.instance != null)
+                {
+                    terminal = SkUtilities.GetPrivateProperty<Terminal>(Console.instance, "m_terminalInstance");
+                }
+            }
+            if (Console.instance != null && terminal != null)
             {
                 //Scrollable console
                 if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
@@ -137,6 +149,7 @@ namespace SkToolbox.SkModules
                 if (Console.instance.m_chatWindow.gameObject.activeInHierarchy)
                 {
                     string inputText = Console.instance.m_input.text;
+
                     if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape))
                     {
                         consoleLastMessage = string.Empty;
@@ -145,25 +158,25 @@ namespace SkToolbox.SkModules
                     {
                         consoleLastMessage = inputText;
                     }
-                    if (Input.GetKeyDown(KeyCode.Return))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
                     {
                         if (inputText.Equals(string.Empty) && !consoleLastMessage.Equals(string.Empty))
                         {
                             consoleHistory.Add(consoleLastMessage);
-                            SkCommandProcessor.ProcessCommands(consoleLastMessage, SkCommandProcessor.LogTo.Console);
+                            //SkCommandProcessor.ProcessCommands(consoleLastMessage, SkCommandProcessor.LogTo.Console);
 
                             consoleLastMessage = string.Empty;
                         }
                     }
-                    if (Input.GetKeyDown(KeyCode.UpArrow))
-                    {
-                        Console.instance.m_input.text = consoleHistory.Fetch(inputText, true);
-                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                    }
-                    if (Input.GetKeyDown(KeyCode.DownArrow))
-                    {
-                        Console.instance.m_input.text = consoleHistory.Fetch(inputText, false);
-                    }
+                    //if (Input.GetKeyDown(KeyCode.UpArrow))
+                    //{
+                    //    Console.instance.m_input.text = consoleHistory.Fetch(inputText, true);
+                    //    Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                    //}
+                    //if (Input.GetKeyDown(KeyCode.DownArrow))
+                    //{
+                    //    Console.instance.m_input.text = consoleHistory.Fetch(inputText, false);
+                    //}
                 }
                 if (Input.GetKeyDown(KeyCode.Slash) // Open console with slash
                     && (SkConfigEntry.COpenConsoleWithSlash != null && SkConfigEntry.COpenConsoleWithSlash.Value)
@@ -173,121 +186,177 @@ namespace SkToolbox.SkModules
                     Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Tab)) // Autocomplete
-                {
-                    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value
-                        && Console.instance != null && global::Console.IsVisible())
-                    {
-                        if (!string.IsNullOrEmpty(consoleLastMessage))
-                        {
-                            if (consoleLastMessage.StartsWith("/spawn")) // Spawn command
-                            {
-                                BuildPrebabs();
+                //if (Input.GetKeyDown(KeyCode.Tab)) // Autocomplete
+                //{
+                //    if (SkConfigEntry.CConsoleAutoComplete != null && SkConfigEntry.CConsoleAutoComplete.Value
+                //        && Console.instance != null && global::Console.IsVisible())
+                //    {
+                //        if (!string.IsNullOrEmpty(consoleLastMessage))
+                //        {
+                //            if (consoleLastMessage.StartsWith("/spawn")) // Spawn command
+                //            {
+                //                BuildPrefabs();
 
-                                string matchString = consoleLastMessage.Remove(0, 6);
-                                matchString = matchString.Trim();
+                //                string matchString = consoleLastMessage.Remove(0, 6);
+                //                matchString = matchString.Trim();
 
-                                if (string.IsNullOrEmpty(matchString))
-                                {
-                                    matchString = "a";
-                                }
-                                try
-                                {
-                                    string matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
-                                    && item.StartsWith(matchString, true,
-                                    System.Globalization.CultureInfo.InvariantCulture));
-                                    if (!string.IsNullOrEmpty(matchString))
-                                    {
-                                        Console.instance.m_input.text = "/spawn " + matchPrefab;
-                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    //
-                                }
-                            }
-                            else if (consoleLastMessage.StartsWith("/give")) // Spawn command
-                            {
-                                BuildPrebabs();
+                //                if (string.IsNullOrEmpty(matchString))
+                //                {
+                //                    matchString = "a";
+                //                }
+                //                try
+                //                {
+                //                    string matchPrefab = PrefabList.FirstOrDefault(item => !item.Equals(matchString)
+                //                    && item.StartsWith(matchString, true,
+                //                    System.Globalization.CultureInfo.InvariantCulture));
+                //                    if (!string.IsNullOrEmpty(matchString))
+                //                    {
+                //                        Console.instance.m_input.text = "/spawn " + matchPrefab;
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+                //            }
+                //            else if (consoleLastMessage.StartsWith("/spawntamed")) // Spawn command
+                //            {
+                //                BuildPrefabs();
 
-                                string matchString = consoleLastMessage.Remove(0, 5);
-                                matchString = matchString.Trim();
+                //                string matchString = consoleLastMessage.Remove(0, 11);
+                //                matchString = matchString.Trim();
 
-                                if (string.IsNullOrEmpty(matchString))
-                                {
-                                    matchString = "Woo";
-                                }
+                //                if (string.IsNullOrEmpty(matchString))
+                //                {
+                //                    matchString = "a";
+                //                }
 
-                                try
-                                {
-                                    string matchItem = ItemList.FirstOrDefault(item => !item.Equals(matchString)
-                                    && item.StartsWith(matchString, true,
-                                    System.Globalization.CultureInfo.InvariantCulture));
-                                    if (!string.IsNullOrEmpty(matchString))
-                                    {
-                                        Console.instance.m_input.text = "/give " + matchItem;
-                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    //
-                                }
-                            }
-                            else if (consoleLastMessage.StartsWith("/env")) // env command
-                            {
-                                string matchString = consoleLastMessage.Remove(0, 4);
-                                matchString = matchString.Trim();
+                //                try
+                //                {
+                //                    string matchItem = ItemList.FirstOrDefault(item => !item.Equals(matchString)
+                //                    && item.StartsWith(matchString, true,
+                //                    System.Globalization.CultureInfo.InvariantCulture));
+                //                    if (!string.IsNullOrEmpty(matchString))
+                //                    {
+                //                        Console.instance.m_input.text = "/spawntamed " + matchItem;
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+                //            }
+                //            else if (consoleLastMessage.StartsWith("/give")) // Spawn command
+                //            {
+                //                BuildPrefabs();
 
-                                if (string.IsNullOrEmpty(matchString))
-                                {
-                                    matchString = "Cle";
-                                }
+                //                string matchString = consoleLastMessage.Remove(0, 5);
+                //                matchString = matchString.Trim();
 
-                                try
-                                {
-                                    string matchEnv = SkCommandProcessor.weatherList.FirstOrDefault(item => !item.Equals(matchString)
-                                    && item.StartsWith(matchString, true,
-                                    System.Globalization.CultureInfo.InvariantCulture));
-                                    if (!string.IsNullOrEmpty(matchString))
-                                    {
-                                        Console.instance.m_input.text = "/env " + matchEnv;
-                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    //
-                                }
-                            }
-                            else // Sktoolbox command or Alias
-                            {
-                                try
-                                {
-                                    KeyValuePair<string, string> matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true,
-                                        System.Globalization.CultureInfo.InvariantCulture));
+                //                if (string.IsNullOrEmpty(matchString))
+                //                {
+                //                    matchString = "Woo";
+                //                }
 
-                                    KeyValuePair<string, string> matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
-                                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true,
-                                        System.Globalization.CultureInfo.InvariantCulture));
+                //                try
+                //                {
+                //                    string matchItem = ItemList.FirstOrDefault(item => !item.Equals(matchString)
+                //                    && item.StartsWith(matchString, true,
+                //                    System.Globalization.CultureInfo.InvariantCulture));
+                //                    if (!string.IsNullOrEmpty(matchString))
+                //                    {
+                //                        Console.instance.m_input.text = "/give " + matchItem;
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+                //            }
+                //            else if (consoleLastMessage.StartsWith("/give")) // Spawn command
+                //            {
+                //                BuildPrefabs();
 
-                                    if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
-                                    {
-                                        Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
-                                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    //
-                                }
+                //                string matchString = consoleLastMessage.Remove(0, 5);
+                //                matchString = matchString.Trim();
 
-                            }
-                        }
-                    }
-                }
+                //                if (string.IsNullOrEmpty(matchString))
+                //                {
+                //                    matchString = "Woo";
+                //                }
+
+                //                try
+                //                {
+                //                    string matchItem = ItemList.FirstOrDefault(item => !item.Equals(matchString)
+                //                    && item.StartsWith(matchString, true,
+                //                    System.Globalization.CultureInfo.InvariantCulture));
+                //                    if (!string.IsNullOrEmpty(matchString))
+                //                    {
+                //                        Console.instance.m_input.text = "/give " + matchItem;
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+                //            }
+                //            else if (consoleLastMessage.StartsWith("/env")) // env command
+                //            {
+                //                string matchString = consoleLastMessage.Remove(0, 4);
+                //                matchString = matchString.Trim();
+
+                //                if (string.IsNullOrEmpty(matchString))
+                //                {
+                //                    matchString = "Cle";
+                //                }
+
+                //                try
+                //                {
+                //                    string matchEnv = SkCommandProcessor.weatherList.FirstOrDefault(item => !item.Equals(matchString)
+                //                    && item.StartsWith(matchString, true,
+                //                    System.Globalization.CultureInfo.InvariantCulture));
+                //                    if (!string.IsNullOrEmpty(matchString))
+                //                    {
+                //                        Console.instance.m_input.text = "/env " + matchEnv;
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+                //            }
+                //            else // Sktoolbox command or Alias
+                //            {
+                //                try
+                //                {
+                //                    KeyValuePair<string, string> matchCommand = SkCommandProcessor.commandList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                //                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true,
+                //                        System.Globalization.CultureInfo.InvariantCulture));
+
+                //                    KeyValuePair<string, string> matchAlias = AliasList.FirstOrDefault(item => !item.Key.Equals(consoleLastMessage)
+                //                        && item.Key.StartsWith(consoleLastMessage.Substring(0, Console.instance.m_input.caretPosition), true,
+                //                        System.Globalization.CultureInfo.InvariantCulture));
+
+                //                    if (!string.IsNullOrEmpty(matchCommand.Key) || !string.IsNullOrEmpty(matchAlias.Key))
+                //                    {
+                //                        Console.instance.m_input.text = (string.IsNullOrEmpty(matchCommand.Key) ? matchAlias.Key : matchCommand.Key);
+                //                        Console.instance.m_input.caretPosition = Console.instance.m_input.text.Length;
+                //                    }
+                //                }
+                //                catch (Exception)
+                //                {
+                //                    //
+                //                }
+
+                //            }
+                //        }
+                //    }
+                //}
             }
             base.ModuleStatus = SkUtilities.Status.Ready;
         }
@@ -378,11 +447,6 @@ namespace SkToolbox.SkModules
                         ConsoleOutputStyle.fontSize = fontSize;
                         ConsoleOutputStyle.font = consoleFont;
                         ConsoleOutputStyle.normal.textColor = outputColor;
-
-                        Console.instance.m_output.gameObject.SetActive(false);
-                        SkCommandProcessor.ProcessCommand("/clear", SkCommandProcessor.LogTo.Console);
-                        Console.instance.Print("type \"help\" - for commands");
-                        Console.instance.Print("");
                     }
                 }
                 catch (Exception Ex)
@@ -397,13 +461,12 @@ namespace SkToolbox.SkModules
                     ConsoleOutputStyle.fontSize = 18;
                     ConsoleOutputStyle.font = consoleFont;
                     ConsoleOutputStyle.normal.textColor = Color.white;
-
-                    Console.instance.m_output.gameObject.SetActive(false);
-                    SkCommandProcessor.ProcessCommand("/clear", SkCommandProcessor.LogTo.Console);
-                    Console.instance.Print("type \"help\" - for commands");
-                    Console.instance.Print("");
                 }
             }
+            Console.instance.m_output.gameObject.SetActive(false);
+            SkCommandProcessor.ProcessCommand("/clear", SkCommandProcessor.LogTo.Console);
+            //Console.instance.Print("type \"help\" - for commands");
+            //Console.instance.Print("");
         }
 
         private void OnGUI()
@@ -424,9 +487,9 @@ namespace SkToolbox.SkModules
                 {
                     rectConsoleOutput = new Rect
                     {
-                        x = 1,
+                        x = 7,
                         y = 1,
-                        width = Console.instance.m_output.rectTransform.rect.width,
+                        width = Console.instance.m_output.rectTransform.rect.width - 7,
                         height = Console.instance.m_output.rectTransform.rect.height
                     };
                     if (SkVersionChecker.VersionCurrent())
@@ -470,18 +533,25 @@ namespace SkToolbox.SkModules
             GUILayout.EndVertical();
         }
 
-        public void BuildPrebabs()
+        public void BuildPrefabs()
         {
             if (PrefabList.Count == 0 && ZNetScene.instance != null)
             {
-                foreach (GameObject Prefab in SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Values)
+                try
                 {
-                    PrefabList.Add(ZNetView.GetPrefabName(Prefab));
-                    ItemDrop ItemComponent = Prefab.GetComponent<ItemDrop>();
-                    if (ItemComponent != null)
+                    foreach (GameObject Prefab in SkUtilities.GetPrivateField<Dictionary<int, GameObject>>(ZNetScene.instance, "m_namedPrefabs").Values)
                     {
-                        ItemList.Add(ZNetView.GetPrefabName(Prefab));
+                        PrefabList.Add(Utils.GetPrefabName(Prefab));
+                        ItemDrop ItemComponent = Prefab.GetComponent<ItemDrop>();
+                        if (ItemComponent != null)
+                        {
+                            ItemList.Add(Utils.GetPrefabName(Prefab));
+                        }
                     }
+                }
+                catch(Exception)
+                {
+
                 }
             }
         }
@@ -509,7 +579,6 @@ namespace SkToolbox.SkModules
             {
                 try
                 {
-
                     HandleChat();
                 }
                 catch (Exception)
@@ -524,6 +593,7 @@ namespace SkToolbox.SkModules
                 {
                     SkCommandProcessor.Announce();
                     LoadConsoleCustomizations();
+                    SkCommandProcessor.InitCommands();
                     anncounced1 = true;
                 }
             }
@@ -586,7 +656,7 @@ namespace SkToolbox.SkModules
                     {
                         foreach (Character character in charList)
                         {
-                            if (character != null && !character.IsDead() && !character.IsPlayer())
+                            if (character != null && Player.m_localPlayer != null && !character.IsDead() && !character.IsPlayer())
                             {
                                 if (Vector3.Distance(character.transform.position, Player.m_localPlayer.transform.position) < SkCommandProcessor.bDetectRange)
                                 {
@@ -638,7 +708,6 @@ namespace SkToolbox.SkModules
                 {
                     //
                 }
-
             }
         }
 
@@ -656,31 +725,32 @@ namespace SkToolbox.SkModules
 
         private void ProcessHotkeys()
         {
-            if (hotkeyList != null && hotkeyList.Count > 0)
-            {
+            ////FIX
+            //if (hotkeyList != null && hotkeyList.Count > 0)
+            //{
 
-                foreach (char c in Input.inputString)
-                {
-                    if (Console.instance != null && !global::Console.IsVisible() && Chat.instance != null && !global::Chat.instance.m_input.isFocused)
-                    {
-                        try
-                        {
-                            string matchHotkey = hotkeyList.Keys.First(item => item.ToString().Equals(c.ToString()));
-                            //SkUtilities.Logz(new string[] { "CONTROLLER" }, new string[] { "Found: " + matchHotkey });
+            //    foreach (char c in Input.inputString)
+            //    {
+            //        if (Console.instance != null && !global::Console.IsVisible() && Chat.instance != null && !global::Chat.instance.m_input.isFocused)
+            //        {
+            //            try
+            //            {
+            //                string matchHotkey = hotkeyList.Keys.First(item => item.ToString().Equals(c.ToString()));
+            //                //SkUtilities.Logz(new string[] { "CONTROLLER" }, new string[] { "Found: " + matchHotkey });
 
-                            if (!string.IsNullOrEmpty(matchHotkey.ToString()))
-                            {
-                                //SkUtilities.Logz(new string[] { "CONTROLLER", "RUN HOTKEY" }, new string[] { "Command List: " + matchHotkey, hotkeyList[matchHotkey] });
-                                SkCommandProcessor.ProcessCommands(hotkeyList[matchHotkey], SkCommandProcessor.LogTo.Chat | SkCommandProcessor.LogTo.Console);
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            //
-                        }
-                    }
-                }
-            }
+            //                if (!string.IsNullOrEmpty(matchHotkey.ToString()))
+            //                {
+            //                    //SkUtilities.Logz(new string[] { "CONTROLLER", "RUN HOTKEY" }, new string[] { "Command List: " + matchHotkey, hotkeyList[matchHotkey] });
+            //                    SkCommandProcessor.ProcessCommands(hotkeyList[matchHotkey], SkCommandProcessor.LogTo.Chat | SkCommandProcessor.LogTo.Console);
+            //                }
+            //            }
+            //            catch (Exception)
+            //            {
+            //                //
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private void ProcessAutoRun()
@@ -693,9 +763,11 @@ namespace SkToolbox.SkModules
                     {
                         try
                         {
-                            SkUtilities.Logz(new string[] { "CONTROLLER", "AUTORUN" }, new string[] { "Command List: " + SkConfigEntry.CAutoRunCommand.Value });
-                            SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
-                            SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
+                            ////FIX
+                            SkCommandProcessor.PrintOut("Apologies, autorun was broken by Hearth and Home and is disabled this patch. Fix is in progress.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
+                            //SkUtilities.Logz(new string[] { "CONTROLLER", "AUTORUN" }, new string[] { "Command List: " + SkConfigEntry.CAutoRunCommand.Value });
+                            //SkCommandProcessor.PrintOut("==> AutoRun enabled! Command line: " + SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console);
+                            //SkCommandProcessor.ProcessCommands(SkConfigEntry.CAutoRunCommand.Value, SkCommandProcessor.LogTo.Console); // try to proces SkToolbox command
                         }
                         catch (Exception)
                         {
@@ -839,7 +911,13 @@ namespace SkToolbox.SkModules
                         hotkeyList.Add(HotkeySplit[0], HotkeySplit[1]);
                     }
                 }
+                ////FIX
+                if(hotkeyList.Count > 0)
+                {
+                    SkCommandProcessor.PrintOut("Apologies, hotkeys was broken by Hearth and Home and is disabled this patch. Fix is in progress. Please attempt to use the new bind command.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
 
+                    hotkeyList.Clear();
+                }
             }
             catch (Exception Ex)
             {
@@ -974,26 +1052,32 @@ namespace SkToolbox.SkModules
 
                 if (AliasList != null && AliasList.Count > 0)
                 {
-                    List<string> trashKeys = new List<string>();
-                    foreach (string key in AliasList.Keys)
+                    ////FIX
+                    if (AliasList.Count > 0)
                     {
-                        if (!SkCommandProcessor.commandList.Keys.Contains(key))
-                        {
-                            SkCommandProcessor.commandList.Add(key, "- (Alias) " + AliasList[key].Trim());
-                        }
-                        else
-                        {
-                            SkCommandProcessor.PrintOut("Alias\t► '" + key + "' is invalid. This command is already in the list.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
-                            trashKeys.Add(key);
-                        }
+                        SkCommandProcessor.PrintOut("Apologies, command aliasing was broken by Hearth and Home and is disabled this patch. Fix is in progress.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
+                        hotkeyList.Clear();
                     }
-                    if (trashKeys.Count > 0)
-                    {
-                        foreach (string key in trashKeys)
-                        {
-                            AliasList.Remove(key);
-                        }
-                    }
+                    //List<string> trashKeys = new List<string>();
+                    //foreach (string key in AliasList.Keys)
+                    //{
+                    //    if (!SkCommandProcessor.commandList.Keys.Contains(key))
+                    //    {
+                    //        SkCommandProcessor.commandList.Add(key, "- (Alias) " + AliasList[key].Trim());
+                    //    }
+                    //    else
+                    //    {
+                    //        SkCommandProcessor.PrintOut("Alias\t► '" + key + "' is invalid. This command is already in the list.", SkCommandProcessor.LogTo.Console | SkCommandProcessor.LogTo.DebugConsole);
+                    //        trashKeys.Add(key);
+                    //    }
+                    //}
+                    //if (trashKeys.Count > 0)
+                    //{
+                    //    foreach (string key in trashKeys)
+                    //    {
+                    //        AliasList.Remove(key);
+                    //    }
+                    //}
                 }
             }
             catch (Exception Ex)
@@ -1013,33 +1097,36 @@ namespace SkToolbox.SkModules
 
                     foreach (Character toon in nearbyCharacters)
                     {
-                        float toonDist = Vector3.Distance(playerPos, toon.transform.position);
+                        if(toon != null)
+                        {
+                            float toonDist = Vector3.Distance(playerPos, toon.transform.position);
 
-                        if (toonDist > 15)
-                        {
-                            GUI.color = Color.green;
-                        }
-                        else if (toonDist > 10 && toonDist < 15)
-                        {
-                            GUI.color = Color.yellow;
-                        }
-                        else if (toonDist > 5 && toonDist < 10)
-                        {
-                            GUI.color = Color.yellow + Color.red;
-                        }
-                        else if (toonDist > 0 && toonDist < 5)
-                        {
-                            GUI.color = Color.red;
-                        }
-                        GUILayout.BeginHorizontal();
+                            if (toonDist > 15)
+                            {
+                                GUI.color = Color.green;
+                            }
+                            else if (toonDist > 10 && toonDist < 15)
+                            {
+                                GUI.color = Color.yellow;
+                            }
+                            else if (toonDist > 5 && toonDist < 10)
+                            {
+                                GUI.color = Color.yellow + Color.red;
+                            }
+                            else if (toonDist > 0 && toonDist < 5)
+                            {
+                                GUI.color = Color.red;
+                            }
+                            GUILayout.BeginHorizontal();
 
-                        GUILayout.Label("Name: " + toon.GetHoverName());
-                        GUILayout.Label("HP: " + Mathf.RoundToInt(toon.GetHealth()) + "/" + toon.GetMaxHealth()
-                            + " | Level: " + toon.GetLevel()
-                            + " | Dist: " + Mathf.RoundToInt(toonDist));
+                            GUILayout.Label("Name: " + toon.GetHoverName());
+                            GUILayout.Label("HP: " + Mathf.RoundToInt(toon.GetHealth()) + "/" + toon.GetMaxHealth()
+                                + " | Level: " + toon.GetLevel()
+                                + " | Dist: " + Mathf.RoundToInt(toonDist));
 
-                        GUILayout.EndHorizontal();
-                        GUI.color = Color.white;
+                            GUILayout.EndHorizontal();
+                            GUI.color = Color.white;
+                        }
                     }
                 }
                 GUILayout.EndVertical();

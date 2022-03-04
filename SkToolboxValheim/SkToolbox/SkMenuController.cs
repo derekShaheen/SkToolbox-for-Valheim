@@ -1,5 +1,4 @@
-﻿using SkToolbox.Configuration;
-using SkToolbox.Utility;
+﻿using SkToolbox.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,12 +11,12 @@ namespace SkToolbox
     /// Designed to control the menu processes. Menu operations can be requested/performed via this class.
     /// </summary>
 
-    internal class SkMenuController : MonoBehaviour
+    public class SkMenuController : MonoBehaviour
     {
         private string contextTipInfo1 = "NumPad Arrows";
         private string contextTipInfo2 = "NumPad 5 to Select";
         private string contextTipInfo3 = "NumPad . to Back";
-        internal static Version SkMenuControllerVersion = new Version(1, 1, 4); // 12/2020
+        internal static Version SkMenuControllerVersion = new Version(1, 5, 0); // 09/2021
 
         internal static Status SkMenuControllerStatus = Status.Initialized;
 
@@ -26,27 +25,27 @@ namespace SkToolbox
         //private readonly string welcomeMsg = "[SkToolbox Loaded]\nPress NumPad 0\nto Acknowledge.";
         private readonly string welcomeMotd = "";
 
-        private bool firstRun = false;
-        private bool InitialCheck = true;
+        private bool displayWelcome = false;
+        private bool initialCheck = true;
         internal bool logResponse = false;
 
-        private bool MenuOpen = false;
-        private bool SubMenuOpen = false;
+        private bool menuOpen = false;
+        private bool subMenuOpen = false;
         private bool menuProcessInitialOptSize = true; // Scale the main menu on start
         private bool subMenuProcessInitialOptSize = true; // Scale the submenu upon request
-        //public float InputDelay = 0.2f;
-        //public float CurrentInputDelay = 0f;
-        private int MenuSelection = 1;
-        private int SubMenuSelection = 1;
+        public float inputDelay = -1f; // Set to -1f to disable. Default 0.2f if enabled.
+        public float currentInputDelay = 0f;
+        private int menuSelection = 1;
+        private int subMenuSelection = 1;
         private int maxSelectionOption;
         private int subMaxSelectionOption = 1;
         private int subMenuMaxItemsPerPage = 12;
         private int subMenuCurrentPage = 1;
-        //private List<SkMenuItem> menuOptions;
-        public List<SkModules.SkBaseModule> MenuOptions;
-        public List<SkMenuItem> SubMenuOptions;
-        public List<SkMenuItem> SubMenuOptionsDisplay;
-        private SkModuleController SkModuleController;
+
+        public List<SkModules.SkBaseModule> menuOptions;
+        public List<SkMenuItem> subMenuOptions;
+        public List<SkMenuItem> subMenuOptionsDisplay;
+        public SkModuleController SkModuleController;
 
         //GUI Positions
         private int ypos_initial = 0;
@@ -78,48 +77,9 @@ namespace SkToolbox
 
         void Update()
         {
-            if(Console.instance != null && global::Console.IsVisible())
+            if (initialCheck) // It takes a frame to load the components. Attempt to load menu options in second frame.
             {
-                MenuOpen = false;
-            }
-            if (SkCommandProcessor.altOnScreenControls)
-            {
-                if(SkConfigEntry.OAltToggle != null && SkConfigEntry.OAltUp != null && SkConfigEntry.OAltDown != null && SkConfigEntry.OAltChoose != null && SkConfigEntry.OAltBack != null)
-                {
-                    contextTipInfo1 = SkConfigEntry.OAltToggle.Value + "/" + SkConfigEntry.OAltUp.Value + "/" + SkConfigEntry.OAltDown.Value;
-                    contextTipInfo2 = SkConfigEntry.OAltChoose.Value + " Button";
-                    contextTipInfo3 = SkConfigEntry.OAltBack.Value + " Button";
-                    keyBindings["selToggle"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltToggle.Value);
-                    keyBindings["selUp"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltUp.Value);
-                    keyBindings["selDown"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltDown.Value);
-                    keyBindings["selChoose"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltChoose.Value);
-                    keyBindings["selBack"] = (KeyCode)Enum.Parse(typeof(KeyCode), SkConfigEntry.OAltBack.Value);
-                } else
-                {
-                    contextTipInfo1 = "Home/PgUp/PgDn";
-                    contextTipInfo2 = "Insert Button";
-                    contextTipInfo3 = "Delete Button";
-                    keyBindings["selToggle"] = KeyCode.Home;
-                    keyBindings["selUp"] = KeyCode.PageUp;
-                    keyBindings["selDown"] = KeyCode.PageDown;
-                    keyBindings["selChoose"] = KeyCode.Insert;
-                    keyBindings["selBack"] = KeyCode.Delete;
-                }
-            }
-            else
-            {
-                contextTipInfo1 = "NumPad Arrows";
-                contextTipInfo2 = "NumPad 5 to Select";
-                contextTipInfo3 = "NumPad . to Back";
-                keyBindings["selToggle"] = KeyCode.Keypad0;
-                keyBindings["selUp"] = KeyCode.Keypad8;
-                keyBindings["selDown"] = KeyCode.Keypad2;
-                keyBindings["selChoose"] = KeyCode.Keypad5;
-                keyBindings["selBack"] = KeyCode.KeypadPeriod;
-            }
-            if (InitialCheck) // It takes a frame to load the components. Attempt to load menu options in second frame.
-            {
-                if (MenuOptions?.Count == 0) // If there is no menu, try to refresh it from SkMain
+                if (menuOptions?.Count == 0) // If there is no menu, try to refresh it from SkMain
                 { // There will be at least one frame where there is no menu when initialized
                     UpdateMenuOptions(SkModuleController.GetOptions());
                 }
@@ -128,52 +88,50 @@ namespace SkToolbox
                     SkMenuControllerStatus = Status.Ready;
                     if (SkMenuControllerStatus == Status.Ready && SkModuleController.SkMainStatus == Status.Ready)
                     {
-                        InitialCheck = false;
+                        initialCheck = false;
                         SkUtilities.Logz(new string[] { "CONTROLLER", "NOTIFY" }, new string[] { "READY." }); // Notify the console that the menu is ready
                     }
                 }
             }
             //Keycode menu activation
-            if (Input.GetKeyDown(keyBindings["selToggle"]) 
-                && Console.instance != null && !global::Console.IsVisible() 
-                && Chat.instance != null && !global::Chat.instance.m_input.isFocused)
+            if (Input.GetKeyDown(keyBindings["selToggle"]))
             {
-                firstRun = false;
-                MenuOpen = !MenuOpen;
+                displayWelcome = false;
+                menuOpen = !menuOpen;
                 //MenuOpen = false;
             }
-            if (MenuOpen) // Menu is open
+            if (menuOpen) // Menu is open
             {
-                if (!SubMenuOpen) // Main menu
+                if (!subMenuOpen) // Main menu
                 {
 
                     //if (Input.GetKey(keyBindings["selDown"]) && CurrentInputDelay <= 0)
-                    if (Input.GetKeyDown(keyBindings["selDown"]))
+                    if ((inputDelay == -1f && Input.GetKeyDown(keyBindings["selDown"])) || (inputDelay > -1f && Input.GetKey(keyBindings["selDown"]) && currentInputDelay <= 0))
                     {
-                        //CurrentInputDelay = InputDelay;
-                        SubMenuSelection = 1;
-                        if (MenuSelection != maxSelectionOption)
+                        currentInputDelay = inputDelay;
+                        subMenuSelection = 1;
+                        if (menuSelection != maxSelectionOption)
                         {
-                            MenuSelection += 1;
+                            menuSelection += 1;
                         }
                         else
                         {
-                            MenuSelection = 1;
+                            menuSelection = 1;
                         }
                     }
 
                     //if (Input.GetKey(keyBindings["selUp"]) && CurrentInputDelay <= 0)
-                    if (Input.GetKeyDown(keyBindings["selUp"]))
+                    if ((inputDelay == -1f && Input.GetKeyDown(keyBindings["selUp"])) || (inputDelay > -1f && Input.GetKey(keyBindings["selUp"]) && currentInputDelay <= 0))
                     {
                         //CurrentInputDelay = InputDelay;
-                        SubMenuSelection = 1;
-                        if (MenuSelection != 1)
+                        subMenuSelection = 1;
+                        if (menuSelection != 1)
                         {
-                            MenuSelection -= 1;
+                            menuSelection -= 1;
                         }
                         else
                         {
-                            MenuSelection = maxSelectionOption;
+                            menuSelection = maxSelectionOption;
                         }
                     }
 
@@ -181,7 +139,7 @@ namespace SkToolbox
                     {
                         try
                         {
-                            RunMethod(MenuOptions[MenuSelection - 1].CallerEntry.ItemClass);
+                            RunMethod(menuOptions[menuSelection - 1].CallerEntry.ItemClass);
                         }
                         catch (Exception ex)
                         {
@@ -192,55 +150,56 @@ namespace SkToolbox
                 else // We are in the submenu
                 {
                     //if (Input.GetKey(keyBindings["selDown"]) && CurrentInputDelay <= 0)
-                    if (Input.GetKeyDown(keyBindings["selDown"]))
+                    if ((inputDelay == -1f && Input.GetKeyDown(keyBindings["selDown"])) || (inputDelay > -1f && Input.GetKey(keyBindings["selDown"]) && currentInputDelay <= 0))
                     {
-                        //CurrentInputDelay = InputDelay;
-                        if (SubMenuSelection != subMaxSelectionOption)
+                        currentInputDelay = inputDelay;
+                        if (subMenuSelection != subMaxSelectionOption)
                         {
-                            SubMenuSelection += 1;
+                            subMenuSelection += 1;
                         }
                         else
                         {
-                            SubMenuSelection = 1;
+                            subMenuSelection = 1;
                         }
                     }
 
                     //if (Input.GetKey(keyBindings["selUp"]) && CurrentInputDelay <= 0)
-                    if (Input.GetKeyDown(keyBindings["selUp"]))
+                    if ((inputDelay == -1f && Input.GetKeyDown(keyBindings["selUp"])) || (inputDelay > -1f && Input.GetKey(keyBindings["selUp"]) && currentInputDelay <= 0))
                     {
-                        //CurrentInputDelay = InputDelay;
-                        if (SubMenuSelection != 1)
+                        currentInputDelay = inputDelay;
+                        if (subMenuSelection != 1)
                         {
-                            SubMenuSelection -= 1;
+                            subMenuSelection -= 1;
                         }
                         else
                         {
-                            SubMenuSelection = subMaxSelectionOption;
+                            subMenuSelection = subMaxSelectionOption;
                         }
                     }
 
                     if (Input.GetKeyDown(keyBindings["selChoose"]))
                     {
-                        SubMenuOpen = false;
+                        subMenuOpen = false;
+                        //SkUtilities.Logz(new string[] { "CONTROLLER", "SUB SEL" }, new string[] { SubMenuSelection.ToString() });
                         try
                         {
-                            RunMethod(SubMenuOptionsDisplay[SubMenuSelection - 1].ItemClass); // Pass back the method and parameter
+                            RunMethod(subMenuOptionsDisplay[subMenuSelection - 1].ItemClass); // Pass back the method
                         }
                         catch (Exception)
                         {
                             try
                             {
-                                if (SubMenuOptionsDisplay[SubMenuSelection - 1].ItemText.Equals("Next >"))
+                                if (subMenuOptionsDisplay[subMenuSelection - 1].ItemText.Equals("Next >"))
                                 {
                                     IncreasePage();
                                 }
-                                else if (SubMenuOptionsDisplay[SubMenuSelection - 1].ItemText.Equals("< Previous"))
+                                else if (subMenuOptionsDisplay[subMenuSelection - 1].ItemText.Equals("< Previous"))
                                 {
                                     DecreasePage();
                                 }
                                 else
                                 {
-                                    RunMethod(SubMenuOptionsDisplay[SubMenuSelection - 1].ItemClassStr, SubMenuOptionsDisplay[SubMenuSelection - 1].ItemText); // Pass back the method and parameter
+                                    RunMethod(subMenuOptionsDisplay[subMenuSelection - 1].ItemClassStr, subMenuOptionsDisplay[subMenuSelection - 1].ItemText); // Pass back the method and string from the menu option
 
                                 }
                             }
@@ -253,42 +212,42 @@ namespace SkToolbox
                 }
                 if (Input.GetKeyDown(keyBindings["selBack"])) // Menu is open, but regardless of main or submenu...
                 {
-                    if (!SubMenuOpen)
+                    if (!subMenuOpen)
                     {
-                        MenuOpen = false;
+                        menuOpen = false;
                     }
-                    SubMenuOpen = false;
+                    subMenuOpen = false;
                 }
             }
-            //CurrentInputDelay -= Time.deltaTime;
-            //CurrentInputDelay = Mathf.Clamp(CurrentInputDelay, 0f, 999f); // Prevent this from dipping beneath 0
+            currentInputDelay -= Time.deltaTime;
+            currentInputDelay = Mathf.Clamp(currentInputDelay, 0f, 999f); // Prevent this from dipping beneath 0
         }
 
         void OnGUI()
         {
             GUI.color = Color.white;
 
-            if (firstRun)
+            if (displayWelcome)
             { // Display the greeting message
                 //GUI.Box(new Rect(10, ypos_initial + ypos_offset, 150, 55), welcomeMsg);
                 var WelcomeWindow = GUILayout.Window(49101, new Rect(7, ypos_initial, 150, 55), ProcessWelcome, "");
             }
 
-            if (MenuOptions == null || MenuOptions.Count == 0 || ypos_initial == 0) // If there is no menu, try to refresh it from SkMain // Also if the Screen.* was not able to be calculated,
+            if (menuOptions == null || menuOptions.Count == 0 || ypos_initial == 0) // If there is no menu, try to refresh it from SkMain // Also if the Screen.* was not able to be calculated,
                                                                                     //      ypos_initial will also still be 0, and the menu will appear in the top left corner.
             { // There will be at least one frame where there is no menu when initialized
                 UpdateMenuOptions(SkModuleController.GetOptions());
             }
             else // We've received a menu from SkMain and can now display it
             {
-                if (MenuOpen) // Display the menu components
+                if (menuOpen) // Display the menu components
                 {
                     if (menuProcessInitialOptSize) // Calculate the X size of the text and store the highest value for the width
                     {
                         float largestCalculatedWidth = 0;
                         GUIStyle style = GUI.skin.box;
                         // Calculate width
-                        foreach (SkModules.SkBaseModule optList in MenuOptions)
+                        foreach (SkModules.SkBaseModule optList in menuOptions)
                         {
                             GUIContent menuTextItem = new GUIContent(optList.CallerEntry.ItemText);
                             Vector2 size = style.CalcSize(menuTextItem);
@@ -299,18 +258,18 @@ namespace SkToolbox
 
                         menuProcessInitialOptSize = false; // Processing of the main menu size is complete, let's not calculate this every frame...
                     }
-                    var MainWindow = GUILayout.Window(49000, new Rect(7, ypos_initial, mWidth + ypos_offset, 30 + (ypos_offset * MenuOptions.Count)), ProcessMainMenu, "- [" + appName + "] -");
+                    var MainWindow = GUILayout.Window(49000, new Rect(7, ypos_initial, mWidth + ypos_offset, 30 + (ypos_offset * menuOptions.Count)), ProcessMainMenu, "- [" + appName + "] -");
 
                     //GUILayout.Window(49002, new Rect(7, MainWindow.y + MainWindow.height + ypos_offset, mWidth + ypos_offset, 30 + (ypos_offset * menuTipSize)), ProcessContextMenu, "- Context -");
 
-                    if (SubMenuOpen)
+                    if (subMenuOpen)
                     {
                         if (subMenuProcessInitialOptSize) // only calculate the size once after the submenu was sent
                         {
                             float largestCalculatedWidth = 0;
                             GUIStyle style = GUI.skin.box;
                             // Calculate width
-                            foreach (SkMenuItem optList in SubMenuOptions)
+                            foreach (SkMenuItem optList in subMenuOptions)
                             {
                                 GUIContent menuTextItem = new GUIContent(optList.ItemText);
                                 Vector2 size = style.CalcSize(menuTextItem);
@@ -320,16 +279,26 @@ namespace SkToolbox
                             sWidth = Mathf.Clamp(sWidth, 105, 1024); // Min/max width
                         }
 
-                        if (SubMenuOptions.Count > subMenuMaxItemsPerPage)
+                        if (subMenuOptions.Count > subMenuMaxItemsPerPage)
                         { // This will display the submenu box and title. It will also display what page we are on, and the maximum number of pages.
                             GUILayout.Window(49001, new Rect(mWidth + subMenu_xpos_offset, ypos_initial - ypos_offset, sWidth + subMenu_xpos_offset, (30 + (ypos_offset * subMenuMaxItemsPerPage))), ProcessSubMenu,
-                                "- Submenu - " + subMenuCurrentPage + "/" + (Mathf.Ceil(SubMenuOptions.Count / subMenuMaxItemsPerPage) + (SubMenuOptions.Count % subMenuMaxItemsPerPage == 0 ? 0 : 1)));
+                                "- Submenu - " + subMenuCurrentPage + "/" + (Mathf.Ceil(subMenuOptions.Count / subMenuMaxItemsPerPage) + (subMenuOptions.Count % subMenuMaxItemsPerPage == 0 ? 0 : 1)));
                         }
                         else
                         {
-                            GUILayout.Window(49001, new Rect(mWidth + subMenu_xpos_offset, ypos_initial - ypos_offset, sWidth + subMenu_xpos_offset, (30 + (ypos_offset * SubMenuOptions.Count))), ProcessSubMenu, "- Submenu -");
+                            GUILayout.Window(49001, new Rect(mWidth + subMenu_xpos_offset, ypos_initial - ypos_offset, sWidth + subMenu_xpos_offset, (30 + (ypos_offset * subMenuOptions.Count))), ProcessSubMenu, "- Submenu -");
                         }
                     }
+                }
+            }
+
+            if (Event.current.button == 0
+                    && Event.current.type != EventType.Repaint
+                    && Event.current.type != EventType.Layout)
+            {
+                if (Event.current.type == EventType.MouseDown)
+                {
+                    Event.current.Use();
                 }
             }
 
@@ -352,7 +321,7 @@ namespace SkToolbox
         {
             try
             {
-                ProcessSubMenu(SubMenuOptions);
+                ProcessSubMenu(subMenuOptions);
             }
             catch (Exception ex)
             {
@@ -399,11 +368,11 @@ namespace SkToolbox
             //styMenuItems.normal.background = null;
 
             GUILayout.BeginVertical();
-            for (var i = 0; i < MenuOptions.Count; i++)
+            for (var i = 0; i < menuOptions.Count; i++)
             {
-                if (i == (MenuSelection - 1)) // These if statements perform color changing based on selections
+                if (i == (menuSelection - 1)) // These if statements perform color changing based on selections
                 {
-                    if (SubMenuOpen)
+                    if (subMenuOpen)
                     {
                         GUI.color = menuOptionSelected;
                     }
@@ -417,7 +386,19 @@ namespace SkToolbox
                     GUI.color = Color.white;
                 }
 
-                GUILayout.Label(MenuOptions[i].CallerEntry.ItemText, styMenuItems); // Display the label
+                if (GUILayout.Button(menuOptions[i].CallerEntry.ItemText, styMenuItems))
+                {
+                    subMenuOpen = false;
+                    menuSelection = i + 1;
+                    try
+                    {
+                        RunMethod(menuOptions[i].CallerEntry.ItemClass);
+                    }
+                    catch (Exception ex)
+                    {
+                        SkUtilities.Logz(new string[] { "CONTROLLER", "ERROR" }, new string[] { ex.Message });
+                    }
+                }
             }
             GUI.color = Color.white;
             GUILayout.EndVertical();
@@ -426,14 +407,14 @@ namespace SkToolbox
         public void IncreasePage()
         {
             subMenuCurrentPage++;
-            if (subMenuCurrentPage == 2) { SubMenuSelection++; }
-            SubMenuOpen = true;
+            if (subMenuCurrentPage == 2) { subMenuSelection++; }
+            subMenuOpen = true;
         }
 
         public void DecreasePage()
         {
             subMenuCurrentPage--;
-            SubMenuOpen = true;
+            subMenuOpen = true;
         }
 
         /// <summary>
@@ -448,12 +429,12 @@ namespace SkToolbox
             {
                 subMenuCurrentPage = 1; // Reset the page to the first
                 sWidth = subWidth; // Use custom width if passed in
-                SubMenuOpen = true; // A submenu was requested, enable it
+                subMenuOpen = true; // A submenu was requested, enable it
                 subMenuProcessInitialOptSize = true; // Need to calculate sizes of the new submenu. This is later calculated only if we are not using the custom subWidth (subWidth <> 0)
 
-                this.SubMenuOptions = subMenuOptions; // Set the submenu options
+                this.subMenuOptions = subMenuOptions; // Set the submenu options
                 subMaxSelectionOption = subMenuOptions.Count; // How many options are there?
-                if (SubMenuSelection > subMenuOptions.Count) { SubMenuSelection = 1; } // Select 1st item if previous selection is out of bounds
+                if (subMenuSelection > subMenuOptions.Count) { subMenuSelection = 1; } // Select 1st item if previous selection is out of bounds
 
                 if (refreshTime > 0)
                 { // Real time menu? Call the subroutine
@@ -483,7 +464,7 @@ namespace SkToolbox
 
         private void ProcessSubMenu(List<SkMenuItem> subMenuOptions)
         {
-            if (SubMenuOpen)
+            if (subMenuOpen)
             {
                 GUIStyle styMenuItems = new GUIStyle(GUI.skin.box);
 
@@ -520,20 +501,20 @@ namespace SkToolbox
                     }
 
                     subMenuOptions = tempOptionsList;
-                    SubMenuOptionsDisplay = tempOptionsList;
+                    subMenuOptionsDisplay = tempOptionsList;
                     subMaxSelectionOption = subMenuOptions.Count; // How many options are there?
-                    if (SubMenuSelection > subMenuOptions.Count) { SubMenuSelection = 1; }
+                    if (subMenuSelection > subMenuOptions.Count) { subMenuSelection = 1; }
                 }
                 else
                 {
-                    SubMenuOptionsDisplay = subMenuOptions;
+                    subMenuOptionsDisplay = subMenuOptions;
                 }
 
                 GUILayout.BeginVertical();
 
                 for (var i = 0; i < subMenuOptions.Count; i++)
                 {
-                    if (i == (SubMenuSelection - 1))
+                    if (i == (subMenuSelection - 1))
                     {
                         GUI.color = menuOptionHighlight;
                     }
@@ -541,7 +522,36 @@ namespace SkToolbox
                     {
                         GUI.color = Color.white;
                     }
-                    GUILayout.Label(subMenuOptions[i].ItemText, styMenuItems);
+                    if (GUILayout.Button(subMenuOptions[i].ItemText, styMenuItems))
+                    {
+                        subMenuSelection = i + 1;
+                        try
+                        {
+                            RunMethod(subMenuOptionsDisplay[i].ItemClass); // Pass back the method and parameter
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                if (subMenuOptionsDisplay[i].ItemText.Equals("Next >"))
+                                {
+                                    IncreasePage();
+                                }
+                                else if (subMenuOptionsDisplay[i].ItemText.Equals("< Previous"))
+                                {
+                                    DecreasePage();
+                                }
+                                else
+                                {
+                                    RunMethod(subMenuOptionsDisplay[i].ItemClassStr, subMenuOptionsDisplay[i].ItemText); // Pass back the method and parameter
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                SkUtilities.Logz(new string[] { "CONTROLLER", "ERROR" }, new string[] { ex.Message });
+                            }
+                        }
+                    }
                 }
                 GUILayout.EndVertical();
                 GUI.color = Color.white;
@@ -555,39 +565,53 @@ namespace SkToolbox
             styHeader.alignment = TextAnchor.MiddleCenter;
 
             GUILayout.BeginVertical();
-
-            if (SubMenuOpen) // Display tip for submenu items
+            try
             {
-                if (SubMenuOptionsDisplay[SubMenuSelection - 1].ItemTip != null)
+                if (subMenuOpen) // Display tip for submenu items
                 {
-                    if (!SubMenuOptionsDisplay[SubMenuSelection - 1].ItemTip.Equals(""))
+                    try
                     {
-                        GUILayout.Label("- Context -", styHeader);
-                        GUILayout.Label(SubMenuOptionsDisplay[SubMenuSelection - 1].ItemTip);
+                        if (subMenuOptionsDisplay.Count > 0 && subMenuOptionsDisplay[subMenuSelection - 1] != null && subMenuOptionsDisplay[subMenuSelection - 1].ItemTip != null)
+                        {
+                            if (!subMenuOptionsDisplay[subMenuSelection - 1].ItemTip.Equals(""))
+                            {
+                                GUILayout.Label("- Context -", styHeader);
+                                GUILayout.Label(subMenuOptionsDisplay[subMenuSelection - 1].ItemTip);
+                            }
+                        }
+                    }
+                    catch (NullReferenceException)
+                    {
+                        //
+                    }
+
+                }
+                else // Display tip for main menu items
+                {
+                    if (menuOptions[menuSelection - 1].CallerEntry != null && menuOptions[menuSelection - 1].CallerEntry.ItemTip != null)
+                    {
+                        if (!menuOptions[menuSelection - 1].CallerEntry.ItemTip.Equals(""))
+                        {
+                            GUILayout.Label("- Context -", styHeader);
+                            GUILayout.Label(menuOptions[menuSelection - 1].CallerEntry.ItemTip);
+                        }
                     }
                 }
-            }
-            else // Display tip for main menu items
-            {
-                if (MenuOptions[MenuSelection - 1].CallerEntry.ItemTip != null)
+
+                GUILayout.Label("- Controls -", styHeader);
+                GUILayout.Label(contextTipInfo1);
+
+                GUILayout.Label(contextTipInfo2);
+
+                if (subMenuOpen)
                 {
-                    if (!MenuOptions[MenuSelection - 1].CallerEntry.ItemTip.Equals(""))
-                    {
-                        GUILayout.Label("- Context -", styHeader);
-                        GUILayout.Label(MenuOptions[MenuSelection - 1].CallerEntry.ItemTip);
-                    }
+                    GUILayout.Label(contextTipInfo3);
+
                 }
             }
-
-            GUILayout.Label("- Controls -", styHeader);
-            GUILayout.Label(contextTipInfo1);
-
-            GUILayout.Label(contextTipInfo2);
-
-            if (SubMenuOpen)
+            catch (ArgumentException)
             {
-                GUILayout.Label(contextTipInfo3);
-
+                // This error could be thrown if certain variables change in the middle of a frame. Just suppress it and the new element will show on the following frame.
             }
             GUILayout.EndVertical();
             GUI.color = Color.white;
@@ -596,23 +620,23 @@ namespace SkToolbox
         private IEnumerator RealTimeMenuUpdate(float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
-            if (SubMenuOpen)
+            if (subMenuOpen)
             {
-                RunMethod(SubMenuOptions[SubMenuSelection - 1].ItemClass);
+                RunMethod(subMenuOptions[subMenuSelection - 1].ItemClass);
             }
         }
 
         public void UpdateMenuOptions(List<SkModules.SkBaseModule> newMenuOptions)
         {
-            SubMenuOpen = false;
-            MenuOpen = false;
-            MenuSelection = 1;
-            SubMenuSelection = 1;
-            MenuOptions = newMenuOptions;
-            if (MenuOptions?.Count > 0)
+            subMenuOpen = false;
+            menuOpen = false;
+            menuSelection = 1;
+            subMenuSelection = 1;
+            menuOptions = newMenuOptions;
+            if (menuOptions?.Count > 0)
             {
-                ypos_initial = (Screen.height / 2) - (MenuOptions.Count / 2 * ypos_offset); // Rescale the Y axis calculation
-                maxSelectionOption = MenuOptions.Count; // How many options were sent?
+                ypos_initial = (Screen.height / 2) - (menuOptions.Count / 2 * ypos_offset); // Rescale the Y axis calculation
+                maxSelectionOption = menuOptions.Count; // How many options were sent?
             }
             menuProcessInitialOptSize = true; // Initialize the main menu resize on next frame
         }
@@ -632,6 +656,12 @@ namespace SkToolbox
             {
                 SkUtilities.Logz(new string[] { "CONTROLLER", "ERROR" }, new string[] { "Error running method. Likely not found... " + ex.Message }, LogType.Error);
             }
+        }
+
+        public void CloseMenu()
+        {
+            menuOpen = false;
+            subMenuOpen = false;
         }
     }
 }

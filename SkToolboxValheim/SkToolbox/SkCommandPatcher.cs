@@ -21,6 +21,7 @@ namespace SkToolbox
 
         public static void InitPatch()
         {
+            
             if (!InitComplete)
             {
                 //SkUtilities.Logz(new string[] { "SkCommandPatcher", "INJECT" }, new string[] { "Attempting injection..." });
@@ -28,7 +29,6 @@ namespace SkToolbox
                 {
                     //Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
                     harmony = Harmony.CreateAndPatchAll(typeof(SkCommandPatcher).Assembly);
-
                     //SkUtilities.Logz(new string[] { "SkCommandPatcher", "INJECT" }, new string[] { "INJECT => COMPLETE" });
                 }
                 catch (Exception ex)
@@ -44,37 +44,25 @@ namespace SkToolbox
             }
         }
 
-        [HarmonyPatch(typeof(Console), "IsCheatsEnabled")]
-        public static class PatchIsCheatsEnabled
+        [HarmonyPatch(typeof(Console), "IsConsoleEnabled")]
+        public static class PatchIsConsoleEnabled
         {
-            public static void Postfix(bool __result)
+            [HarmonyPriority(Priority.Last)]
+            private static void Postfix(bool __result)
             {
-                __result = SkCommandPatcher.BCheat;
+                if (Configuration.SkConfigEntry.CConsoleEnabled != null && Configuration.SkConfigEntry.CConsoleEnabled.Value)
+                {
+                    __result = Configuration.SkConfigEntry.CConsoleEnabled.Value;
+                }
             }
         }
 
-        //[HarmonyPatch(typeof(Console), "AddString")]
-        //private static class PatchAddString
+        //[HarmonyPatch(typeof(Console), "IsCheatsEnabled")]
+        //public static class PatchIsCheatsEnabled
         //{
-        //    static List<string> currentBuffer = new List<string>();
-        //    private static bool Prefix(string text)
+        //    public static void Postfix(bool __result)
         //    {
-        //        if (Console.instance != null)
-        //        {
-        //            currentBuffer = SkUtilities.GetPrivateField<List<string>>(Console.instance, "m_chatBuffer");
-        //            currentBuffer.Add(text);
-        //            while (currentBuffer.Count > 40)
-        //            {
-        //                currentBuffer.RemoveAt(0);
-        //            }
-        //            SkUtilities.SetPrivateField(Console.instance, "m_chatBuffer", currentBuffer);
-        //            Console.instance.GetType().GetMethod("UpdateChat", SkUtilities.BindFlags).Invoke(Console.instance, null);
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            return true;
-        //        }
+        //        __result = SkCommandPatcher.BCheat;
         //    }
         //}
 

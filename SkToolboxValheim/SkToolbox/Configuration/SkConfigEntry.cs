@@ -11,9 +11,11 @@ namespace SkToolbox.Configuration
 
         public static ConfigEntry<bool> CAllowChatCommandInput { get; set; }
         public static ConfigEntry<bool> CAllowPublicChatOutput { get; set; }
+        public static ConfigEntry<bool> CAllowChatOutput { get; set; }
         public static ConfigEntry<bool> CAllowExecuteOnClear { get; set; }
         public static ConfigEntry<bool> CConsoleEnabled { get; set; }
         public static ConfigEntry<bool> CScrollable { get; set; }
+        public static ConfigEntry<int> CScrollableLimit { get; set; }
         public static ConfigEntry<bool> CConsoleAutoComplete { get; set; }
 
         public static ConfigEntry<bool> COpenChatWithSlash { get; set; }

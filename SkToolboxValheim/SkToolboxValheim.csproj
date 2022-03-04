@@ -49,7 +49,6 @@
     </Reference>
     <Reference Include="assembly_valheim">
       <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\BepInEx\core\BepInEx.dll</HintPath>
@@ -121,6 +120,9 @@
     <Compile Include="SkToolbox\SkModules\SkBaseModule.cs" />
     <Compile Include="SkToolbox\Utility\SkUtilities.cs" />
     <Compile Include="SkToolbox\Configuration\SkVersionChecker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SkToolbox\Command\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

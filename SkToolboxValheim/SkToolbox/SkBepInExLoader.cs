@@ -7,13 +7,13 @@ using UnityEngine;
 namespace SkToolbox
 {
     [BepInPlugin(GUID, MODNAME, VERSION)]
-    class SkBepInExLoader : BaseUnityPlugin
+    public class SkBepInExLoader : BaseUnityPlugin
     {
         public const string
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.10.1.0";
+            VERSION = "1.10.5.0";
 
         private void Start()
         {
@@ -21,27 +21,29 @@ namespace SkToolbox
 
             base.transform.parent = null;
             UnityEngine.Object.DontDestroyOnLoad(this);
-            SkLoader.Init();
+            SkLoader.InitBepThreading(this);
         }
 
-        private void InitConfig()
+        public void InitConfig()
         {
             try
             {
                 SkConfigEntry.CDescriptor = Config.Bind("- Index", "ThisIsJustAnIndex-NotASetting", true
                     , "Config sections:" +
                     "\n0 - General" +
-                    "\n1 - Auto Run" +
+                    "\n1 - Auto Run [Currently Disabled due to Hearth and Home patch. Fix coming soon]" +
                     "\n2 - Customize Console Look" +
-                    "\n3 - Command Aliasing" +
+                    "\n3 - Command Aliasing [Currently Disabled due to Hearth and Home patch. Fix coming soon]" +
                     "\n4 - On-Screen Menu" +
-                    "\n5 - Command Hotkeys" +
+                    "\n5 - Command Hotkeys [Currently Disabled due to Hearth and Home patch. Fix coming soon]" +
                     "\n");
 
                 SkConfigEntry.CConsoleEnabled = Config.Bind("0 - General", "ConsoleEnabled", true
                     , "Enables the console without launch option.");
                 SkConfigEntry.CScrollable = Config.Bind("0 - General", "ConsoleScrollable", true
                     , "Enables the console to be scrollable.");
+                SkConfigEntry.CScrollableLimit = Config.Bind("0 - General", "ConsoleScrollableLimit", 500
+                    , "Maximum number of lines to store in the console. Game default = 30 (lol)");
                 SkConfigEntry.CConsoleAutoComplete = Config.Bind("0 - General", "AutoComplete", true
                     , "Press tab to auto-complete SkToolbox commands if you have partially typed a command.");
                 SkConfigEntry.CAllowChatCommandInput = Config.Bind("0 - General", "AllowChatCommandInput", true
@@ -50,6 +52,8 @@ namespace SkToolbox
                     , "Toggle this to allow the mod to respond publicly with certain commands, when entered into chat." +
                     "\nThe /portal command for example, if used in chat and this is true, others nearby will be able to see the response." +
                     "\nNOTE: If you see a response from your name, it is shown publicly and everyone can see it. If it is a response from (SkToolbox), only you see it.");
+                SkConfigEntry.CAllowChatOutput = Config.Bind("0 - General", "AllowResponseInChat", true
+                    , "Toggle this to allow the mod to show output in the chat. If this is disabled, the mod will not output to the chat at all, publicly or not.");
                 SkConfigEntry.CAllowExecuteOnClear = Config.Bind("0 - General", "AllowExecuteOnClear", false
                     , "Toggle this to enable the ability to execute commands by clearing the input (by hitting escape, or selecting all and removing).");
                 SkConfigEntry.COpenConsoleWithSlash = Config.Bind("0 - General", "OpenConsoleWithSlash", false
@@ -94,7 +98,7 @@ namespace SkToolbox
                 SkConfigEntry.CConsoleCaretColor = Config.Bind("2 - CustomizeConsoleLook", "ConsoleCaretColor", "#DCE6F5FF"
                     , "Set the color of the input text caret shown in the console. Game default = #FFFFFFFF. Color format is #RRGGBBAA");
 
-                SkConfigEntry.CAlias1 = Config.Bind("3 - CommandAliasing", "Alias1", "/creative: /god; /ghost; /imacheater; /nores; /nocost; echo Creative mode toggled!"
+                SkConfigEntry.CAlias1 = Config.Bind("3 - CommandAliasing", "Alias1", "/creative: /god; /ghost; /imacheater; /nores; /nocost; /echo Creative mode toggled!"
                     , "Set this to create a command alias. Specify what the user will type, and what will be executed. " +
                     "Command chaining does work here, and these aliases can be used with the AutoRun functionality above." +
                     " Note that aliases cannot reference other aliases. The slash (/) prefix is also not required - command aliases can be set to anything you want!" +

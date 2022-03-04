@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SkToolbox.Utility
 {
-    internal static class SkUtilities
+    public static class SkUtilities
     {
         public static bool ConvertInternalWarningsErrors = false; // Should we allow output of warnings and errors from SkToolbox, or suppress them all to regular log output? // True = suppress
         public static BindingFlags BindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -51,6 +51,13 @@ namespace SkToolbox.Utility
             var prop = obj.GetType()
                 .GetProperty(propertyName, BindFlags);
             prop.SetValue(obj, value, null);
+        }
+
+        public static T GetPrivateProperty<T>(this object obj, string propertyName)
+        {
+            var prop = obj.GetType().GetProperty(propertyName, BindFlags);
+            var value = prop.GetValue(obj);
+            return (T)value;
         }
 
         public static void InvokePrivateMethod(this object obj, string methodName, object[] methodParams)
