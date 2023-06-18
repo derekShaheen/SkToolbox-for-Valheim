@@ -1197,7 +1197,7 @@ namespace SkToolbox
                         {
                             try
                             {
-                                component.GetZDO().SetPGWVersion(ZNetObject[0].GetZDO().GetPGWVersion());
+                                //component.GetZDO().SetPGWVersion(ZNetObject[0].GetZDO().GetPGWVersion());
                                 ZNetObject[0].GetZDO().Set("spawn_id", component.GetZDO().m_uid);
                                 ZNetObject[0].GetZDO().Set("alive_time", ZNet.instance.GetTime().Ticks);
                             }
@@ -2624,7 +2624,7 @@ namespace SkToolbox
         {
             if (Chat.instance != null)
             {
-                Chat.instance.OnNewChatMessage(null, 999, chatPos, Talker.Type.Normal, source, ln);
+                Chat.instance.OnNewChatMessage(null, 999, chatPos, Talker.Type.Normal, UserInfo.GetLocalUser(), source, ln);
                 SkUtilities.SetPrivateField(Chat.instance, "m_hideTimer", 0f);
                 Chat.instance.m_chatWindow.gameObject.SetActive(true);
                 Chat.instance.m_input.gameObject.SetActive(true);
@@ -2682,7 +2682,7 @@ namespace SkToolbox
             {
                 float levelOffset = prefab.GetComponent<TerrainModifier>().m_levelOffset;
                 GameObject terrainObject = UnityEngine.Object.Instantiate(prefab, position - Vector3.up * levelOffset, Quaternion.identity);
-                terrainObject.GetComponent<ZNetView>().GetZDO().SetPGWVersion(component.GetZDO().GetPGWVersion());
+                //terrainObject.GetComponent<ZNetView>().GetZDO().SetPGWVersion(component.GetZDO().GetPGWVersion());
             }
 
             //Thank you to BlueAmulet for this code

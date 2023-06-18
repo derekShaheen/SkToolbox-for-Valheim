@@ -74,6 +74,7 @@
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="UnityEngine">
       <HintPath>D:\Games\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.dll</HintPath>
       <Private>False</Private>

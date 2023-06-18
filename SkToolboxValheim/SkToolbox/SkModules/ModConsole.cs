@@ -410,7 +410,7 @@ namespace SkToolbox.SkModules
                     ConsoleOutputStyle = new GUIStyle();
                     ConsoleOutputStyle.wordWrap = true;
 
-                    int fontSize = Console.instance.m_output.fontSize;
+                    int fontSize = (int)Console.instance.m_output.fontSize;
                     string font = "Consolas";
                     Color outputColor = Console.instance.m_output.color;
                     Color inputColor = Console.instance.m_input.textComponent.color;
@@ -438,7 +438,7 @@ namespace SkToolbox.SkModules
                     Console.instance.m_input.caretColor = caretColor;
                     Console.instance.m_input.customCaretColor = true;
 
-                    Console.instance.m_output.font = consoleFont;
+                    Console.instance.m_output.font = TMPro.TMP_FontAsset.CreateFontAsset(consoleFont);
                     Console.instance.m_output.fontSize = fontSize;
                     Console.instance.m_output.color = outputColor;
 
