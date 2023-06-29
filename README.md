@@ -1,7 +1,7 @@
+Official Valheim mod release page: https://www.nexusmods.com/valheim/mods/8
+
 SkToolbox - Valheim
 AUTHOR: Skrip (https://steamcommunity.com/id/Skrip037/)
-Toolbox Version: 1.8.0
-Valheim at time of release: 0.147.3
 
 SkToolbox is a fully clientside utility meant for improving the gameplay experience, by enabling the player to modify their character or the environment to their liking. The mod enables features that could allow a player to drastically change their character or others.
 
@@ -37,7 +37,7 @@ After extraction, in the game root folder, you should see the Valheim.exe file, 
 :: CHANGELOG ::
 • Version 1.8.0
    ![NEW] Version Checker has been implemented. Toolbox will now alert when an update has been released.
-	[NEW] New configuration option added - OpenConsoleWithSlash
+   	[NEW] New configuration option added - OpenConsoleWithSlash
 	[NEW] New configuration options added - ConsoleFont, ConsoleFontSize, ConsoleOutputTextColor, ConsoleSelectionColor, ConsoleCaretColor. These allow the customization of the look of the console. Console now set to new look settings by default.
 	[NEW] New configuration options added - Alternate on-screen controls are now fully configurable!
 • Version 1.7.0
