@@ -44,14 +44,17 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\..\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_utils">
-      <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_utils.dll</HintPath>
+    <Reference Include="assembly_utils, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\assembly_utils.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_valheim">
-      <HintPath>D:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
+    <Reference Include="assembly_valheim, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\..\..\BepInEx\core\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -74,32 +77,35 @@
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>D:\Games\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.IMGUIModule.dll</HintPath>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>D:\Games\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.TextRenderingModule.dll</HintPath>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\Release - BepInEx\unstripped_corlib\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>D:\Games\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIModule.dll</HintPath>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Games\SteamLibrary\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -131,8 +137,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>echo Copying debug files to the game...
-copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "D:\Games\Steam\steamapps\common\Valheim\BepInEx\plugins\SkToolboxValheim.dll"
-copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "D:\Games\Steam\steamapps\common\Valheim\BepInEx\scripts\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "B:\Games\SteamLibrary\steamapps\common\Valheim\BepInEx\plugins\SkToolboxValheim.dll"
+copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Debug\SkToolboxValheim.dll" "B:\Games\SteamLibrary\steamapps\common\Valheim\BepInEx\scripts\SkToolboxValheim.dll"
 echo Copying release files and readme to folders...
 copy /Y  "B:\SkToolbox Projects\Valheim\SkToolboxValheim\SkToolboxValheim\bin\Release\SkToolboxValheim.dll" "B:\SkToolbox Projects\Release - BepInEx\BepInEx\plugins\SkToolboxValheim.dll"
 copy /Y  "B:\SkToolbox Projects\SkToolbox Readme.txt" "B:\SkToolbox Projects\Release - BepInEx\SkToolbox Readme.txt"
