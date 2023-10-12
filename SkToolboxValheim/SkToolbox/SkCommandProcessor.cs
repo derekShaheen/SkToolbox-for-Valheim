@@ -2651,7 +2651,7 @@ namespace SkToolbox
             bool done = false;
             do
             {
-                done = ZDOMan.instance.GetAllZDOsWithPrefabIterative(Game.instance.m_portalPrefab.name, m_tempPortalList, ref index);
+                done = ZDOMan.instance.GetAllZDOsWithPrefabIterative(Game.instance.m_portalPrefabs[0].name, m_tempPortalList, ref index);
             }
             while (!done);
             string outStr = string.Empty;

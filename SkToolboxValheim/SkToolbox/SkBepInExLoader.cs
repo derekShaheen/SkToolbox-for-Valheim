@@ -13,7 +13,7 @@ namespace SkToolbox
             MODNAME = "SkToolbox",
             AUTHOR = "Skrip",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "1.10.5.0";
+            VERSION = "1.10.8.0";
 
         private void Start()
         {
@@ -84,7 +84,7 @@ namespace SkToolbox
                 SkConfigEntry.CAllowLookCustomizations = Config.Bind("2 - CustomizeConsoleLook", "ConsoleAllowLookCustomizations", true
                     , "Toggle this to enable or disable the customization settings below.");
 
-                SkConfigEntry.CConsoleFont = Config.Bind("2 - CustomizeConsoleLook", "ConsoleFont", "Consolas"
+                SkConfigEntry.CConsoleFont = Config.Bind("2 - CustomizeConsoleLook", "ConsoleFont", "Consola.ttl"
                     , "Set the font size of the text in the console. Game default = AveriaSansLibre-Bold");
                 SkConfigEntry.CConsoleFontSize = Config.Bind("2 - CustomizeConsoleLook", "ConsoleFontSize", 18
                     , "Set the font size of the text in the console. Game default = 18");

@@ -3,6 +3,7 @@ using SkToolbox.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace SkToolbox.SkModules
@@ -411,7 +412,28 @@ namespace SkToolbox.SkModules
                     ConsoleOutputStyle.wordWrap = true;
 
                     int fontSize = (int)Console.instance.m_output.fontSize;
-                    string font = "Consolas";
+                    string fontName = SkConfigEntry.CConsoleFont.Value;
+                    string fontPath = string.Empty;
+                    string[] fontPaths = Font.GetPathsToOSFonts();
+                    foreach (var path in fontPaths)
+                    {
+                        if (path.IndexOf(fontName, StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            fontPath = path;
+                            break;
+                        }
+                    }
+
+                    if(!string.IsNullOrEmpty(fontPath))
+                    {
+                        Font foundFont = new Font(fontPath);
+                        Font consoleFontFont = Font.CreateDynamicFontFromOSFont(fontName, fontSize);
+                        TMP_FontAsset consoleFont = TMP_FontAsset.CreateFontAsset(foundFont);
+                        Console.instance.m_input.textComponent.font = consoleFont;
+                        Console.instance.m_output.font = consoleFont;
+                        ConsoleOutputStyle.font = consoleFontFont;
+                    }   
+                    
                     Color outputColor = Console.instance.m_output.color;
                     Color inputColor = Console.instance.m_input.textComponent.color;
                     Color selectionColor = Console.instance.m_input.selectionColor;
@@ -419,7 +441,7 @@ namespace SkToolbox.SkModules
                     try
                     {
                         fontSize = SkConfigEntry.CConsoleFontSize.Value;
-                        font = SkConfigEntry.CConsoleFont.Value;
+                        fontName = SkConfigEntry.CConsoleFont.Value;
                         ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleOutputTextColor.Value, out outputColor);
                         ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleInputTextColor.Value, out inputColor);
                         ColorUtility.TryParseHtmlString(SkConfigEntry.CConsoleSelectionColor.Value, out selectionColor);
@@ -430,22 +452,19 @@ namespace SkToolbox.SkModules
                         SkUtilities.Logz(new string[] { "ERR" }, new string[] { "Failed to load something from the config.", Ex.Message }, LogType.Warning);
                     }
 
-                    Font consoleFont = Font.CreateDynamicFontFromOSFont(font, fontSize);
-
+                    
+                    
                     Console.instance.m_input.textComponent.color = inputColor;
-                    Console.instance.m_input.textComponent.font = consoleFont;
                     Console.instance.m_input.selectionColor = selectionColor;
                     Console.instance.m_input.caretColor = caretColor;
                     Console.instance.m_input.customCaretColor = true;
 
-                    Console.instance.m_output.font = TMPro.TMP_FontAsset.CreateFontAsset(consoleFont);
                     Console.instance.m_output.fontSize = fontSize;
                     Console.instance.m_output.color = outputColor;
 
                     if (SkConfigEntry.CScrollable != null & SkConfigEntry.CScrollable.Value)
                     {
                         ConsoleOutputStyle.fontSize = fontSize;
-                        ConsoleOutputStyle.font = consoleFont;
                         ConsoleOutputStyle.normal.textColor = outputColor;
                     }
                 }
